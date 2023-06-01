@@ -1,5 +1,6 @@
 import { component$ , useSignal} from '@builder.io/qwik';
-import type { DocumentHead } from '@builder.io/qwik-city';
+import { Link, type DocumentHead } from '@builder.io/qwik-city';
+import { IcoAdicionador, IcoAdmin, IcoCajero } from '../../components/router-head/iconos/iconos';
 
 export default component$(() => {
   const count = useSignal(0);
@@ -7,19 +8,17 @@ export default component$(() => {
   
   return (
     <>
-      <h1>Admin 👋</h1>
-
-     
+      <h1 class="text-7xl">Caja 👋</h1>
     </>
   );
 });
 
 export const head: DocumentHead = {
-  title: 'Food-Floow',
+  title: 'Food-Floow Caja',
   meta: [
     {
       name: 'description',
-      content: 'Qwik site description',
+      content: 'Caja',
     },
   ],
 };

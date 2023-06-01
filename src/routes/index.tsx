@@ -1,6 +1,6 @@
-import { component$, useContext, useTask$ } from '@builder.io/qwik';
+import { component$, useContext, useTask$, useVisibleTask$ } from '@builder.io/qwik';
 import type { DocumentHead } from '@builder.io/qwik-city';
-import { Form, routeAction$, z, zod$ } from '@builder.io/qwik-city';
+import { Form, routeAction$, useNavigate, z, zod$ } from '@builder.io/qwik-city';
 import { AuthContext } from '~/context/auth/auth.context';
 import { login } from '~/services/auth.service';
 
@@ -33,9 +33,20 @@ export const useLoginAction = routeAction$(
 );
 
 export default component$(() => {
-
+  const nav = useNavigate();
   const actionForm = useLoginAction();
   const authContext = useContext(AuthContext);
+  
+  useVisibleTask$(({track}) => {
+
+    track(() => {
+      authContext.isAutenticated
+    })
+
+    if(authContext.isAutenticated){
+      nav('/inicio');
+    }
+  });
 
   useTask$( ({ track }) => {
     track(() => { actionForm.value})
@@ -45,8 +56,19 @@ export default component$(() => {
       //implementar la grabacion de token
 
       console.log("authContext", authContext);
-    
+      console.log("actionForm", actionForm.value.data.user);
       authContext.token = actionForm.value.data.access_token;
+      authContext.user = {
+        id: actionForm.value.data.user.id,
+        email: actionForm.value.data.user.email,
+        name: actionForm.value.data.user.name,
+        rol: actionForm.value.data.user.role.nombre,
+        imagen: actionForm.value.data.user.imagen
+      }
+      nav('/inicio');
+    }
+    else{
+      console.log("error", actionForm.value?.data);
     }
 
   });
