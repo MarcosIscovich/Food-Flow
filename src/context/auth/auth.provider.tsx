@@ -56,8 +56,7 @@ export const AuthProvider = component$(() => {
         {
             authStore.isAutenticated = true;
             authStore.loading = false;
-            localStorage.setItem('token', authStore.token);
-           
+            localStorage.setItem('token', authStore.token);    
         }
     });
 
