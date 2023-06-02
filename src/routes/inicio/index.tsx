@@ -12,6 +12,8 @@ export default component$(() => {
   return (
     <>
     {/* esta es para un merge a develop */}
+    {/* esta es para un merge a develop */}
+    {/* esta es para un merge a develop */}
     {authcontext.isAutenticated ? (
       <>
       <h1>Admin 👋</h1>
