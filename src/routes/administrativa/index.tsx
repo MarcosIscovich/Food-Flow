@@ -14,11 +14,11 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-  title: 'Food-Floow Caja',
+  title: 'Food-Floow Administrativa',
   meta: [
     {
       name: 'description',
-      content: 'Caja',
+      content: 'Administrativa site description',
     },
   ],
 };
