@@ -1,5 +1,5 @@
 import { component$ } from '@builder.io/qwik';
 
-export const Configuracion = component$(() => {
+export default component$(() => {
   return <div class="text-3xl">Configuracion</div>
 });

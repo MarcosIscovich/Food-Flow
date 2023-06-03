@@ -68,7 +68,7 @@ export default component$(() => {
       nav('/inicio');
     }
     else{
-      console.log("error", actionForm.value?.data);
+      console.log("error", actionForm.value?.failed);
     }
 
   });
@@ -76,9 +76,9 @@ export default component$(() => {
   return (
     <>
       <div class="hero min-h-screen bg-base-200">
-        <div class="hero-content flex-col lg:flex-row-reverse">
+        <div class="hero-content flex-col ">
           <div class="text-center lg:text-left">
-            <h1 class="text-5xl font-bold">Ingresa al sistema</h1>
+            <h1 class="text-5xl font-bold mb-10">Ingresa al sistema</h1>
           </div>
 
 
