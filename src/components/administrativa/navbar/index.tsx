@@ -20,25 +20,25 @@ export const Navbar = component$(() => {
                 <Link href="/administrativa/personal">Personal</Link>
               </li>
               <li>
-                <Link href="/roles">Roles</Link>
+                <Link href="/administrativa/roles">Roles</Link>
               </li>
               <li>
-                <Link href="/productos">Productos</Link>
+                <Link href="/administrativa/productos">Productos</Link>
               </li>
               <li>
-                <Link href="/mapas">Mapas</Link>
+                <Link href="/administrativa/mapas">Mapas</Link>
               </li>
               <li>
-                <Link href="/administrativa/clientes">Clientes</Link>
+                <Link href="/administrativa/administrativa/clientes">Clientes</Link>
               </li>
               <li>
-                <Link href="/proveedores">Proveedores</Link>
+                <Link href="/administrativa/proveedores">Proveedores</Link>
               </li>
               <li>
-                <Link href="/informes">Informes</Link>
+                <Link href="/administrativa/informes">Informes</Link>
               </li>
               <li>
-                <Link href="/reservas">Reservas</Link>
+                <Link href="/administrativa/reservas">Reservas</Link>
               </li>
               <li>
                 <Link href="/configuracion">Configuracion</Link>
