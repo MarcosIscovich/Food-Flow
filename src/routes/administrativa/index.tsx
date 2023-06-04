@@ -1,6 +1,5 @@
 import { component$ , useSignal} from '@builder.io/qwik';
-import { Link, type DocumentHead } from '@builder.io/qwik-city';
-import { IcoAdicionador, IcoAdmin, IcoCajero } from '../../components/router-head/iconos/iconos';
+import {  type DocumentHead } from '@builder.io/qwik-city';
 
 export default component$(() => {
   const count = useSignal(0);

@@ -3,11 +3,11 @@ import { Navbar } from '../../components/administrativa/navbar';
 
 export default component$(() => {
 
-  
   return (
     <>
       <Navbar />
-      <Slot />    
+        <Slot />     
+
     </>
   );
 
