@@ -6,8 +6,9 @@ export default component$(() => {
   
   return (
     <>
-      <Navbar />
-      <Slot />    
+      <Navbar >
+        <Slot />   
+      </Navbar >
     </>
   );
 
