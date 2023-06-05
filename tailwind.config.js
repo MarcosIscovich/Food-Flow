@@ -2,7 +2,11 @@
 module.exports = {
   content: ['./src/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        bgblue: "#060879",
+      }
+    },
   },
   plugins: [
     require('daisyui'),
@@ -19,25 +23,19 @@ module.exports = {
     themes: [
       {
         mytheme: {
-          primary: "#66CC8A",
-
-          secondary: "#377CFB",
-
-          accent: "#EA5234",
-
-          neutral: "#333C4D",
-
-          "base-100": "#FFFFFF",
-
-          info: "#3ABFF8",
-
-          success: "#36D399",
-
-          warning: "#FBBD23",
-
-          error: "#F87272",
+          "primary": "#060879",
+          "secondary": "#ea580c",
+          "accent": "#2563eb",
+          "neutral": "#d1d5db",
+          "base-100": "#f5f5f4",
+          "info": "#facc15",
+          "success": "#65a30d",
+          "warning": "#bc7700",
+          "error": "#dc2626",
         },
+
       },
     ],
   },
 };
+
