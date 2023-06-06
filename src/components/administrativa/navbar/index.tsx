@@ -1,14 +1,15 @@
 import { Slot, component$ } from '@builder.io/qwik';
 import { Link } from '@builder.io/qwik-city';
+import styles from './administrativa.module.css';
 
 
 export const Navbar = component$(() => {
   return (
     <>
-      <div class="drawer ">
+      {/* <div class="drawer ">
         <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content flex flex-col ">
-          {/* <!-- Navbar --> */}
+      
           <div class="w-full navbar bg-colorblue ">
             <div class="flex-none navbar-start ">
               <label for="my-drawer-3" class="btn btn-square btn-ghost text-white">
@@ -32,7 +33,7 @@ export const Navbar = component$(() => {
             </div>
             
           </div>
-          {/* <!-- Page content here --> */}
+     
           <div class="h-full">
             <Slot />
           </div>
@@ -70,6 +71,52 @@ export const Navbar = component$(() => {
           </ul>
 
         </div>
+      </div> */}
+      <div class={styles.menu}>
+        <div class="bg-colorblue pb-10">
+          <label tabIndex={0} class="btn btn-ghost btn-circle avatar ">
+            <div class="w-10 rounded-full ">
+              <img src="" alt="logoFF" />
+            </div>
+          </label>
+        </div>
+        <div class="bg-colorblue text-white pt-5 pb-5 flex justify-center">
+         <span>FOODFLOW</span> 
+        </div>
+        <ul class="menu h-full bg-colorblue">
+          <li>
+            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/personal">Personal</Link>
+          </li>
+          <li>
+            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/roles">Roles</Link>
+          </li>
+          <li>
+            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/productos">Productos</Link>
+          </li>
+          <li>
+            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/mapas">Mapas</Link>
+          </li>
+          <li>
+            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/clientes">Clientes</Link>
+          </li>
+          <li>
+            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/proveedores">Proveedores</Link>
+          </li>
+          <li>
+            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/informes">Informes</Link>
+          </li>
+          <li>
+            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/reservas">Reservas</Link>
+          </li>
+          <li>
+            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/configuracion">Configuracion</Link>
+          </li>
+        </ul>
+      </div>
+
+      <div class={styles.content}>
+        <Slot />
+
       </div>
 
 
@@ -78,19 +125,4 @@ export const Navbar = component$(() => {
 });
 
 
-{/* <div class="navbar-end">
-  <div class="flex-none gap-2">
-    <div class="dropdown dropdown-end ">
-      <label tabIndex={0} class="btn btn-ghost btn-circle avatar">
-        <div class="w-10 rounded-full">
-          <img src="" alt="logoFF" />
-        </div>
-      </label>
-      <ul tabIndex={0} class="mt-3 p-2 shadow menu menu-sm dropdown-content rounded-box w-52 text-white hover:bg-indigo-500 bg-bgblue">
-        <li><a>Logout</a></li>
-      </ul>
-    </div>
 
-  </div>
-</div>
- */}
