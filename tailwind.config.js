@@ -11,6 +11,7 @@ module.exports = {
         error: "#dc2626",
         warning: "#bc7700",
         info: "#facc15", 
+        colorgray: "#d1d5db",
       },
     },
   },
