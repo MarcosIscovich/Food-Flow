@@ -7,7 +7,7 @@
   "resolved" "https://registry.npmjs.org/@alloc/quick-lru/-/quick-lru-5.2.0.tgz"
   "version" "5.2.0"
 
-"@builder.io/qwik-city@^1.1.4":
+"@builder.io/qwik-city@^1.1.0", "@builder.io/qwik-city@^1.1.4":
   "integrity" "sha512-AzIlyyP8nmv3DRXVtiBUcjMtazIaLr0U3hHoieqrtK+XfdhTXdKjzFX9ceUj0zSwX4wrvX86BtwrYJDMeJ+AuA=="
   "resolved" "https://registry.npmjs.org/@builder.io/qwik-city/-/qwik-city-1.1.5.tgz"
   "version" "1.1.5"
@@ -18,7 +18,7 @@
     "vfile" "5.3.7"
     "zod" "^3.21.4"
 
-"@builder.io/qwik@^1.1.4":
+"@builder.io/qwik@^1.1.0", "@builder.io/qwik@^1.1.4":
   "integrity" "sha512-/CZzZaUPctUBHNjchJRXV+JC28HZtv4JteCKnpqjp8YcvzHNuB3A0FpIGEzEWD/F/pg+4YunvxrBSb9ZdPJROw=="
   "resolved" "https://registry.npmjs.org/@builder.io/qwik/-/qwik-1.1.5.tgz"
   "version" "1.1.5"
@@ -138,6 +138,11 @@
     "unist-util-stringify-position" "^3.0.0"
     "unist-util-visit" "^4.0.0"
     "vfile" "^5.0.0"
+
+"@modular-forms/qwik@^0.17.0":
+  "integrity" "sha512-nw2TsbtlYDVF/iZT9ofNh57RXX0UEK5YICpDVBYtz2kZAuwWxGBh089/5mhl2QA9qmczF2Qrm3t1HLhM+dSnuw=="
+  "resolved" "https://registry.npmjs.org/@modular-forms/qwik/-/qwik-0.17.0.tgz"
+  "version" "0.17.0"
 
 "@nodelib/fs.scandir@2.1.5":
   "integrity" "sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g=="
@@ -423,7 +428,7 @@
   "resolved" "https://registry.npmjs.org/astring/-/astring-1.8.6.tgz"
   "version" "1.8.6"
 
-"autoprefixer@^10.0.2", "autoprefixer@^10.4.14":
+"autoprefixer@^10.4.14":
   "integrity" "sha512-FQzyfOsTlwVzjHxKEqRIAdJx9niO6VCBCoEwax/VLSoQF29ggECcPuBqUMZ+u8jCZOPSy8b8/8KnuFbp0SaFZQ=="
   "resolved" "https://registry.npmjs.org/autoprefixer/-/autoprefixer-10.4.14.tgz"
   "version" "10.4.14"
@@ -570,26 +575,15 @@
   dependencies:
     "color-name" "~1.1.4"
 
-"color-name@^1.0.0", "color-name@~1.1.4":
+"color-name@~1.1.4":
   "integrity" "sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA=="
   "resolved" "https://registry.npmjs.org/color-name/-/color-name-1.1.4.tgz"
   "version" "1.1.4"
 
-"color-string@^1.9.0":
-  "integrity" "sha512-shrVawQFojnZv6xM40anx4CkoDP+fZsw/ZerEMsW/pyzsRbElpsL/DBVW7q3ExxwusdNXI3lXpuhEZkzs8p5Eg=="
-  "resolved" "https://registry.npmjs.org/color-string/-/color-string-1.9.1.tgz"
-  "version" "1.9.1"
-  dependencies:
-    "color-name" "^1.0.0"
-    "simple-swizzle" "^0.2.2"
-
-"color@^4.2":
-  "integrity" "sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A=="
-  "resolved" "https://registry.npmjs.org/color/-/color-4.2.3.tgz"
-  "version" "4.2.3"
-  dependencies:
-    "color-convert" "^2.0.1"
-    "color-string" "^1.9.0"
+"colord@^2.9":
+  "integrity" "sha512-jeC1axXpnb0/2nn/Y1LPuLdgXBLH7aDcHu4KEKfqw3CUhX7ZpfBSlPKyqXE6btIgEzfWtrX3/tyBCaCvXvMkOw=="
+  "resolved" "https://registry.npmjs.org/colord/-/colord-2.9.3.tgz"
+  "version" "2.9.3"
 
 "comma-separated-tokens@^2.0.0":
   "integrity" "sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg=="
@@ -615,7 +609,7 @@
     "shebang-command" "^2.0.0"
     "which" "^2.0.1"
 
-"css-selector-tokenizer@^0.8.0":
+"css-selector-tokenizer@^0.8":
   "integrity" "sha512-Jd6Ig3/pe62/qe5SBPTN8h8LeUg/pT4lLgtavPf7updwwHpvFzxvOQBHYj2LZDMjUnBzgvIUSjRcf6oT5HzHFg=="
   "resolved" "https://registry.npmjs.org/css-selector-tokenizer/-/css-selector-tokenizer-0.8.0.tgz"
   "version" "0.8.0"
@@ -628,14 +622,14 @@
   "resolved" "https://registry.npmjs.org/cssesc/-/cssesc-3.0.0.tgz"
   "version" "3.0.0"
 
-"daisyui@^2.51.6":
-  "integrity" "sha512-LQTA5/IVXAJHBMFoeaEMfd7/akAFPPcdQPR3O9fzzcFiczneJFM73CFPnScmW2sOgn/D83cvkP854ep2T9OfTg=="
-  "resolved" "https://registry.npmjs.org/daisyui/-/daisyui-2.52.0.tgz"
-  "version" "2.52.0"
+"daisyui@^3.0.19":
+  "integrity" "sha512-hx3yQ0/Bmn+8OvnA0bayInfu+VjqM3wNNujEaTmnpQRM8p1cwFzcvBXtACNN5gBeEAF18iSBH3drz3wdZ1vCaw=="
+  "resolved" "https://registry.npmjs.org/daisyui/-/daisyui-3.0.19.tgz"
+  "version" "3.0.19"
   dependencies:
-    "color" "^4.2"
-    "css-selector-tokenizer" "^0.8.0"
-    "postcss-js" "^4.0.0"
+    "colord" "^2.9"
+    "css-selector-tokenizer" "^0.8"
+    "postcss-js" "^4"
     "tailwindcss" "^3"
 
 "debug@^4.0.0", "debug@^4.1.1", "debug@^4.3.2", "debug@^4.3.4":
@@ -1323,11 +1317,6 @@
     "call-bind" "^1.0.2"
     "get-intrinsic" "^1.2.0"
     "is-typed-array" "^1.1.10"
-
-"is-arrayish@^0.3.1":
-  "integrity" "sha512-eVRqCvVlZbuw3GrM63ovNSNAeA1K16kaR/LRY/92w0zxQ5/1YzwblUX652i4Xs9RwAGjW9d9y6X88t8OaAJfWQ=="
-  "resolved" "https://registry.npmjs.org/is-arrayish/-/is-arrayish-0.3.2.tgz"
-  "version" "0.3.2"
 
 "is-bigint@^1.0.1":
   "integrity" "sha512-zB9CruMamjym81i2JZ3UMn54PKGsQzsJeo6xvN3HJJ4CAsQNB6iRutp2To77OfCNuoxspsIhzaPoO1zyCEhFOg=="
@@ -2237,7 +2226,7 @@
     "read-cache" "^1.0.0"
     "resolve" "^1.1.7"
 
-"postcss-js@^4.0.0", "postcss-js@^4.0.1":
+"postcss-js@^4", "postcss-js@^4.0.1":
   "integrity" "sha512-dDLF8pEO191hJMtlHFPRa8xsizHaM82MLfNkUHdUtVEV3tgTp5oj+8qbEqYM57SLfc74KSbw//4SeJma2LRVIw=="
   "resolved" "https://registry.npmjs.org/postcss-js/-/postcss-js-4.0.1.tgz"
   "version" "4.0.1"
@@ -2280,7 +2269,7 @@
   "resolved" "https://registry.npmjs.org/postcss-value-parser/-/postcss-value-parser-4.2.0.tgz"
   "version" "4.2.0"
 
-"postcss@^8.0.0", "postcss@^8.1.0", "postcss@^8.1.6", "postcss@^8.2.14", "postcss@^8.4.21", "postcss@^8.4.23", "postcss@>=8.0.9":
+"postcss@^8", "postcss@^8.0.0", "postcss@^8.1.0", "postcss@^8.2.14", "postcss@^8.4.21", "postcss@^8.4.23", "postcss@>=8.0.9":
   "integrity" "sha512-M0RzbcI0sO/XJNucsGjvWU9ERWxb/ytp1w6dKtxTKgixdtQDq4rmx/g8W1hnaheq9jgwL/oyEdH5Bc4WwJKMqg=="
   "resolved" "https://registry.npmjs.org/postcss/-/postcss-8.4.24.tgz"
   "version" "8.4.24"
@@ -2452,13 +2441,6 @@
     "call-bind" "^1.0.0"
     "get-intrinsic" "^1.0.2"
     "object-inspect" "^1.9.0"
-
-"simple-swizzle@^0.2.2":
-  "integrity" "sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg=="
-  "resolved" "https://registry.npmjs.org/simple-swizzle/-/simple-swizzle-0.2.2.tgz"
-  "version" "0.2.2"
-  dependencies:
-    "is-arrayish" "^0.3.1"
 
 "slash@^3.0.0":
   "integrity" "sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q=="
