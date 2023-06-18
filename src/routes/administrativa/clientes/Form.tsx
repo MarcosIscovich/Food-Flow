@@ -49,7 +49,7 @@ email: z
   .string()
   .min(1, 'Please enter your email.')
   .email('The email address is badly formatted.'),
-  observaciones: z.string().min(1).max(50),
+  observaciones: z.string().min(1).max(250),
 // password: z
 //   .string()
 //   .min(1, 'Please enter your password.')
@@ -138,20 +138,51 @@ export default component$<parametros>((props) => {
                               >
                                 {field.label}
                               </label>
-                              {field.tipo === "textarea" ? (
-                                <textarea {...props} value={fie.value} rows="4" class="rounded-md w-full max-w-xs col-span-2"/>
-                              ) : (
-                                <input
+                              {field.tipo === "textarea" && (
+                                <textarea
+                                  {...props}
+                                  value={fie.value}
+                                  rows="4"
+                                  class="rounded-md w-full max-w-xs col-span-2"
+                                />
+                              )}
+                              {field.tipo === "select" && (
+                                <select
                                   class={`${
                                     field.key
                                       ? "hidden"
                                       : "input input-bordered w-full max-w-xs col-span-2"
                                   }`}
                                   {...props}
-                                  type={field.tipo}
                                   value={fie.value}
-                                />
+                                >
+                                  {field.options.map((option, index) => {
+                                    console.log("option", option);
+                                    console.log("Options", field.options);
+
+                                    return (
+                                      <option key={index} >
+                                        {option}
+                                      </option>
+                                    );
+                                  })}
+                                </select>
                               )}
+                              {(field.tipo === "text" ||
+                                field.tipo === "number" ||
+                                field.tipo === "date") && (
+                                  <input
+                                    class={`${
+                                      field.key
+                                        ? "hidden"
+                                        : "input input-bordered w-full max-w-xs col-span-2"
+                                    }`}
+                                    {...props}
+                                    type={field.tipo}
+                                    value={fie.value}
+                                  />
+                                )}
+
                             </div>
 
                             {fie.error && (

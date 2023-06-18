@@ -11,21 +11,15 @@ import { routeLoader$, type DocumentHead, z } from "@builder.io/qwik-city";
 import moment from "moment";
 //import { Breadcrumbs } from "~/components/layout/breadcrumbs.component";
 import { Confirm } from "~/components/sharedComponents/utils/confirm.component";
-
-//import { Pagination } from "~/components/utils/pagination.component";
 import { Toast } from "~/components/sharedComponents/utils/toast.component";
 import { AuthContext } from '~/context/auth/auth.context';
-//import { k10_getFecha } from "~/helpers/funciones";
 import {
   lista,
   create,
   update,
   deleteRegistro,
  } from "~/services/clientes.service";
-import { ClienteModal } from "./modal";
 import { IconDown, IconUp } from "~/components/sharedComponents/icons";
-//import { TemplateCuponesGeneraModal } from "./modalGenera";
-import { customAlphabet } from "nanoid";
 import { Pagination } from "~/components/sharedComponents/utils/pagination.component";
 import  ClienteForm  from "./Form";
 import { InitialValues } from "@modular-forms/qwik";
@@ -47,6 +41,13 @@ export interface ICliente {
     updatedAt?: Date;
   };
 
+  const EnumCondicionIva = [
+   "Responsable Inscripto",
+   "Monotributista",
+   "Exento",
+   "Consumidor Final"
+  ];
+
   const TableFields:ITableField [] = [
     { nombre: "id", label: "ID", ordenable: true, tipo: "number", key: true, hidden: false },
     { nombre: "nombre", label: "Nombre", ordenable: true, tipo: "text" },
@@ -58,11 +59,12 @@ export interface ICliente {
     { nombre: "codigo_postal", label: "Código Postal", ordenable: false, visibleMobile: true, tipo: "text" },
     { nombre: "cuit", label: "CUIT", ordenable: false, visibleMobile: true, tipo: "text" },
     { nombre: "razon_social", label: "Razón Social", ordenable: false, visibleMobile: true, tipo: "text" },
-    { nombre: "condicion_iva", label: "Condición IVA", ordenable: true, visibleMobile: true,  tipo: "text" },
+    { nombre: "condicion_iva", label: "Condición IVA", ordenable: true, visibleMobile: true,  tipo: "select",  options: EnumCondicionIva} ,
     { nombre: "fecha_nacimiento", label: "Fecha Nacimiento", ordenable: false, visibleMobile: true, tipo: "date" },
     { nombre: "observaciones", label: "Observaciones", ordenable: true, visibleMobile: true,  tipo: "textarea", hidden: true },
   ]
 
+  
   export interface ITableField {
     nombre: string;
     label: string;
@@ -71,6 +73,8 @@ export interface ICliente {
     tipo: string;
     key?: boolean;
     hidden?: boolean;
+    //las opciones son para los campos tipo select, salen de un Enum
+    options?: any;
   }
     
     const infoTitle = {
@@ -189,16 +193,16 @@ export default component$(() => {
 
     if (itemData.id > 0) {
       // Editar
-      tipoAccion = "editado";
+      tipoAccion = "editado y guardado";
       resp = await update(authContext.token || "", itemData);
     } else {
       resp = await create(authContext.token || "", itemData);
     }
 
     console.log(resp);
-    if (resp && (resp?.id || tipoAccion == "editado")) {
+    if (resp && (resp?.id || tipoAccion == "editado y guardado")) {
       // show toast
-      infoToast.msg = `Se ha ${tipoAccion} el template de cupón correctamente`;
+      infoToast.msg = `Se ha ${tipoAccion} el cliente correctamente`;
       infoToast.type = "success";
       infoToast.show = true;
 

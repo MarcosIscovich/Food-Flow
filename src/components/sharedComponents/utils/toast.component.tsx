@@ -12,7 +12,7 @@ export const Toast = component$<parametros>((props) => {
 
   let typeClass = "alert alert-info";
   if (type == "error") {
-    typeClass = "alert alert-danger";
+    typeClass = "alert alert-error";
   }
   if (type == "success") {
     typeClass = "alert alert-success";
