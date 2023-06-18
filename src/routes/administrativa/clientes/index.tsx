@@ -60,7 +60,7 @@ export interface ICliente {
     { nombre: "razon_social", label: "Razón Social", ordenable: false, visibleMobile: true, tipo: "text" },
     { nombre: "condicion_iva", label: "Condición IVA", ordenable: true, visibleMobile: true,  tipo: "text" },
     { nombre: "fecha_nacimiento", label: "Fecha Nacimiento", ordenable: false, visibleMobile: true, tipo: "date" },
-    { nombre: "observaciones", label: "Observaciones", ordenable: true, visibleMobile: true,  tipo: "text", hidden: true },
+    { nombre: "observaciones", label: "Observaciones", ordenable: true, visibleMobile: true,  tipo: "textarea", hidden: true },
   ]
 
   export interface ITableField {

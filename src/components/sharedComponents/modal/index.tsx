@@ -24,11 +24,7 @@ export const Modal = component$<ComponentProps>((props) => {
           <Slot />
         </div>
 
-        <div class="modal-action">
-          <label for="my-modal-6" class="btn" onClick$={onClose$}>
-            Cerrar
-          </label>
-        </div>
+       
       </div>
     </div>
   );

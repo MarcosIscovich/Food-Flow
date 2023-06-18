@@ -122,33 +122,65 @@ export default component$<parametros>((props) => {
         title={title}
       >
         {!loading.value ? (
-        <div class="w-full">
-          <Form onSubmit$={handleSubmit} class="flex flex-col items-center">
-            <div class="rounded-md text-2xl m-2">
-            {tableFields.map((field, index) => {
-             
-                return (
-                  <div key={index} >
-                    <Field name={field.nombre} >  
-                      {(fie, props) => (
-                        <div class="rounded-md text-2xl m-2 flex flex-col">
-                             <label class={field.key ? 'hidden' : ''} for={field.nombre}>{field.label}</label>
-                            <input class={`${field.key ? 'hidden' : 'm-2 p-2 border-2 border-gray-300 rounded-md'}`}
-                            {...props}
-                            type={field.tipo}
-                            value={fie.value}
-                          />
-                          {fie.error && <div >{fie.error}</div>}
-                        </div>
-                      )}
-                    </Field>
-                  </div>
-                );
-              
-            })}
-            </div>
-            <button type="submit" class="btn btn-primary">Login</button>
-          </Form>
+          <div class="w-full">
+            <Form onSubmit$={handleSubmit} class="flex flex-col items-center">
+              <div class="rounded-md text-2xl m-2 w-full">
+                {tableFields.map((field, index) => {
+                  return (
+                    <div key={index} class="flex justify-between">
+                      <Field name={field.nombre}>
+                        {(fie, props) => (
+                          <div class="flex flex-col w-full">
+                            <div class="rounded-md text-xl m-2 grid grid-cols-3 justify-between">
+                              <label
+                                class={field.key ? "hidden" : "justify-start"}
+                                for={field.nombre}
+                              >
+                                {field.label}
+                              </label>
+                              {field.tipo === "textarea" ? (
+                                <textarea {...props} value={fie.value} rows="4" class="rounded-md w-full max-w-xs col-span-2"/>
+                              ) : (
+                                <input
+                                  class={`${
+                                    field.key
+                                      ? "hidden"
+                                      : "input input-bordered w-full max-w-xs col-span-2"
+                                  }`}
+                                  {...props}
+                                  type={field.tipo}
+                                  value={fie.value}
+                                />
+                              )}
+                            </div>
+
+                            {fie.error && (
+                              <div class="text-error text-sm flex justify-end">
+                                {fie.error}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </Field>
+                    </div>
+                  );
+                })}
+              </div>
+              <div class="w-full flex justify-end">
+              <div class="modal-action">
+                <label
+                  for="my-modal-6"
+                  class="btn btn-secondary flex justify-end"
+                  onClick$={onClose$}
+                >
+                  Cerrar
+                </label>
+                <button type="submit" class="btn btn-primary flex justify-end">
+                  Guardar
+                </button>
+              </div>
+                </div>
+            </Form>
           </div>
         ) : (
           <div>Loading...</div>
