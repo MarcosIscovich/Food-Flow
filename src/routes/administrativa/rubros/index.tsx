@@ -1,10 +1,30 @@
-import { component$, useSignal } from '@builder.io/qwik';
+import { $, component$, useSignal } from '@builder.io/qwik';
+import  { createRubro }  from '~/services/rubroSubrubro/rubro.service';
 
 
 export default component$(() => {
 
     const openModal = useSignal(false)
     const openModalSub = useSignal(false)
+    const rubro = useSignal("")
+   // const subRubro = useSignal("")
+
+    const addRubro = $(async () => {
+        
+        const rubroData =  rubro.value ;     
+       
+       const response = await createRubro( rubroData );
+       console.log("response", response);
+       
+
+    });
+    const addSubRubro = $(async () => {
+       
+       
+       //const response = await createRubro(rubro);
+
+    });
+            
 
     return <div class="p-5 ">
         <div class="container w-full">
@@ -25,7 +45,7 @@ export default component$(() => {
 
                         <dialog id="my_modal_1" class={openModal.value ? "modal modal-open " : "modal"}>
 
-                            <form method="dialog" class="modal-box w-80 border-solid border-2 border-indigo-600 " >
+                            <form method="dialog" onSubmit$={addRubro} class="modal-box w-80 border-solid border-2 border-indigo-600 " preventdefault:submit >
                                 <div class="flex flex-row justify-center ">
                                     <h3 class="font-bold text-lg text-colororange">Agregar Rubro</h3>
                                 </div>
@@ -33,13 +53,13 @@ export default component$(() => {
                                 <div class="mb-4 mt-7 flex justify-center w-60 ml-3 ">
 
                                     <label for="name" class="label font-bold text-colororange ">Nombre:</label>
-                                    <input type="text" id="name" name="name" placeholder="Ingrese nombre del rubro" class="input input-primary border-solid" />
+                                    <input onInput$={ (e) => rubro.value = (e.target as HTMLInputElement).value} type="text" name='rubro' placeholder="Ingrese nombre del rubro" class="input input-primary border-solid" />
 
                                 </div>
                                 <div class="modal-action flex justify-evenly">
 
                                     <button class="btn btn-secondary" onClick$={() => openModal.value = !openModal.value}>Cerrar</button>
-                                    <button class="btn btn-primary">Guardar</button>
+                                    <button class="btn btn-primary" type='submit'>Guardar</button>
 
                                 </div>
                             </form>
@@ -113,12 +133,20 @@ export default component$(() => {
                         <button class="btn btn-primary" onClick$={() => openModalSub.value = !openModalSub.value} >Agregar SubRubro</button>
 
                         <dialog id="my_modal_1" class={openModalSub.value ? "modal modal-open" : "modal"}>
-                            <form method="dialog" class="modal-box w-full border-solid border-2 border-indigo-600 " >
+                            <form method="dialog" onSubmit$={addSubRubro} class="modal-box w-full border-solid border-2 border-indigo-600 " >
                                 <div class="flex flex-row justify-center ">
                                     <h3 class="font-bold text-lg text-colororange">Agregar SubRubro</h3>
-                                    <div class="tooltip" data-tip="hello">
-                                        <button class="btn">Hover me</button>
+                                    <div class="flex flex-col justify-end">
+                                      <div class="tooltip" data-tip="hello">
+                                        <button class="absolute right-0 top-0 h-full ">
+                                        <svg class="text-gray-600 h-5 w-5" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path d="M22 22l-6-6"></path>
+                                    <circle cx="10" cy="10" r="7"></circle>
+                                </svg>
+                                        </button>
+                                    </div>  
                                     </div>
+                                    
                                 </div>
 
                                 <div class="mb-4 mt-7 flex  ml-3 ">
@@ -142,7 +170,7 @@ export default component$(() => {
                                 <div class="modal-action flex justify-evenly">
 
                                     <button class="btn btn-secondary" onClick$={() => openModalSub.value = !openModalSub.value}>Cerrar</button>
-                                    <button class="btn btn-primary">Guardar</button>
+                                    <button class="btn btn-primary" type='submit'>Guardar</button>
 
                                 </div>
                             </form>
