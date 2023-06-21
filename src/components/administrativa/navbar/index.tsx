@@ -37,10 +37,16 @@ export const Navbar = component$(() => {
       url: "/administrativa/personal",
     },
     {
-      id: 5,
+      id: 6,
       titulo: "Clientes",
       //Roles: soloAdmins,
       url: "/administrativa/clientes",
+    },
+    {
+      id: 7,
+      titulo: "Reservas",
+      //Roles: soloAdmins,
+      url: "/administrativa/reservas",
     },
 
   ]
