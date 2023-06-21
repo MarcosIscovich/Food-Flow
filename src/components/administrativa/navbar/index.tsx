@@ -18,20 +18,32 @@ export const Navbar = component$(() => {
       child: [
         {
           id: 2,
+          titulo: "Agregar Producto",
+          //Roles: rolesTodos,
+          url: "/administrativa/productos",
+        },
+        {
+          id: 3,
           titulo: "Rubros/SubRubros",
           //Roles: soloAdmins,
           url: "/administrativa/rubros",
         },
+        {
+          id: 4,
+          titulo: "Sectores",
+          //Roles: soloAdmins,
+          url: "/administrativa/sectores",
+        }
       ]
     },
     {
-      id: 4,
+      id: 5,
       titulo: "Roles",
       //Roles: soloAdmins,
       url: "/administrativa/roles",
     },
     {
-      id: 5,
+      id: 6,
       titulo: "Personal",
       //Roles: soloAdmins,
       url: "/administrativa/personal",
@@ -73,7 +85,7 @@ export const Navbar = component$(() => {
             <Slot />
           </div>
         </div>
-        <div class="drawer-side">
+        <div class="drawer-side ">
           <label for="my-drawer-3" class="drawer-overlay"></label>
           {/* <ul class="menu p-4 w-60 h-full  text-base-content mt-16 bg-colorblue">
             <li>
@@ -105,21 +117,21 @@ export const Navbar = component$(() => {
               <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/configuracion">Configuracion</Link>
             </li>
           </ul> */}
-          <ul class="menu p-4 bg-base-200 w-56 rounded-box">
+          <ul class="menu p-4 w-56  mt-16 bg-colorblue ">
             {
               menuItems.map((item, idx) => {
                 return (
                   <>
                     {
                       item.child ? (
-                        <li key={idx}>
+                        <li key={idx} >
                           <details open>
-                            <summary>{item.titulo}</summary>
-                            <ul>
+                            <summary class="text-white hover:bg-slate-400 hover:rounded-md">{item.titulo}</summary>
+                            <ul >
                               {
                                 item.child?.map((child, idx) => {
                                   return (
-                                    <li key={idx}><Link href={child.url}>{child.titulo}</Link></li>
+                                    <li key={idx} class="text-white hover:bg-slate-400 hover:rounded-md"><Link  href={child.url}>{child.titulo}</Link></li>
                                   )
                                 })
                               }
@@ -127,7 +139,7 @@ export const Navbar = component$(() => {
                           </details>
                         </li>
                       ) : (
-                        <li key={idx}><Link href={item.url}>{item.titulo}</Link></li>
+                        <li class="text-white  hover:bg-slate-400 hover:rounded-md" key={idx}><Link href={item.url}>{item.titulo}</Link></li>
                       )
                     }
                   </>
