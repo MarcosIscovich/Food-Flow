@@ -23,6 +23,7 @@ import { IconDown, IconUp } from "~/components/sharedComponents/icons";
 import { Pagination } from "~/components/sharedComponents/utils/pagination.component";
 import  ClienteForm  from "./Form";
 import { InitialValues } from "@modular-forms/qwik";
+import { selectOption } from "~/interfaces/iTableFieldConfiguratio";
 
 export interface ICliente {
     id: number;
@@ -70,11 +71,11 @@ export interface ICliente {
     { fieldName: "razon_social", title: "Razón Social", ordenable: false, type: "text",  hiddenInMobile: true,
     visibleInTable: true, },
     { fieldName: "condicion_iva", title: "Condición IVA", ordenable: true,  hiddenInMobile: true,
-    visibleInTable: true,  type: "select",  options: EnumCondicionIva} ,
+    visibleInTable: true,  type: "select",  options: []} ,
     { fieldName: "fecha_nacimiento", title: "Fecha Nacimiento", ordenable: false,  hiddenInMobile: true,
     visibleInTable: true, type: "date" },
     { fieldName: "observaciones", title: "Observaciones", ordenable: true,  hiddenInMobile: true,
-    visibleInTable: true,  type: "textarea"},
+    visibleInTable: false,  type: "textarea"},
   ]
 
   
@@ -84,10 +85,10 @@ export interface ICliente {
     ordenable: boolean;
     type: string;
     key?: boolean;
-    hiddenInMobile: true,
-    visibleInTable: true,
+    hiddenInMobile: boolean,
+    visibleInTable: boolean,
     //las opciones son para los campos tipo select, salen de un Enum
-    options?: any;
+    options?: selectOption[];
   }
     
     const infoTitle = {
@@ -122,6 +123,24 @@ export const clienteSchema = z.object({
  
 export type ClienteForm = z.infer<typeof clienteSchema>;
 
+export const useSelectOption = routeLoader$<selectOption[]> (() => {
+
+  const selectOptions: selectOption[] = [
+     { value: "1", label: "Responsable Inscripto" },
+     { value: "2", label: "Monotributista" },
+     { value: "3", label: "Exento" },
+     { value: "4", label: "Consumidor Final" },
+    // {label: "Responsable Inscripto"},
+    // {label: "Monotributista"},
+    // {label: "Exento"},
+    // {label: "Consumidor Final"},
+
+  ];
+
+  return selectOptions;
+
+});
+
 export const useFormLoader = routeLoader$<InitialValues<ClienteForm>>((item) => 
   {
     const data = {
@@ -145,7 +164,8 @@ export const useFormLoader = routeLoader$<InitialValues<ClienteForm>>((item) =>
 
 export default component$(() => {
   const authContext = useContext(AuthContext);
-
+  TableFields[10].options = useSelectOption().value;
+  console.log("TableFields", TableFields);
   const itemData = useStore({
     id: 0,
     nombre: "",
@@ -385,7 +405,7 @@ export default component$(() => {
                   {TableFields.map((field) => {
                     return (
                       <th
-                        class={`${field.visibleInTable ? " hidden " : field.hiddenInMobile ? "hidden md:table-cell ": ""}} ${field.ordenable ? " cursor-pointer " : ""}hover:bg-slate-400  rounded-md `}
+                        class={`${!field.visibleInTable ? " hidden " : field.hiddenInMobile ? "hidden md:table-cell ": ""}} ${field.ordenable ? " cursor-pointer " : ""}hover:bg-slate-400  rounded-md `}
                         onClick$={$(() => field.ordenable ? setOrder(field.fieldName): null)}
                       >
                         <div class="flex">
@@ -415,7 +435,7 @@ export default component$(() => {
                           {TableFields.map((field) => {
                             return (
                               <td
-                                class={`${field.visibleInTable ? " hidden " : field.hiddenInMobile ? "hidden md:table-cell ": ""} `}
+                                class={`${!field.visibleInTable ? " hidden " : field.hiddenInMobile ? "hidden md:table-cell ": ""} `}
                       
                               >
                                   {item[field.fieldName]}  

@@ -1,5 +1,9 @@
-import { component$, useSignal } from '@builder.io/qwik';
+import { PropFunction, component$, useSignal } from '@builder.io/qwik';
+import { selectOption } from '~/interfaces/iTableFieldConfiguratio';
+import { setValue } from '@modular-forms/qwik';
 //import { Field } from '@modular-forms/qwik';
+import { on } from 'events';
+import { value } from '@modular-forms/qwik';
 
 export interface InputType {
   field: any,
@@ -12,11 +16,14 @@ export const InputType = component$<InputType>((props) => {
   const count = useSignal(0);
   return (
     <>
+      <label for={field.fieldName}>
+        <span class="   !text-xs">{field.title}</span>
+      </label>
       {field.type === "textarea" && (
         <textarea
           {...props}
           value={fie.value}
-          rows="4"
+          rows={4}
           class="rounded-md w-full max-w-xs col-span-2"
         />
       )}
@@ -29,12 +36,17 @@ export const InputType = component$<InputType>((props) => {
           }`}
           {...props}
           value={fie.value}
-        >
-          {field.options.map((option, index) => {
-            console.log("option", option);
-            console.log("Options", field.options);
+          onChange$ = {(e) => {
+            fie.value = e.target.value;
+           // console.log("e.target.value", e.target.value);  
+          }}
 
-            return <option key={index}>{option}</option>;
+        >
+          {field.options.map((option: selectOption) => {
+             //console.log("option", option);
+            // console.log("field.Options", field.options);
+
+            return <option key={option.value}>{option.label}</option>;
           })}
         </select>
       )}

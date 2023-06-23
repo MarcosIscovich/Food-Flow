@@ -4,5 +4,5 @@ export interface IReservas {
     telefono: string;
     hora: string;
     dia: string;
-    cantpersonas: number;
+    cantpersonas: string;
   }

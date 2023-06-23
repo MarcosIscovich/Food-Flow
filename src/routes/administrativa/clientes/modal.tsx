@@ -80,7 +80,7 @@ import { Field } from "@modular-forms/qwik";
         console.log("cambia datos que llegan", _itemData);
         loading.value = true;
         let count=0;
-        if (_itemData) {
+        if (_itemData.id > 0) {
 
         Object.entries(_itemData).forEach(([key, value]) => {
           itemDataS[count] =value;
