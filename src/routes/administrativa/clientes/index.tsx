@@ -49,30 +49,43 @@ export interface ICliente {
   ];
 
   const TableFields:ITableField [] = [
-    { nombre: "id", label: "ID", ordenable: true, tipo: "number", key: true, hidden: false },
-    { nombre: "nombre", label: "Nombre", ordenable: true, tipo: "text" },
-    { nombre: "apellido", label: "Apellido", ordenable: true, tipo: "text" },
-    { nombre: "email", label: "Email", ordenable: true, tipo: "text" },
-    { nombre: "telefono", label: "Teléfono", ordenable: true, tipo: "text" },
-    { nombre: "direccion", label: "Dirección", ordenable: false, visibleMobile: true, tipo: "text" },
-    { nombre: "ciudad", label: "Ciudad", ordenable: false, visibleMobile: true, tipo: "text" },
-    { nombre: "codigo_postal", label: "Código Postal", ordenable: false, visibleMobile: true, tipo: "text" },
-    { nombre: "cuit", label: "CUIT", ordenable: false, visibleMobile: true, tipo: "text" },
-    { nombre: "razon_social", label: "Razón Social", ordenable: false, visibleMobile: true, tipo: "text" },
-    { nombre: "condicion_iva", label: "Condición IVA", ordenable: true, visibleMobile: true,  tipo: "select",  options: EnumCondicionIva} ,
-    { nombre: "fecha_nacimiento", label: "Fecha Nacimiento", ordenable: false, visibleMobile: true, tipo: "date" },
-    { nombre: "observaciones", label: "Observaciones", ordenable: true, visibleMobile: true,  tipo: "textarea", hidden: true },
+    { fieldName: "id", title: "ID", ordenable: true, type: "number", hiddenInMobile: true,
+    visibleInTable: true, },
+    { fieldName: "nombre", title: "Nombre", ordenable: true, type: "text" , hiddenInMobile: true,
+    visibleInTable: true,},
+    { fieldName: "apellido", title: "Apellido", ordenable: true, type: "text",  hiddenInMobile: true,
+    visibleInTable: true, },
+    { fieldName: "email", title: "Email", ordenable: true, type: "text",  hiddenInMobile: true,
+    visibleInTable: true, },
+    { fieldName: "telefono", title: "Teléfono", ordenable: true, type: "text",  hiddenInMobile: true,
+    visibleInTable: true, },
+    { fieldName: "direccion", title: "Dirección", ordenable: false, type: "text",  hiddenInMobile: true,
+    visibleInTable: true, },
+    { fieldName: "ciudad", title: "Ciudad", ordenable: false, type: "text",  hiddenInMobile: true,
+    visibleInTable: true, },
+    { fieldName: "codigo_postal", title: "Código Postal", ordenable: false, type: "text",  hiddenInMobile: true,
+    visibleInTable: true, },
+    { fieldName: "cuit", title: "CUIT", ordenable: false, type: "text",  hiddenInMobile: true,
+    visibleInTable: true, },
+    { fieldName: "razon_social", title: "Razón Social", ordenable: false, type: "text",  hiddenInMobile: true,
+    visibleInTable: true, },
+    { fieldName: "condicion_iva", title: "Condición IVA", ordenable: true,  hiddenInMobile: true,
+    visibleInTable: true,  type: "select",  options: EnumCondicionIva} ,
+    { fieldName: "fecha_nacimiento", title: "Fecha Nacimiento", ordenable: false,  hiddenInMobile: true,
+    visibleInTable: true, type: "date" },
+    { fieldName: "observaciones", title: "Observaciones", ordenable: true,  hiddenInMobile: true,
+    visibleInTable: true,  type: "textarea"},
   ]
 
   
   export interface ITableField {
-    nombre: string;
-    label: string;
+    fieldName: string;
+    title: string;
     ordenable: boolean;
-    visibleMobile?: boolean;
-    tipo: string;
+    type: string;
     key?: boolean;
-    hidden?: boolean;
+    hiddenInMobile: true,
+    visibleInTable: true,
     //las opciones son para los campos tipo select, salen de un Enum
     options?: any;
   }
@@ -372,11 +385,11 @@ export default component$(() => {
                   {TableFields.map((field) => {
                     return (
                       <th
-                        class={`${field.hidden ? " hidden " : field.visibleMobile ? "hidden md:table-cell ": ""}} ${field.ordenable ? " cursor-pointer " : ""}hover:bg-slate-400  rounded-md `}
-                        onClick$={$(() => field.ordenable ? setOrder(field.nombre): null)}
+                        class={`${field.visibleInTable ? " hidden " : field.hiddenInMobile ? "hidden md:table-cell ": ""}} ${field.ordenable ? " cursor-pointer " : ""}hover:bg-slate-400  rounded-md `}
+                        onClick$={$(() => field.ordenable ? setOrder(field.fieldName): null)}
                       >
                         <div class="flex">
-                          {field.label} {field.ordenable ? getIconOrder(field.nombre): ""}
+                          {field.title} {field.ordenable ? getIconOrder(field.fieldName): ""}
                         </div>
                       </th>
                     );
@@ -402,10 +415,10 @@ export default component$(() => {
                           {TableFields.map((field) => {
                             return (
                               <td
-                                class={`${field.hidden ? " hidden " : field.visibleMobile ? "hidden md:table-cell ": ""} `}
+                                class={`${field.visibleInTable ? " hidden " : field.hiddenInMobile ? "hidden md:table-cell ": ""} `}
                       
                               >
-                                  {item[field.nombre]}  
+                                  {item[field.fieldName]}  
                               </td>
                             );
                           }

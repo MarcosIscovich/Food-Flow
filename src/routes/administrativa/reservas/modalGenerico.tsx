@@ -4,9 +4,11 @@ import { setValue, useForm, zodForm$, clearError } from "@modular-forms/qwik";
 import type { z } from "@builder.io/qwik-city";
 
 import { Modal } from "~/components/sharedComponents/modal/index";
-import type { FormField } from "./index";
-import { useFormLoader, validationSchema } from "./index";
+import type { FormField } from "./esquema";
+import { validationSchema } from "./esquema";
+import { useFormLoader } from "./index";
 import type { iTableFieldConfiguration } from "~/interfaces/iTableFieldConfiguratio";
+import { InputType } from "~/components/sharedComponents/utils/inputType.component";
 
 type IBaseSchema = z.infer<typeof validationSchema>;
 
@@ -92,12 +94,13 @@ export const ModalGenerico = component$<parametros>((props) => {
                                       {field.title}
                                     </span>
                                   </label>
-                                  <input
+                                  <InputType field={field} fie={fie} propss={props} />
+                                  {/* <input
                                     class="block p-2 w-full input input-sm max-w-xs rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     {...props}
                                     type={field.type}
                                     value={fie.value}
-                                  />
+                                  /> */}
                                   {fie.value && fie.error && (
                                     <div>{fie.error}</div>
                                   )}
@@ -108,10 +111,22 @@ export const ModalGenerico = component$<parametros>((props) => {
                         );
                       })}
                 </div>
-                <div class="w-full flex justify-center items-center my-6  ">
-                  <button type="submit" class="btn btn-primary">
-                    GUARDAR
-                  </button>
+                <div class="w-full flex justify-end">
+                  <div class="modal-action">
+                    <label
+                      for="my-modal-6"
+                      class="btn btn-secondary flex justify-end"
+                      onClick$={onClose$}
+                    >
+                      Cerrar
+                    </label>
+                    <button
+                      type="submit"
+                      class="btn btn-primary flex justify-end"
+                    >
+                      Guardar
+                    </button>
+                  </div>
                 </div>
               </Form>
             </div>

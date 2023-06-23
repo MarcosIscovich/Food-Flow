@@ -20,111 +20,38 @@ import { Table } from "~/components/sharedComponents/utils/table";
 import type { InitialValues } from "@modular-forms/qwik";
 import type { iTableFieldConfiguration } from "~/interfaces/iTableFieldConfiguratio";
 import type { iPageData } from "~/interfaces/iPageData";
+import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial } from "./esquema";
+import type { FormField } from "./esquema";
+import { info } from "console";
 
 interface IBaseCrud extends IReservas {}
 
-const infoTitle: iPageData = {
-  titulo: "Reservas",
-  subTitulo: "Utilidad para gestionar reservas",
-  ayuda:
-    "Permite administrar los usuarios que pueden acceder a la app de chat.",
-};
-
-const modeloUrl = "reservas";
-
-const tableFieldConfiguration: iTableFieldConfiguration[] = [
-  {
-    title: "ID",
-    fieldName: "id",
-    hiddenInMobile: true,
-    visibleInTable: true,
-    defaultValue: 0,
-    type: "number",
-  },
-  {
-    title: "Cliente",
-    fieldName: "cliente",
-    hiddenInMobile: false,
-    visibleInTable: true,
-    defaultValue: "",
-    type: "text",
-  },
-  {
-    title: "Telefono",
-    fieldName: "telefono",
-    hiddenInMobile: false,
-    visibleInTable: true,
-    defaultValue: "",
-    type: "text",
-  },
-  {
-    title: "Hora",
-    fieldName: "hora",
-    hiddenInMobile: true,
-    visibleInTable: true,
-    defaultValue: "",
-    type: "time",
-  },
-  {
-    title: "Fecha",
-    fieldName: "dia",
-    hiddenInMobile: true,
-    visibleInTable: false,
-    defaultValue: "",
-    type: "date",
-  },
-  {
-    title: "Cantidad",
-    fieldName: "cantpersonas",
-    hiddenInMobile: true,
-    visibleInTable: false,
-    defaultValue: "",
-    type: "number",
-  },
-];
-
-export const validationSchema = z.object({
-  id: z.string().optional(),
-  cliente: z.string().min(1, "Ingrese el nombre del usuario."),
-  telefono: z.string().min(1, "Ingrese el teléfono del usuario.").max(50),
-  hora: z
-    .string()
-    .min(1, "Ingrese la hora.")
-    .min(5, "Por favor ingrese una hora."),
-    dia: z
-    .string(),
-    cantpersonas: z
-    .number()
-    .min(1, "Ingrese la la cantidad.")
-});
-
-export type FormField = "id" | "cliente" | "telefono" | "hora" | "dia" | "cantpersonas";
-
 export const useFormLoader = routeLoader$<InitialValues<IBaseCrud>>(() => {
-  const data = {
-    id: "",
-    cliente: "",
-    telefono: "",
-    hora: "",
-    dia: "",
-    cantpersonas: 0,
-  };
-  return data;
+  // const data = {
+  //   id: "",
+  //   cliente: "",
+  //   telefono: "",
+  //   hora: "",
+  //   dia: "",
+  //   cantpersonas: 0,
+  // };
+  return dataInicial;
 });
 
 export default component$(() => {
-  const authContext = useContext(AuthContext);
-
   
-
-  const itemData = useStore<IBaseCrud>({
-    id: "",
-    cliente: "",
-    telefono: "",
-    hora: "",
-    dia: "",
-    cantpersonas: 0,
-  });
+  const authContext = useContext(AuthContext);
+  const itemData = useStore<IBaseCrud>(
+    dataInicial
+    //   {
+  //   id: "",
+  //   cliente: "",
+  //   telefono: "",
+  //   hora: "",
+  //   dia: "",
+  //   cantpersonas: 0,
+  // }
+  );
 
   const infoToast = useStore({
     msg: "",
@@ -143,19 +70,25 @@ export default component$(() => {
 
   const fillItemData = $((item: IBaseCrud | null) => {
     if (item === null) {
-      itemData.id = "";
-      itemData.cliente = "";
-      itemData.telefono = "";
-      itemData.hora = "";
-      itemData.dia = "";
-      itemData.cantpersonas = 0;
+      Object.entries(itemData).forEach(([key, value]) => {
+        itemData[key] = "";
+      });
+      // itemData.id = "";
+      // itemData.cliente = "";
+      // itemData.telefono = "";
+      // itemData.hora = "";
+      // itemData.dia = "";
+      // itemData.cantpersonas = 0;
     } else {
-      itemData.id = item.id;
-      itemData.cliente = item.cliente;
-      itemData.telefono = item.telefono;
-      itemData.hora = item.hora;
-      itemData.dia = item.dia;
-      itemData.cantpersonas = item.cantpersonas;
+      Object.entries(itemData).forEach(([key, value]) => {
+        itemData[key] = item[key];
+      });
+      // itemData.id = item.id;
+      // itemData.cliente = item.cliente;
+      // itemData.telefono = item.telefono;
+      // itemData.hora = item.hora;
+      // itemData.dia = item.dia;
+      // itemData.cantpersonas = item.cantpersonas;
     }
   });
 
@@ -319,11 +252,11 @@ export default component$(() => {
 });
 
 export const head: DocumentHead = {
-  title: "APICHAT - Control Panel",
+  title: infoTitle.titulo,
   meta: [
     {
       name: "description",
-      content: "Panel de control general",
+      content: infoTitle.subTitulo,
     },
   ],
 };
