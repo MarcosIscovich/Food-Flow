@@ -1,14 +1,13 @@
 // @ts-nocheck
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { $, component$, useSignal, useStore, useTask$} from '@builder.io/qwik';
-import { routeLoader$, z } from '@builder.io/qwik-city';
-import type { InitialValues, SubmitHandler } from '@modular-forms/qwik';
-import { formAction$, reset, setValues, setValue, useForm, zodForm$ } from '@modular-forms/qwik';
+import { z } from '@builder.io/qwik-city';
+import type {  SubmitHandler } from '@modular-forms/qwik';
+import { formAction$, setValue, useForm, zodForm$ } from '@modular-forms/qwik';
 import { ITableField } from ".";
 import { Modal } from "~/components/sharedComponents/modal";
-import { table } from 'console';
 import {useFormLoader} from './index'
-import { on } from 'events';
+import { InputType } from '~/components/sharedComponents/utils/inputType.component';
 
 interface parametros {
     tableFields: ITableField[];
@@ -125,20 +124,22 @@ export default component$<parametros>((props) => {
           <div class="w-full">
             <Form onSubmit$={handleSubmit} class="flex flex-col items-center">
               <div class="rounded-md text-2xl m-2 w-full">
+                
                 {tableFields.map((field, index) => {
                   return (
                     <div key={index} class="flex justify-between">
-                      <Field name={field.nombre}>
+                      <Field name={field.fieldName}>
                         {(fie, props) => (
                           <div class="flex flex-col w-full">
                             <div class="rounded-md text-xl m-2 grid grid-cols-3 justify-between">
                               <label
                                 class={field.key ? "hidden" : "justify-start"}
-                                for={field.nombre}
+                                for={field.fieldName}
                               >
-                                {field.label}
+                                {field.title}
                               </label>
-                              {field.tipo === "textarea" && (
+                              <InputType field={field} fie={fie} propss={props} />
+                              {/* {field.tipo === "textarea" && (
                                 <textarea
                                   {...props}
                                   value={fie.value}
@@ -161,9 +162,7 @@ export default component$<parametros>((props) => {
                                     console.log("Options", field.options);
 
                                     return (
-                                      <option key={index} >
-                                        {option}
-                                      </option>
+                                      <option key={index}>{option}</option>
                                     );
                                   })}
                                 </select>
@@ -171,18 +170,17 @@ export default component$<parametros>((props) => {
                               {(field.tipo === "text" ||
                                 field.tipo === "number" ||
                                 field.tipo === "date") && (
-                                  <input
-                                    class={`${
-                                      field.key
-                                        ? "hidden"
-                                        : "input input-bordered w-full max-w-xs col-span-2"
-                                    }`}
-                                    {...props}
-                                    type={field.tipo}
-                                    value={fie.value}
-                                  />
-                                )}
-
+                                <input
+                                  class={`${
+                                    field.key
+                                      ? "hidden"
+                                      : "input input-bordered w-full max-w-xs col-span-2"
+                                  }`}
+                                  {...props}
+                                  type={field.tipo}
+                                  value={fie.value}
+                                />
+                              )} */}
                             </div>
 
                             {fie.error && (
@@ -198,19 +196,22 @@ export default component$<parametros>((props) => {
                 })}
               </div>
               <div class="w-full flex justify-end">
-              <div class="modal-action">
-                <label
-                  for="my-modal-6"
-                  class="btn btn-secondary flex justify-end"
-                  onClick$={onClose$}
-                >
-                  Cerrar
-                </label>
-                <button type="submit" class="btn btn-primary flex justify-end">
-                  Guardar
-                </button>
-              </div>
+                <div class="modal-action">
+                  <label
+                    for="my-modal-6"
+                    class="btn btn-secondary flex justify-end"
+                    onClick$={onClose$}
+                  >
+                    Cerrar
+                  </label>
+                  <button
+                    type="submit"
+                    class="btn btn-primary flex justify-end"
+                  >
+                    Guardar
+                  </button>
                 </div>
+              </div>
             </Form>
           </div>
         ) : (
