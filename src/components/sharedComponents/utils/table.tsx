@@ -23,6 +23,7 @@ import {
     confirmDeleteItem: (item: any) => void;
     _order: string;
     _orderSign: string;
+    filter: string []
   }
   
   export const Table = component$<parametros>((props) => {
@@ -35,6 +36,7 @@ import {
       confirmDeleteItem,
       _order,
       _orderSign,
+      filter,
     } = props;
   
     const authContext = useContext(AuthContext);
@@ -85,6 +87,7 @@ import {
           order.value,
           orderSign.value,
           modeloURL,
+          filter || ""
         );
   
           console.log("response", response);

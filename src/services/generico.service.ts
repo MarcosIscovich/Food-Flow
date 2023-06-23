@@ -8,11 +8,16 @@ export const lista = async (
     searchText: string = "",
     order: string = "",
     orderSign: string = "",
-    url: string = ""
+    url: string = "",
+    filter: string[]
   ): Promise<any> => {
-    
-    const encoded = encodeURI(`${configuration.api}${url}?page=${pageNumber}&filter[cliente]=${searchText}&limit=${pageSize}&sort=${orderSign == "-" ? "-": "" }${order}`)//?page=${pageNumber}&per_page=${pageSize}&sort=${order}`) //&searchText=${searchText});${orderSign == "-" ? "-": "" }
-    console.log(encoded);
+    console.log("llega a lista filter: ", filter);
+
+    const filtro = filter.length > 0 ? filter.map((item) => `&filter[${item}]=${searchText}`).join(",") : "";
+    const fil = filtro == "" ? "" : filtro;
+    console.log("llega a lista filtro: ", filtro);
+    const encoded = encodeURI(`${configuration.api}${url}?page=${pageNumber}${fil}&limit=${pageSize}&sort=${orderSign == "-" ? "-": "" }${order}`)//?page=${pageNumber}&per_page=${pageSize}&sort=${order}`) //&searchText=${searchText});${orderSign == "-" ? "-": "" }
+    console.log("Encoded",encoded);
     console.log("order", order)
     const resp = await fetch(
     encoded,
