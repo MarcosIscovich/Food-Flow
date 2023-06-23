@@ -22,11 +22,33 @@ import type { iTableFieldConfiguration } from "~/interfaces/iTableFieldConfigura
 import type { iPageData } from "~/interfaces/iPageData";
 import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial } from "./esquema";
 import type { FormField } from "./esquema";
-import { info } from "console";
+import { info, table } from "console";
+import { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
 
 interface IBaseCrud extends IReservas {}
 
+export const useSelectOption = routeLoader$<selectOption[]> (() => {
+
+  const selectOptions: selectOption[] = [
+    { value: "1", label: "1" },
+    { value: "2", label: "2" },
+    { value: "3", label: "3" },
+    { value: "4", label: "4" },
+    { value: "5", label: "5" },
+    { value: "6", label: "6" },
+    { value: "7", label: "7" },
+    { value: "8", label: "8" },
+    { value: "9", label: "9" },
+    { value: "10", label: "10" },
+  ];
+
+  return selectOptions;
+
+});
+
 export const useFormLoader = routeLoader$<InitialValues<IBaseCrud>>(() => {
+
+
   // const data = {
   //   id: "",
   //   cliente: "",
@@ -39,7 +61,9 @@ export const useFormLoader = routeLoader$<InitialValues<IBaseCrud>>(() => {
 });
 
 export default component$(() => {
-  
+
+  tableFieldConfiguration[5].options = useSelectOption().value;
+
   const authContext = useContext(AuthContext);
   const itemData = useStore<IBaseCrud>(
     dataInicial
@@ -69,10 +93,16 @@ export default component$(() => {
   const refreshData = useSignal<boolean>(false);
 
   const fillItemData = $((item: IBaseCrud | null) => {
+    console.log("fillItemData", item);
     if (item === null) {
+
       Object.entries(itemData).forEach(([key, value]) => {
-        itemData[key] = "";
+        //typeof value === "number" ? (itemData[key] = 0) : (itemData[key] = "");
+        const _key = key as keyof IBaseCrud;
+        itemData[_key] =  "";
       });
+
+      console.log("fillItemData Null", itemData);
       // itemData.id = "";
       // itemData.cliente = "";
       // itemData.telefono = "";
@@ -81,8 +111,10 @@ export default component$(() => {
       // itemData.cantpersonas = 0;
     } else {
       Object.entries(itemData).forEach(([key, value]) => {
-        itemData[key] = item[key];
+        const _key = key as keyof IBaseCrud;
+        itemData[_key] =  item[_key] || "";
       });
+      console.log("fillItemData Not Null", itemData);
       // itemData.id = item.id;
       // itemData.cliente = item.cliente;
       // itemData.telefono = item.telefono;
@@ -94,7 +126,6 @@ export default component$(() => {
 
   const confirmDeleteItem = $(async (_itemData: IBaseCrud) => {
     await fillItemData(_itemData);
-
     infoConfirm.show = true;
   });
 
@@ -115,6 +146,7 @@ export default component$(() => {
   const itemSave = $(async () => {
     let resp: any;
     let tipoAccion = "creado";
+    console.log("llega a itemSave", itemData);
 
     if (itemData?.id && itemData.id) {
       console.log("llega a editar itemSave", itemData);

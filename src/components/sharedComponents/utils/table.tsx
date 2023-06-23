@@ -52,7 +52,7 @@ import {
         order.value = value;
         orderSign.value = "";
       } else {
-        orderSign.value = orderSign.value == "-" ? "-" : "";
+        orderSign.value = orderSign.value == "" ? "-" : "";
       }
     });
   

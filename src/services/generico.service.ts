@@ -11,7 +11,7 @@ export const lista = async (
     url: string = ""
   ): Promise<any> => {
     
-    const encoded = encodeURI(`${configuration.api}${url}?page=${pageNumber}&limit=${pageSize}&sort=${orderSign == "-" ? "-": "" }${order}`)//?page=${pageNumber}&per_page=${pageSize}&sort=${order}`) //&searchText=${searchText});${orderSign == "-" ? "-": "" }
+    const encoded = encodeURI(`${configuration.api}${url}?page=${pageNumber}&filter[cliente]=${searchText}&limit=${pageSize}&sort=${orderSign == "-" ? "-": "" }${order}`)//?page=${pageNumber}&per_page=${pageSize}&sort=${order}`) //&searchText=${searchText});${orderSign == "-" ? "-": "" }
     console.log(encoded);
     console.log("order", order)
     const resp = await fetch(

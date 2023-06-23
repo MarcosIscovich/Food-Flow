@@ -42,7 +42,7 @@ export const ModalGenerico = component$<parametros>((props) => {
 
     if (_itemData != undefined && genericForm != undefined) {
       Object.entries(_itemData).forEach(([key, value]) => {
-        if (_itemData.id) {
+        if (_itemData.id > 0) {
           setValue(genericForm, key as FormField, value as any);
         } else {
           setValue(genericForm, key as FormField, "");
@@ -89,11 +89,11 @@ export const ModalGenerico = component$<parametros>((props) => {
                             <Field name={field.fieldName as FormField}>
                               {(fie, props) => (
                                 <div>
-                                  <label for={field.fieldName}>
+                                  {/* <label for={field.fieldName}>
                                     <span class="   !text-xs">
                                       {field.title}
                                     </span>
-                                  </label>
+                                  </label> */}
                                   <InputType field={field} fie={fie} propss={props} />
                                   {/* <input
                                     class="block p-2 w-full input input-sm max-w-xs rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"

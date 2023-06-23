@@ -59,7 +59,8 @@ export const modeloUrl = "reservas";
      hiddenInMobile: true,
      visibleInTable: true,
      defaultValue: "",
-     type: "number",
+     options: [],
+     type: "select",
    },
  ];
   
@@ -73,19 +74,18 @@ export const modeloUrl = "reservas";
       .min(5, "Por favor ingrese una hora."),
       dia: z
       .string(),
-      cantpersonas: z
-      .string()
-      .min(1, "Ingrese la la cantidad.")
+      cantpersonas: z.union([z.string().min(1, "Ingrese la la cantidad."), z.number().min(1, "Ingrese la la cantidad.")])
+      
   });
   
   export type FormField = "id" | "cliente" | "telefono" | "hora" | "dia" | "cantpersonas";
   
- export const dataInicial= {
+ export let dataInicial= {
     id: "",
     cliente: "",
     telefono: "",
     hora: "",
     dia: "",
-    cantpersonas: 0,
+    cantpersonas: "0",
   };
   
