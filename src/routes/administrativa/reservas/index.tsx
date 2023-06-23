@@ -20,7 +20,7 @@ import { Table } from "~/components/sharedComponents/utils/table";
 import type { InitialValues } from "@modular-forms/qwik";
 import type { iTableFieldConfiguration } from "~/interfaces/iTableFieldConfiguratio";
 import type { iPageData } from "~/interfaces/iPageData";
-import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial } from "./esquema";
+import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial, filter } from './esquema';
 import type { FormField } from "./esquema";
 import { info, table } from "console";
 import { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
@@ -242,6 +242,7 @@ export default component$(() => {
               confirmDeleteItem={confirmDeleteItem}
               _order={"id"}
               _orderSign={""}
+              filter={filter}
             />
           </div>
         </div>
