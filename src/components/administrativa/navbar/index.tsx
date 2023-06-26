@@ -24,9 +24,15 @@ export const Navbar = component$(() => {
         },
         {
           id: 3,
-          titulo: "Rubros/SubRubros",
+          titulo: "Rubros",
           //Roles: soloAdmins,
           url: "/administrativa/rubros",
+        },
+        {
+          id: 10,
+          titulo: "SubRubros",
+          //Roles: soloAdmins,
+          url: "/administrativa/subrubros",
         },
         {
           id: 4,
@@ -49,13 +55,13 @@ export const Navbar = component$(() => {
       url: "/administrativa/personal",
     },
     {
-      id: 6,
+      id: 7,
       titulo: "Clientes",
       //Roles: soloAdmins,
       url: "/administrativa/clientes",
     },
     {
-      id: 7,
+      id: 8,
       titulo: "Reservas",
       //Roles: soloAdmins,
       url: "/administrativa/reservas",
