@@ -61,12 +61,17 @@ export const Navbar = component$(() => {
       url: "/administrativa/reservas",
     },
     {
-      id: 7,
+      id: 8,
       titulo: "Proveedores",
       //Roles: soloAdmins,
       url: "/administrativa/proveedores",
     },
-
+    {
+      id: 8,
+      titulo: "Insumos",
+      //Roles: soloAdmins,
+      url: "/administrativa/insumos",
+    },
   ]
 
   return (
