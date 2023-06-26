@@ -5,7 +5,7 @@ import { IcoAdicionador, IcoAdmin, IcoCajero } from '../../components/router-hea
 export default component$(() => {
   const count = useSignal(0);
   console.log("contador" , count.value);
-  
+  //para probar commit
   return (
     <>
       <h1 class="text-7xl">Adicionador 👋</h1>

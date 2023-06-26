@@ -2,7 +2,7 @@ import { Slot, component$, useContextProvider, useStore, useVisibleTask$ } from 
 import type { AuthState } from "./auth.context";
 import { AuthContext } from "./auth.context";
 import { verifyToken } from "~/services/auth.service";
-import jwt from 'jsonwebtoken';
+
 
 export const AuthProvider = component$(() => {
 
