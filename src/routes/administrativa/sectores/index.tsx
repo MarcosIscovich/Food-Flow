@@ -23,10 +23,12 @@ import type { iPageData } from "~/interfaces/iPageData";
 import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial, filter } from './esquema';
 import type { FormField } from "./esquema";
 import { info, table } from "console";
-import { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
-import type { IRubros } from "~/interfaces/iRubros";
+/* import { selectOption } from '../../../interfaces/iTableFieldConfiguratio'; */
+import type { ISector } from "~/interfaces/iSector";
 
-export const useSelectOption = routeLoader$<selectOption[]>(() => {
+interface IBaseCrud extends ISector { }
+
+/* export const useSelectOption = routeLoader$<selectOption[]> (() => {
 
   const selectOptions: selectOption[] = [
     { value: "1", label: "1" },
@@ -43,26 +45,37 @@ export const useSelectOption = routeLoader$<selectOption[]>(() => {
 
   return selectOptions;
 
-});
+}); */
 
 export const useFormLoader = routeLoader$<InitialValues<IBaseCrud>>(() => {
 
   return dataInicial;
+  // const data = {
+  //   id: "",
+  //   cliente: "",
+  //   telefono: "",
+  //   hora: "",
+  //   dia: "",
+  //   cantpersonas: 0,
+  // };
+
 });
 
 export default component$(() => {
 
+  /* tableFieldConfiguration[5].options = useSelectOption().value; */
+
   const authContext = useContext(AuthContext);
   const itemData = useStore<IBaseCrud>(
-    /*  dataInicial */
-    {
-      id: "",
-      nombre: "",
-      //   telefono: "",
-      //   hora: "",
-      //   dia: "",
-      //   cantpersonas: 0,
-    }
+    dataInicial
+    //   {
+    //   id: "",
+    //   cliente: "",
+    //   telefono: "",
+    //   hora: "",
+    //   dia: "",
+    //   cantpersonas: 0,
+    // }
   );
 
   const infoToast = useStore({
@@ -169,87 +182,115 @@ export default component$(() => {
     modalOpen.value = true;
   });
 
+  return (
+    <div class="m-2">
+      <div class="flex flex-col w-full border-opacity-50">
+        <div class="grid card bg-base-200 rounded-box  place-items-center">
+          <div class="w-full place-content-start ">
+            <Breadcrumbs />
+          </div>
+          <div class="text-center flex flex-col  ">
+            <div
+              class="tooltip tooltip-bottom  tooltip-warning -mb-5 "
+              data-tip={infoTitle.ayuda}
+            >
+              <button class="btn btn-circle btn-ghost ">
+                <IconQuestion />
+              </button>{" "}
+            </div>
 
-  return <div>
-  <Breadcrumbs />
-  <div class="flex justify-center">
-    <span class="text-3xl font-bold mb-7">Productos</span>
-  </div>
+            <div class="  pt-0">
+              <h1 class="text-3xl font-bold  mt-3">
+                {infoTitle.titulo}
 
-  <div class="grid grid-cols-2 gap-4">
-    <div class="col-span-1">
-      <div class="bg-white p-4 rounded shadow">
-        <h2 class="text-xl font-bold mb-4">Tabla</h2>
-        <div class="flex mb-4">
-          <input type="text" class="flex-1 px-4 py-2 border rounded-l" placeholder="Buscar..." />
-          <button class="px-4 py-2 bg-blue-500 text-white rounded-r">Buscar</button>
+                <p class=" mt-0 text-sm ">{infoTitle.subTitulo}</p>
+              </h1>
+            </div>
+
+            <div class="grid  grid-cols-1 md:grid-cols-3   gap-1 p-4 w-full  ">
+              <div></div>
+              <div class="  first-line: text-center">
+                <input
+                  type="text"
+                  bind: value={inputTxt}
+                  placeholder="Búsqueda por texto"
+                  class="input input-bordered w-full max-w-xs "
+                />
+              </div>
+              <div class=" text-right ">
+                <button
+                  class="btn  mt-2 mr-5  btn-warning  "
+                  onClick$={async () => {
+                    await setItemData(null);
+                    modalOpen.value = true;
+                  }}
+                >
+                  Nuevo Sector
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <Table
-          fieldConfiguration={tableFieldConfiguration}
-          modeloURL={modeloUrl}
-          refreshData={refreshData.value}
-          inputTxt={inputTxt.value}
-          setItemData={setItemData}
-          confirmDeleteItem={confirmDeleteItem}
-          _order={"id"}
-          _orderSign={""}
-          filter={filter}
-        />
+        <div class=" h-2"></div>
+        <div class=" card bg-slate-300 rounded-box place-items-end">
+          <div class="overflow-x-auto  w-full p-2">
+            <Table
+              fieldConfiguration={tableFieldConfiguration}
+              modeloURL={modeloUrl}
+              refreshData={refreshData.value}
+              inputTxt={inputTxt.value}
+              setItemData={setItemData}
+              confirmDeleteItem={confirmDeleteItem}
+              _order={"id"}
+              _orderSign={""}
+              filter={filter}
+            />
+          </div>
+        </div>
       </div>
+
+      <ModalGenerico
+        show={modalOpen.value}
+        itemData={itemData}
+        tableFields={tableFieldConfiguration}
+        onSave$={$(async (data: any) => {
+          await setItemData(data);
+          itemSave();
+        })}
+        onClose$={$(() => {
+          modalOpen.value = false;
+        })}
+        title={
+          itemData?.id && itemData?.id ? "Editar usuario" : "Nuevo usuario"
+        }
+      />
+
+      <Confirm
+        msg={infoConfirm.msg}
+        show={infoConfirm.show}
+        resultOk$={$(() => {
+          itemDelete(itemData);
+        })}
+        resultCancel$={$(() => {
+          infoConfirm.show = false;
+        })}
+      />
+      <Toast
+        msg={infoToast.msg}
+        show={infoToast.show}
+        type={infoToast.type}
+        onFinish={$(() => (infoToast.show = false))}
+      />
     </div>
-
-    <div class="col-span-1">
-      <div class="bg-white p-4 rounded shadow">
-        <h2 class="text-xl font-bold mb-4">Agregar Nuevo Producto</h2>
-        <div class="grid grid-cols-2 gap-4">
-          <div class="col-span-2">
-            <label for="nombre" class="block mb-2">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" class="w-full px-4 py-2 border rounded mb-4" />
-
-            <label for="descripcion" class="block mb-2">Descripción:</label>
-            <input type="text" id="descripcion" name="descripcion" class="w-full px-4 py-2 border rounded mb-4" />
-          </div>
-
-          <div class="col-span-2">
-            <label for="disponible" class="flex items-center mb-2">
-              <input type="checkbox" id="disponible" name="disponible" class="mr-2" />
-              Disponible
-            </label>
-            Precio:
-            <input type="text" id="precio" name="precio" class="w-full px-4 py-2 border rounded mb-4" />
-          </div>
-
-          <div class="col-span-2">
-            <label for="imagen" class="block mb-2">Imagen:</label>
-            <input type="file" id="imagen" name="imagen" class="w-full px-4 py-2 border rounded mb-4" />
-          </div>
-
-          <div class="col-span-2">
-            <label for="subrubro" class="block mb-2">Subrubro:</label>
-            <select id="subrubro" name="subrubro" class="w-full px-4 py-2 border rounded mb-4">
-              <option value="1">Opción 1</option>
-              <option value="2">Opción 2</option>
-            </select>
-
-            <label for="sector" class="block mb-2">Sector:</label>
-            <select id="sector" name="sector" class="w-full px-4 py-2 border rounded mb-4">
-              <option value="1">Opción 1</option>
-              <option value="2">Opción 2</option>
-            </select>
-          </div>
-        </div>
-        <div class="flex justify-evenly">
-          <button class="px-4 py-2 bg-blue-500 text-white rounded">Guardar</button>
-          <button class="px-4 py-2 bg-blue-500 text-white rounded">Editar</button>
-          <button class="px-4 py-2 bg-blue-500 text-white rounded">Deshabilitar</button>
-          <button class="px-4 py-2 bg-blue-500 text-white rounded">Eliminar</button>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
+  );
 });
+
+export const head: DocumentHead = {
+  title: infoTitle.titulo,
+  meta: [
+    {
+      name: "description",
+      content: infoTitle.subTitulo,
+    },
+  ],
+};
