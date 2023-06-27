@@ -12,5 +12,5 @@ export interface iTableFieldConfiguration {
     defaultValue: any;
     type : string;
     options?: selectOption[];
-    oredenable?: boolean;
+    ordenable?: boolean;
   }

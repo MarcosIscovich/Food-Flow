@@ -44,20 +44,20 @@ interface IBaseCrud extends IInsumo {}
 
 // });
 
-export const useSelectOption = routeLoader$<selectOption[]> (() => {
+// export const useSelectOption = routeLoader$<selectOption[]> (() => {
 
-  const selectOptions: selectOption[] = [
-    { value: "1", label: "Litros" },
-    { value: "2", label: "Mililitro" },
-    { value: "3", label: "Kilogramo" },
-    { value: "4", label: "Gramo" },
-    { value: "5", label: "Unidad" },
-    { value: "6", label: "Decena" },
-  ];
+//   const selectOptions: selectOption[] = [
+//     { value: "1", label: "Litros" },
+//     { value: "2", label: "Mililitro" },
+//     { value: "3", label: "Kilogramo" },
+//     { value: "4", label: "Gramo" },
+//     { value: "5", label: "Unidad" },
+//     { value: "6", label: "Decena" },
+//   ];
 
-  return selectOptions;
+//   return selectOptions;
 
-});
+// });
 
 export const useFormLoader = routeLoader$<InitialValues<IBaseCrud>>(() => {
 
@@ -66,7 +66,7 @@ export const useFormLoader = routeLoader$<InitialValues<IBaseCrud>>(() => {
 
 export default component$(() => {
 
-  tableFieldConfiguration[3].options = useSelectOption().value;
+  
 
   const authContext = useContext(AuthContext);
   const itemData = useStore<IBaseCrud>(
@@ -75,7 +75,7 @@ export default component$(() => {
 
   useTask$(async({}) => {
     console.log("useTask$");
-    const listado = await lista(
+    const proveedor = await lista(
       authContext.token || "",
       1,
       8,
@@ -85,13 +85,30 @@ export default component$(() => {
       "provedor",
       []);
 
-    console.log("lista", listado);
+    console.log("lista", proveedor);
 
-    const selectOptions: selectOption[] = listado.data.map((item: any) => {
+    const selectOptions: selectOption[] = proveedor.data.map((item: any) => {
       return { value: item.id, label: item.nombre };
     });
     tableFieldConfiguration[4].options = selectOptions;
+    console.log("tableFieldConfiguration", tableFieldConfiguration[4]);
 
+    const medida = await lista(
+      authContext.token || "",
+      1,
+      100,
+      "",
+      "",
+      "",
+      "unidadmedida",
+      []);
+
+    console.log("lista", medida);
+
+    const selectOptionsM: selectOption[] = medida.data.map((item: any) => {
+      return { value: item.id, label: item.nombre };
+    });
+    tableFieldConfiguration[3].options = selectOptionsM;
   });
 
 
@@ -278,7 +295,7 @@ export default component$(() => {
           modalOpen.value = false;
         })}
         title={
-          itemData?.id && itemData?.id ? "Editar usuario" : "Nuevo usuario"
+          itemData?.id && itemData?.id ? `Editar ${infoTitle.titulo}` : `Nuevo ${infoTitle.titulo}`
         }
       />
 
