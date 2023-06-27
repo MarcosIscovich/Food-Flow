@@ -113,15 +113,13 @@ import { options } from '../../../../../admin-qwik/src/routes/admin/index';
         <table class="table table-zebra table-xs w-full ">
           <thead>
             <tr>
-              {fieldConfiguration
-                .filter((item: any) => item.visibleInTable)
-                .map((item: any, index: number) => {
+              {fieldConfiguration.filter((item: any) => item.visibleInTable).map((item: any, index: number) => {
                   return (
                     <th
                       key={index}
                       class={`${
-                        item.hiddenInMobile ? " hidden md:table-cell " : ""
-                      } ${item.ordenable ? " cursor-pointer ": "" } hover:bg-slate-400 rounded-md  `}
+                        item.hiddenInMobile ? " hidden md:table-cell w-auto " : ""
+                      } ${item.ordenable ? " cursor-pointer ": "" } hover:bg-slate-400 rounded-md w-auto `}
                       onClick$={$(() => { item.ordenable ? setOrder(item.fieldName) : ""})}
                     >
                       <div class="flex">
