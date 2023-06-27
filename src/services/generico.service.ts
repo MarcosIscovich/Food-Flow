@@ -65,8 +65,11 @@ export const update = async (
     data: any,
     url: string 
   ): Promise<any> => {
-    const resp = await fetch(
-      `${configuration.api}${url}/${data.id}`,
+    console.log("llega a actualizar: ", data, url, token);
+    const encoded = encodeURI(`${configuration.api}${url}/${data.id}`) 
+    console.log("URLLLLLLLL", encoded);
+    const resp = await fetch( encoded,
+      // `${configuration.api}${url}/${data.id}`,
       {
         method: "PUT",
         headers: {
@@ -76,9 +79,9 @@ export const update = async (
         body: JSON.stringify(data),
       }
     );
-  
+    
     const respuesta = await resp.json();
-  
+    console.log("llega cupon/update", respuesta);
     return respuesta;
   };
 
