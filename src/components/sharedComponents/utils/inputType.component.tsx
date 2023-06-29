@@ -27,7 +27,6 @@ export const InputType = component$<InputType>((props) => {
               class="rounded-md "
               onChange$={(e) => {
                 fie.value = e.target.value;
-                // console.log("e.target.value", e.target.value);
               }}
             />
           )}
@@ -42,23 +41,32 @@ export const InputType = component$<InputType>((props) => {
               value={fie.value}
               onChange$={(e) => {
                 fie.value = e.target.value;
-                // console.log("e.target.value", e.target.value);
               }}
             >
               {field.options.map((option: selectOption) => {
-                //console.log("option", option);
-                // console.log("field.Options", field.options);
-
                 return <option value={option.value}>{option.label}</option>;
               })}
             </select>
+          )}
+          {field.type === "checkbox" && (
+            <div class="flex flex-row justify-start items-center">
+              <input
+                class="form-checkbox input input-bordered input-primary w-auto mr-2"
+                type="checkbox"
+                id={field.fieldName}
+                checked={fie.value == "1" ? true : false}
+                onChange$={(e) => {
+                  fie.value = e.target.checked ? "1" : "0";
+                }}
+              />
+               <label class="text-lg text-colororange ">{field.label}</label>
+            </div>
           )}
           {(field.type === "text" ||
             field.type === "number" ||
             field.type === "time" ||
             field.type === "date" ||
-            field.type === "email" 
-            ) && (
+            field.type === "email") && (
             <input
               class={`${
                 field.key
@@ -70,7 +78,6 @@ export const InputType = component$<InputType>((props) => {
               value={fie.value}
               onChange$={(e) => {
                 fie.value = e.target.value;
-                // console.log("e.target.value", e.target.value);
               }}
             />
           )}

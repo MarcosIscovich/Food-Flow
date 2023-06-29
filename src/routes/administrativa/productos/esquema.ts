@@ -55,7 +55,8 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     hiddenInMobile: true,
     visibleInTable: true,
     defaultValue: "",
-    type: "text",
+    label: "Disponible",
+    type: "checkbox",
   },
   {
     title: "Imagen",
