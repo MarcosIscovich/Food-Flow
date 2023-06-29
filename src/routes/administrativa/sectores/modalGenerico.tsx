@@ -86,7 +86,7 @@ export const ModalGenerico = component$<parametros>((props) => {
                       .map((field, index) => {
                         return (
                           <div key={index}>
-                            <Field name={field.fieldName as FormField}>
+                            <Field name={field.fieldName as any}>
                               {(fie, props) => (
                                 <div>
                                   {/* <label for={field.fieldName}>
