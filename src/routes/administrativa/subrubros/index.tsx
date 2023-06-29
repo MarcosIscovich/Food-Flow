@@ -4,9 +4,9 @@ import {
     useStore,
     $,
     useContext,
-    useTask$,
+    useVisibleTask$,
   } from "@builder.io/qwik";
-  import { z, type DocumentHead, routeLoader$ } from "@builder.io/qwik-city";
+  import { type DocumentHead, routeLoader$ } from "@builder.io/qwik-city";
   
   import { Breadcrumbs } from "~/components/sharedComponents/utils/breadcrumbs";
   import { Confirm } from "~/components/sharedComponents/utils/confirm.component";
@@ -19,12 +19,8 @@ import {
   import type { ISubRubros } from "~/interfaces/iSubRubro";
   import { Table } from "~/components/sharedComponents/utils/table";
   import type { InitialValues } from "@modular-forms/qwik";
-  import type { iTableFieldConfiguration } from "~/interfaces/iTableFieldConfiguratio";
-  import type { iPageData } from "~/interfaces/iPageData";
   import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial, filter } from './esquema';
-  import type { FormField } from "./esquema";
-  import { info, table } from "console";
-  import { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
+  import type { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
   
   interface IBaseCrud extends ISubRubros {}
   
@@ -57,7 +53,7 @@ import {
     const authContext = useContext(AuthContext);
  
 
-    useTask$(async() => {
+    useVisibleTask$(async() => {
       console.log("useTask$");
       const rubros = await lista(
         authContext.token || "",

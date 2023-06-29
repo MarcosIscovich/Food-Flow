@@ -1,10 +1,8 @@
-import { PropFunction, component$, useSignal } from '@builder.io/qwik';
-import { selectOption } from '~/interfaces/iTableFieldConfiguratio';
-import { setValue } from '@modular-forms/qwik';
+import { component$ } from '@builder.io/qwik';
+import type { selectOption } from '~/interfaces/iTableFieldConfiguratio';
+
 //import { Field } from '@modular-forms/qwik';
-import { on } from 'events';
-import { value } from '@modular-forms/qwik';
-import styles from './utils.module.css'
+
 
 export interface InputType {
   field: any,
@@ -13,8 +11,8 @@ export interface InputType {
 }
 
 export const InputType = component$<InputType>((props) => {
-  const { field, fie, propss } = props;
-  const count = useSignal(0);
+  const { field, fie } = props;
+  
   return (
     <>
       <div class="grid grid-cols-4 gap-4 mt-7 ">
@@ -54,7 +52,7 @@ export const InputType = component$<InputType>((props) => {
                 //console.log("option", option);
                 // console.log("field.Options", field.options);
 
-                return <option value={option.value}>{option.label}</option>;
+                return <option key={option.value} value={option.value}>{option.label}</option>;
               })}
             </select>
           )}

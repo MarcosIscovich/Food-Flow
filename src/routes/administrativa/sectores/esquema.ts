@@ -47,9 +47,13 @@ export const validationSchema = z.object({
   impresora: z.string().min(1, "Ingrese una impresora."),
 });
 
-export type FormField = "id" | "nombre" | "impresora";
+export type FormField = {
+  id: string;
+  nombre: string;
+  impresora: string;
+};
 
-export let dataInicial = {
+export const dataInicial = {
   id: "",
   nombre: "",
   impresora: "",

@@ -39,7 +39,7 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
  
  export type FormField = "id" | "nombre" ;
  
-export let dataInicial= {
+export const dataInicial= {
    id: "",
    nombre: "",
  };
