@@ -1,5 +1,5 @@
-import { component$, useSignal } from '@builder.io/qwik';
-import { selectOption } from '~/interfaces/iTableFieldConfiguratio';
+import { component$ } from '@builder.io/qwik';
+import type { selectOption } from '~/interfaces/iTableFieldConfiguratio';
 
 
 export interface InputType {
@@ -10,14 +10,18 @@ export interface InputType {
 
 export const InputType = component$<InputType>((props) => {
   const { field, fie } = props;
-  
+
   return (
     <>
       <div class="grid grid-cols-4 gap-4 mt-7 ">
         <div class="col-span-auto flex justify-end align-text-bottom">
-          <label class="text-lg text-colororange " for={field.fieldName}>
-            {field.title}:
-          </label>
+          {
+            field.type !== "checkbox" && <label class="text-lg text-colororange " for={field.fieldName}>
+              {field.title}:
+            </label>
+
+          }
+
         </div>
         <div class="col-span-2">
           {field.type === "textarea" && (
@@ -33,11 +37,10 @@ export const InputType = component$<InputType>((props) => {
           )}
           {field.type === "select" && (
             <select
-              class={`${
-                field.key
-                  ? "hidden"
-                  : "input input-bordered input-primary w-auto  "
-              }`}
+              class={`${field.key
+                ? "hidden"
+                : "input input-bordered input-primary w-auto  "
+                }`}
               {...props}
               value={fie.value}
               onChange$={(e) => {
@@ -45,7 +48,7 @@ export const InputType = component$<InputType>((props) => {
               }}
             >
               {field.options.map((option: selectOption) => {
-                return <option value={option.value}>{option.label}</option>;
+                return <option key={option.value} value={option.value}>{option.label}</option>;
               })}
             </select>
           )}
@@ -60,7 +63,7 @@ export const InputType = component$<InputType>((props) => {
                   fie.value = e.target.checked ? "1" : "0";
                 }}
               />
-               <label class="text-lg text-colororange ">{field.label}</label>
+              <label class="text-lg text-colororange ">{field.label}</label>
             </div>
           )}
           {(field.type === "text" ||
@@ -68,20 +71,19 @@ export const InputType = component$<InputType>((props) => {
             field.type === "time" ||
             field.type === "date" ||
             field.type === "email") && (
-            <input
-              class={`${
-                field.key
+              <input
+                class={`${field.key
                   ? "hidden"
                   : "input input-bordered input-primary w-auto"
-              }`}
-              {...props}
-              type={field.type}
-              value={fie.value}
-              onChange$={(e) => {
-                fie.value = e.target.value;
-              }}
-            />
-          )}
+                  }`}
+                {...props}
+                type={field.type}
+                value={fie.value}
+                onChange$={(e) => {
+                  fie.value = e.target.value;
+                }}
+              />
+            )}
         </div>
       </div>
     </>

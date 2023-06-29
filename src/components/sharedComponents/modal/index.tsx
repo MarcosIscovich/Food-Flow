@@ -10,8 +10,7 @@ interface ComponentProps {
 export const Modal = component$<ComponentProps>((props) => {
   const { show, title, size: _size } = props;
 
-  const sizeModal = _size
-    ? _size.length > 0
+  const sizeModal = _size ? _size.length > 0
       ? "lg:max-w-" + _size
       : "lg:max-w-2xl"
     : "lg:max-w-2xl";

@@ -69,6 +69,7 @@ export const ModalGenerico = component$<parametros>((props) => {
           onClose$();
         })}
         title={title}
+        size="3xl"
       >
         <div class="border-b border-gray-900/10 pb-4 pt-0 mt-0">
           <div >
