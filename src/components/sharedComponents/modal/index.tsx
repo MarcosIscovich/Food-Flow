@@ -17,10 +17,10 @@ export const Modal = component$<ComponentProps>((props) => {
     : "lg:max-w-2xl";
 
   return (
-    <div class={show ? "modal modal-middle modal-open" : "modal modal-middle"}>
-      <div class={`modal-box w-full ${sizeModal}`}>
-        <h3 class="font-bold text-lg">{title}</h3>
-        <div class="py-4">
+    <div class={show ? "modal modal-middle modal-open " : "modal modal-middle"}>
+      <div class={`modal-box  ${sizeModal} border-solid border-2 border-indigo-600`}>
+        <h3 class="font-bold text-3xl flex justify-center text-colororange">{title}</h3>
+        <div class="">
           <Slot />
         </div>
 

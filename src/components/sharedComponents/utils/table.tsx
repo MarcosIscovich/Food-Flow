@@ -13,6 +13,7 @@ import {
   import { lista } from "~/services/generico.service";
   import { Pagination } from "./pagination.component";
   import type { iTableFieldConfiguration } from "~/interfaces/iTableFieldConfiguratio";
+import { options } from '../../../../../admin-qwik/src/routes/admin/index';
   
   interface parametros {
     fieldConfiguration: iTableFieldConfiguration[];
@@ -119,9 +120,9 @@ import {
                     <th
                       key={index}
                       class={`${
-                        item.hiddenInMobile ? "hidden md:table-cell" : ""
-                      } cursor-pointer hover:bg-slate-400 rounded-md  `}
-                      onClick$={$(() => setOrder(item.fieldName))}
+                        item.hiddenInMobile ? " hidden md:table-cell " : ""
+                      } ${item.ordenable ? " cursor-pointer ": "" } hover:bg-slate-400 rounded-md  `}
+                      onClick$={$(() => { item.ordenable ? setOrder(item.fieldName) : ""})}
                     >
                       <div class="flex">
                         {item.title} {getIconOrder(item.fieldName)}
@@ -143,23 +144,60 @@ import {
               )}
               onResolved={(data) => {
                 return data.map((item: any, index: number) => {
+                  //console.log(item)
                   return (
                     <tr key={index} class="hover ">
                       {fieldConfiguration
                         .filter((item: any) => item.visibleInTable)
                         .map((fieldItem: any, index: number) => {
-                          return (
-                            <th
-                                key={index}
-                              class={`${
-                                fieldItem.hiddenInMobile
-                                  ? "hidden md:table-cell"
-                                  : ""
-                              }  `}
-                            >
-                              {item[fieldItem.fieldName]}
-                            </th>
-                          );
+                         // console.log("configuration", fieldItem)
+                         
+                              return (
+                                <>
+                                  {fieldItem.options &&
+                                  fieldItem.options.length > 0 ? (
+                                    fieldItem.options.map((option: any) => {
+                                     
+                                      if (
+                                        option.value ==
+                                        item[fieldItem.fieldName]
+                                      ) {
+                                        
+                                        return (
+                                          <th
+                                            key={index}
+                                            class={`${
+                                              fieldItem.hiddenInMobile
+                                                ? "hidden md:table-cell"
+                                                : ""
+                                            }  `}
+                                          >
+                                            {option.label}
+                                          </th>
+                                        );
+                                      }
+                                      // else{
+                                      //   return (
+                                      //     <th
+                                            
+                                      //       ></th>
+                                      //   )
+                                      // }
+                                    })
+                                  ) : (
+                                    <th
+                                      key={index}
+                                      class={`${
+                                        fieldItem.hiddenInMobile
+                                          ? "hidden md:table-cell"
+                                          : ""
+                                      }  `}
+                                    >
+                                      {item[fieldItem.fieldName]}
+                                    </th>
+                                  )}
+                                </>
+                              );
                         })}
   
                       <td>

@@ -24,7 +24,7 @@ import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial, filter } fr
 import type { FormField } from "./esquema";
 import { info, table } from "console";
 import { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
-import type { IRubros } from "~/interfaces/iRubros";
+import { IRubros } from "~/interfaces/iRubros";
 
 interface IBaseCrud extends IRubros { }
 
@@ -193,7 +193,7 @@ export default component$(() => {
                         </div>
 
                         <div class="  pt-0">
-                            <h1 class="text-3xl font-bold  mt-3 ">
+                            <h1 class="text-3xl font-bold  mt-3">
                                 {infoTitle.titulo}
 
                                 <p class=" mt-0 text-sm ">{infoTitle.subTitulo}</p>
@@ -205,14 +205,14 @@ export default component$(() => {
                             <div class="  first-line: text-center">
                                 <input
                                     type="text"
-                                    bind:value={inputTxt}
+                                    bind: value={inputTxt}
                                     placeholder="Búsqueda por texto"
                                     class="input input-bordered w-full max-w-xs "
                                 />
                             </div>
                             <div class=" text-right ">
                                 <button
-                                    class="btn  mt-2 mr-5  btn-primary "
+                                    class="btn  mt-2 mr-5  btn-warning  "
                                     onClick$={async () => {
                                         await setItemData(null);
                                         modalOpen.value = true;

@@ -3,13 +3,11 @@ import type { iPageData } from "~/interfaces/iPageData";
 import { z } from "@builder.io/qwik-city";
 
 export interface IInsumo {
-  id: number;
+  id?: string;
   nombre: string;
-  cantidad: number;
-  tipo_unidad: string;
-  proveedor: string;
-  // createdAt?: Date;
-  // updatedAt?: Date;
+  cantidad: string;
+  unidad_medida_id: string;
+  provedor_id: string;
 };
 
 export  const infoTitle: iPageData = {
@@ -31,6 +29,7 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     visibleInTable: true,
     defaultValue: 0,
     type: "number",
+    ordenable: true,
   },
   {
     title: "Nombre",
@@ -50,7 +49,7 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
   },
   {
     title: "Unidad",
-    fieldName: "tipo_unidad",
+    fieldName: "unidad_medida_id",
     hiddenInMobile: true,
     visibleInTable: true,
     defaultValue: "",
@@ -59,7 +58,7 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
   },
   {
     title: "Proveedor",
-    fieldName: "proveedor",
+    fieldName: "provedor_id",
     hiddenInMobile: true,
     visibleInTable: true,
     defaultValue: "",
@@ -72,20 +71,20 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
  export const validationSchema = z.object({
    id: z.string().optional(),
    nombre: z.string().min(1, "Ingrese el nombre del insumo."),
-   cantidad: z.number().min(1, "Ingrese una cantidad."),
-   tipo_unidad: z.string().min(1, "Ingrese una unidad válida."),
-    proveedor: z.string().min(1, "Ingrese un proveedor válido."),
+   cantidad:  z.union([z.string().min(1, "Ingrese una cantidad."), z.number().min(1, "Ingrese una cantidad.")]),
+   unidad_medida_id: z.union([z.string().min(1, "Ingrese una medida."), z.number().min(1, "Ingrese una medida.")]),
+   provedor_id: z.union([z.string().min(1, "Ingrese un Provedor."), z.number().min(1, "Ingrese un Provedor.")]),
      
  });
  
- export type FormField = "id" | "nombre" | "cantidad" | "tipo_unidad" | "proveedor";
+ export type FormField = "id" | "nombre" | "cantidad" | "unidad_medida_id" | "provedor_id";
  
 export let dataInicial= {
-   id: 0,
+   id: "0",
    nombre: "",
-   cantidad: 0,
-   tipo_unidad: "",
-    proveedor: "",
+   cantidad: "0",
+   unidad_medida_id: "0",
+   provedor_id: "0",
  };
  
 

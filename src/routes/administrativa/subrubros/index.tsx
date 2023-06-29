@@ -13,22 +13,20 @@ import { Confirm } from "~/components/sharedComponents/utils/confirm.component";
 import { Toast } from "~/components/sharedComponents/utils/toast.component";
 import { AuthContext } from "~/context/auth/auth.context";
 
-import { create, update, deleteItem } from "~/services/generico.service";
+import { create, update, deleteItem, lista } from "~/services/generico.service";
 import { ModalGenerico } from "./modalGenerico";
 import { IconQuestion } from "~/components/sharedComponents/icons";
+import type { IReservas } from "~/interfaces/iReservas";
 import { Table } from "~/components/sharedComponents/utils/table";
 import type { InitialValues } from "@modular-forms/qwik";
-import type { iTableFieldConfiguration } from "~/interfaces/iTableFieldConfiguratio";
-import type { iPageData } from "~/interfaces/iPageData";
 import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial, filter } from './esquema';
-import type { FormField } from "./esquema";
 import { info, table } from "console";
 import { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
-import type { IRubros } from "~/interfaces/iRubros";
+import  {ISubRubro } from "~/interfaces/iSubRubro";
 
-interface IBaseCrud extends IRubros { }
+interface IBaseCrud extends ISubRubro { }
 
-export const useSelectOption = routeLoader$<selectOption[]>(() => {
+/* export const useSelectOption = routeLoader$<selectOption[]>(() => {
 
     const selectOptions: selectOption[] = [
         { value: "1", label: "1" },
@@ -45,13 +43,22 @@ export const useSelectOption = routeLoader$<selectOption[]>(() => {
 
     return selectOptions;
 
-});
+}); */
 
 export const useFormLoader = routeLoader$<InitialValues<IBaseCrud>>(() => {
 
-    return dataInicial;
-});
 
+    // const data = {
+    //   id: "",
+    //   cliente: "",
+    //   telefono: "",
+    //   hora: "",
+    //   dia: "",
+    //   cantpersonas: 0,
+    // };
+    return dataInicial;
+  });
+    
 
 export default component$(() => {
 
@@ -59,15 +66,15 @@ export default component$(() => {
 
     const authContext = useContext(AuthContext);
     const itemData = useStore<IBaseCrud>(
-        /*  dataInicial */
-        {
-            id: "",
-            nombre: "",
-            //   telefono: "",
-            //   hora: "",
-            //   dia: "",
-            //   cantpersonas: 0,
-        }
+        dataInicial
+        //   {
+        //   id: "",
+        //   cliente: "",
+        //   telefono: "",
+        //   hora: "",
+        //   dia: "",
+        //   cantpersonas: 0,
+        // }
     );
 
     const infoToast = useStore({
@@ -81,6 +88,7 @@ export default component$(() => {
     });
 
     const modalOpen = useSignal(false);
+    const keyModal = useSignal(false);
 
     const inputTxt = useSignal<string>("");
     const refreshData = useSignal<boolean>(false);
@@ -172,6 +180,9 @@ export default component$(() => {
     const setItemData = $(async (_itemData: IBaseCrud | null) => {
         await fillItemData(_itemData);
         modalOpen.value = true;
+        keyModal.value = true;
+        console.log("setItemData", modalOpen.value);
+        
     });
 
 
@@ -193,7 +204,7 @@ export default component$(() => {
                         </div>
 
                         <div class="  pt-0">
-                            <h1 class="text-3xl font-bold  mt-3 ">
+                            <h1 class="text-3xl font-bold  mt-3">
                                 {infoTitle.titulo}
 
                                 <p class=" mt-0 text-sm ">{infoTitle.subTitulo}</p>
@@ -205,20 +216,20 @@ export default component$(() => {
                             <div class="  first-line: text-center">
                                 <input
                                     type="text"
-                                    bind:value={inputTxt}
+                                    bind: value={inputTxt}
                                     placeholder="Búsqueda por texto"
                                     class="input input-bordered w-full max-w-xs "
                                 />
                             </div>
                             <div class=" text-right ">
                                 <button
-                                    class="btn  mt-2 mr-5  btn-primary "
+                                    class="btn  mt-2 mr-5  btn-warning  "
                                     onClick$={async () => {
                                         await setItemData(null);
                                         modalOpen.value = true;
                                     }}
                                 >
-                                    Nuevo Rubro
+                                    Nuevo SubRubro
                                 </button>
                             </div>
                         </div>
@@ -236,46 +247,105 @@ export default component$(() => {
                             _order={"id"}
                             _orderSign={""}
                             filter={filter}
-                        />                        
+                        />
                     </div>
-                    <ModalGenerico
-                        show={modalOpen.value}
-                        itemData={itemData}
-                        tableFields={tableFieldConfiguration}
-                        onSave$={$(async (data: any) => {
-                            await setItemData(data);
-                            itemSave();
-                        })}
-                        onClose$={$(() => {
-                            modalOpen.value = false;
-                        })}
-                        title={
-                            itemData?.id && itemData?.id ? "Editar Rubro" : "Nuevo Rubro"
-                        }
-                    />
-
-                    <Confirm
-                        msg={infoConfirm.msg}
-                        show={infoConfirm.show}
-                        resultOk$={$(() => {
-                            itemDelete(itemData);
-                        })}
-                        resultCancel$={$(() => {
-                            infoConfirm.show = false;
-                        })}
-                    />
-                    <Toast
-                        msg={infoToast.msg}
-                        show={infoToast.show}
-                        type={infoToast.type}
-                        onFinish={$(() => (infoToast.show = false))}
-                    />
-
                 </div>
+                <ModalGenerico
+                    show={modalOpen.value}
+                    itemData={itemData}
+                    tableFields={tableFieldConfiguration}
+                    onSave$={$(async (data: any) => {
+                        await setItemData(data);
+                        itemSave();
+                    })}
+                    onClose$={$(() => {
+                        modalOpen.value = false;
+                    })}
+                    title={
+                        itemData?.id && itemData?.id ? "Editar usuario" : "Nuevo usuario"
+                    }
+                />
+
+                <Confirm
+                    msg={infoConfirm.msg}
+                    show={infoConfirm.show}
+                    resultOk$={$(() => {
+                        itemDelete(itemData);
+                    })}
+                    resultCancel$={$(() => {
+                        infoConfirm.show = false;
+                    })}
+                />
+                <Toast
+                    msg={infoToast.msg}
+                    show={infoToast.show}
+                    type={infoToast.type}
+                    onFinish={$(() => (infoToast.show = false))}
+                />
+
 
 
                 <div >
-                    subrubros
+                    
+                    {/* <div class="w-full place-content-start ">
+                        <Breadcrumbs />
+                    </div>
+                    <div class="text-center flex flex-col  ">
+                        <div
+                            class="tooltip tooltip-bottom  tooltip-warning -mb-5 "
+                            data-tip={infoTitle.ayuda}
+                        >
+                            <button class="btn btn-circle btn-ghost ">
+                                <IconQuestion />
+                            </button>{" "}
+                        </div>
+
+                        <div class="  pt-0">
+                            <h1 class="text-3xl font-bold  mt-3">
+                                {infoTitle.titulo}
+
+                                <p class=" mt-0 text-sm ">{infoTitle.subTitulo}</p>
+                            </h1>
+                        </div>
+
+                        <div class="grid  grid-cols-1 md:grid-cols-3   gap-1 p-4 w-full  ">
+                            <div></div>
+                            <div class="  first-line: text-center">
+                                <input
+                                    type="text"
+                                    bind: value={inputTxt}
+                                    placeholder="Búsqueda por texto"
+                                    class="input input-bordered w-full max-w-xs "
+                                />
+                            </div>
+                            <div class=" text-right ">
+                                <button
+                                    class="btn  mt-2 mr-5  btn-warning  "
+                                    onClick$={async () => {
+                                        await setItemData(null);
+                                        modalOpen.value = true;
+                                    }}
+                                >
+                                    Nuevo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class=" mt-7 card rounded-box p-7 shadow-md bg-slate-200 ">
+
+                        <Table
+                            fieldConfiguration={tableFieldConfiguration}
+                            modeloURL={modeloUrl}
+                            refreshData={refreshData.value}
+                            inputTxt={inputTxt.value}
+                            setItemData={setItemData}
+                            confirmDeleteItem={confirmDeleteItem}
+                            _order={"id"}
+                            _orderSign={""}
+                            filter={filter}
+                        />
+                    </div> */}
                 </div>
             </div>
         </div>

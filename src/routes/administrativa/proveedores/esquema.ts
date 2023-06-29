@@ -3,7 +3,7 @@ import type { iPageData } from "~/interfaces/iPageData";
 import { z } from "@builder.io/qwik-city";
 
 export interface IProvedor {
-  id: number;
+  id?: string;
   nombre: string;
   apellido: string;
   email: string;
@@ -13,7 +13,7 @@ export interface IProvedor {
   codigo_postal: string;
   cuit: string;
   razon_social: string;
-  condicion_iva: string;
+  condicion_ivas_id: string;
   fecha_nacimiento: string;
   // createdAt?: Date;
   // updatedAt?: Date;
@@ -28,7 +28,7 @@ export  const infoTitle: iPageData = {
   
 export const modeloUrl = "provedor";
 
-export const filter = ["nombre", "apellido", "email"];
+export const filter = ["nombre"];
 
 export const tableFieldConfiguration: iTableFieldConfiguration[] = [
   {
@@ -77,7 +77,6 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     hiddenInMobile: true,
     visibleInTable: true,
     defaultValue: "",
-    options: [],
     type: "text",
   },
    {
@@ -115,11 +114,12 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
    },
    {
      title: "Condicion IVA",
-     fieldName: "condicion_iva",
+     fieldName: "condicion_ivas_id",
      hiddenInMobile: true,
      visibleInTable: true,
      defaultValue: "",
-     type: "text",
+     options: [],
+     type: "select",
    },
    {
      title: "Fecha Nacimiento",
@@ -143,15 +143,27 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
    codigo_postal: z.string().min(1, "Ingrese el código postal del usuario.").max(50),
    cuit: z.string().min(1, "Ingrese el cuit del usuario.").max(50),
    razon_social: z.string().min(1, "Ingrese la razón social del usuario.").max(50),
-   condicion_iva: z.string().min(1, "Ingrese la condición IVA del usuario.").max(50),
+   condicion_ivas_id: z.string().min(1, "Ingrese la condición IVA del usuario.").max(50),
    fecha_nacimiento: z.string().min(1, "Ingrese la fecha de nacimiento del usuario.").max(50),
      
  });
  
- export type FormField = "id" | "nombre" | "apellido" | "email" | "telefono" | "direccion" | "ciudad" | "codigo_postal" | "cuit" | "razon_social" | "condicion_iva" | "fecha_nacimiento";
+ export type FormField =
+   | "id"
+   | "nombre"
+   | "apellido"
+   | "email"
+   | "telefono"
+   | "direccion"
+   | "ciudad"
+   | "codigo_postal"
+   | "cuit"
+   | "razon_social"
+   | "condicion_ivas_id"
+   | "fecha_nacimiento";
  
 export let dataInicial= {
-   id: 0,
+   id: "0",
    nombre: "",
    apellido: "",
    email: "",
@@ -161,7 +173,7 @@ export let dataInicial= {
    codigo_postal: "",
    cuit: "",
    razon_social: "",
-   condicion_iva: "",
+   condicion_ivas_id: "",
    fecha_nacimiento: "",
    
  };
