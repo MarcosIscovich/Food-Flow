@@ -1,10 +1,5 @@
-import { PropFunction, component$, useSignal } from '@builder.io/qwik';
+import { component$, useSignal } from '@builder.io/qwik';
 import { selectOption } from '~/interfaces/iTableFieldConfiguratio';
-import { setValue } from '@modular-forms/qwik';
-//import { Field } from '@modular-forms/qwik';
-import { on } from 'events';
-import { value } from '@modular-forms/qwik';
-import styles from './utils.module.css'
 
 export interface InputType {
   field: any,
@@ -61,7 +56,9 @@ export const InputType = component$<InputType>((props) => {
           {(field.type === "text" ||
             field.type === "number" ||
             field.type === "time" ||
-            field.type === "date") && (
+            field.type === "date" ||
+            field.type === "email" 
+            ) && (
             <input
               class={`${
                 field.key

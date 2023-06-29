@@ -3,10 +3,9 @@ import type { iPageData } from "~/interfaces/iPageData";
 import { z } from "@builder.io/qwik-city";
 
 export interface ICliente {
-    id: number;
+    id?: string;
     nombre: string;
     apellido: string;
-    email: string;
     telefono: string;
     direccion: string;
     ciudad: string;
@@ -15,11 +14,10 @@ export interface ICliente {
     razon_social: string;
     condicion_ivas_id: string;
     fecha_nacimiento: string;
+    email: string;
     observaciones: string;
-    //createdAt?: Date;
-    //updatedAt?: Date;
+ 
   };
-
 
   export  const infoTitle: iPageData = {
     titulo: "Clientes",
@@ -54,15 +52,6 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     {
       fieldName: "apellido",
       title: "Apellido",
-      ordenable: true,
-      type: "text",
-      hiddenInMobile: true,
-      visibleInTable: true,
-      defaultValue: 0,
-    },
-    {
-      fieldName: "email",
-      title: "Email",
       ordenable: true,
       type: "text",
       hiddenInMobile: true,
@@ -142,6 +131,15 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
       defaultValue: 0,
     },
     {
+        fieldName: "email",
+        title: "Email",
+        ordenable: true,
+        type: "text",
+        hiddenInMobile: true,
+        visibleInTable: true,
+        defaultValue: 0,
+    },
+    {
       fieldName: "observaciones",
       title: "Observaciones",
       ordenable: true,
@@ -149,11 +147,11 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
       visibleInTable: false,
       type: "textarea",
       defaultValue: 0,
-    },
+    }
   ];
 
   export const validationSchema = z.object({
-    id: z.number().optional(),
+    id: z.string().optional(),
     nombre: z.string().min(1, 'Please enter your name.'),
     apellido: z.string().min(1, 'Please enter your last name.'),
     telefono: z.string().min(1).max(50),
@@ -163,29 +161,40 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     cuit: z.string().min(10).max(11),
     razon_social: z.string().min(1).max(50),
     condicion_ivas_id: z.string().min(1).max(50),
-    fecha_nacimiento: z.string(),
-    email: z
-  .string()
-  .min(1, 'Please enter your email.')
-  .email('The email address is badly formatted.'),
-  observaciones: z.string().min(1).max(250),
+    fecha_nacimiento: z.string().min(1).max(50),
+    email: z.string().min(1, 'Please enter your email.').email('The email address is badly formatted.'),
+    observaciones: z.string().min(1).max(250)
   });
   
-  export type FormField = "id" | "nombre" | "apellido" | "telefono" | "direccion" | "ciudad" | "codigo_postal" | "cuit" | "razon_social" | "condicion_ivas_id" | "fecha_nacimiento" | "email" | "observaciones";
+  export type FormField =
+    | "id"
+    | "nombre"
+    | "apellido"
+    | "telefono"
+    | "direccion"
+    | "ciudad"
+    | "codigo_postal"
+    | "cuit"
+    | "razon_social"
+    | "condicion_ivas_id"
+    | "fecha_nacimiento"
+    | "email"
+    | "observaciones";
   
- export let dataInicial= {
-    id: 0,
-    nombre: "",
-    apellido: "",
-    telefono: "",
-    direccion: "",
-    ciudad: "",
-    codigo_postal: "",
-    cuit: "",
-    razon_social: "",
-    condicion_ivas_id: "",
-    fecha_nacimiento: "",
-    email: "",
-    observaciones: "",
-  };
+ export let dataInicial = {
+   id: "0",
+   nombre: "",
+   apellido: "",
+   telefono: "",
+   direccion: "",
+   ciudad: "",
+   codigo_postal: "",
+   cuit: "",
+   razon_social: "",
+   condicion_ivas_id: "",
+   fecha_nacimiento: "",
+   email: "",
+   observaciones: ""
+
+ };
   

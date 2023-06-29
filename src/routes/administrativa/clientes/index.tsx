@@ -4,28 +4,24 @@ import {
   useStore,
   $,
   useContext,
-  useTask$,
-  useTaskQrl,
+  useVisibleTask$,
 } from "@builder.io/qwik";
-import { z, type DocumentHead, routeLoader$ } from "@builder.io/qwik-city";
-
+import { type DocumentHead, routeLoader$ } from "@builder.io/qwik-city";
 import { Breadcrumbs } from "~/components/sharedComponents/utils/breadcrumbs";
 import { Confirm } from "~/components/sharedComponents/utils/confirm.component";
 import { Toast } from "~/components/sharedComponents/utils/toast.component";
 import { AuthContext } from "~/context/auth/auth.context";
-
-import { create, update, deleteItem, lista } from "~/services/generico.service";
+import { create, update, deleteItem, lista, selectItems } from "~/services/generico.service";
 import { ModalGenerico } from "./modalGenerico";
 import { IconQuestion } from "~/components/sharedComponents/icons";
 import { Table } from "~/components/sharedComponents/utils/table";
 import type { InitialValues } from "@modular-forms/qwik";
-import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial, ICliente, filter } from "./esquema";
+import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial,filter, ICliente } from "./esquema";
 import { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
 
 interface IBaseCrud extends ICliente {}
 
 export const useFormLoader = routeLoader$<InitialValues<IBaseCrud>>(() => {
-
   return dataInicial;
 });
 
@@ -36,28 +32,19 @@ export default component$(() => {
     dataInicial
   );
 
-  useTask$(async({}) => {
-    console.log("useTask$");
-    const iva = await lista(
-      authContext.token || "",
-      1,
-      8,
-      "",
-      "",
-      "",
-      "condicioniva",
-      []);
+  useVisibleTask$(async({track}) => {
+    track(() => authContext.token);
+    if(authContext?.token){
+      console.log("useTask$");
+      const iva = await selectItems(authContext.token || "", "condicioniva");
+      console.log("lista", iva);
 
-    console.log("lista", iva);
-
-    const selectOptions: selectOption[] = iva.data.map((item: any) => {
-      return { value: item.id, label: item.nombre };
-    });
-    tableFieldConfiguration[10].options = selectOptions;
-    console.log("tableFieldConfiguration", tableFieldConfiguration[10]);
-
+      const selectOptions: selectOption[] = iva.data.map((item: any) => {
+        return { value: item.id, label: item.nombre };
+      });
+      tableFieldConfiguration[10].options = selectOptions;
+    }
   });
-
 
   const infoToast = useStore({
     msg: "",
@@ -77,32 +64,16 @@ export default component$(() => {
   const fillItemData = $((item: IBaseCrud | null) => {
     console.log("fillItemData", item);
     if (item === null) {
-
-      Object.entries(itemData).forEach(([key, value]) => {
-        //typeof value === "number" ? (itemData[key] = 0) : (itemData[key] = "");
+      Object.entries(itemData).forEach(([key]) => {
         const _key = key as keyof IBaseCrud;
-        itemData[_key] =  "";
+        itemData[_key] = "";
       });
 
-      console.log("fillItemData Null", itemData);
-      // itemData.id = "";
-      // itemData.cliente = "";
-      // itemData.telefono = "";
-      // itemData.hora = "";
-      // itemData.dia = "";
-      // itemData.cantpersonas = 0;
     } else {
-      Object.entries(itemData).forEach(([key, value]) => {
+      Object.entries(itemData).forEach(([key]) => {
         const _key = key as keyof IBaseCrud;
-        itemData[_key] =  item[_key] || "";
+        itemData[_key] = item[_key] || "";
       });
-      console.log("fillItemData Not Null", itemData);
-      // itemData.id = item.id;
-      // itemData.cliente = item.cliente;
-      // itemData.telefono = item.telefono;
-      // itemData.hora = item.hora;
-      // itemData.dia = item.dia;
-      // itemData.cantpersonas = item.cantpersonas;
     }
   });
 
@@ -215,6 +186,7 @@ export default component$(() => {
         <div class=" h-2"></div>
         <div class=" card bg-slate-300 rounded-box place-items-end">
           <div class="overflow-x-auto  w-full p-2">
+          {authContext.token && authContext.token && (
             <Table
               fieldConfiguration={tableFieldConfiguration}
               modeloURL={modeloUrl}
@@ -226,10 +198,11 @@ export default component$(() => {
               _orderSign={""}
               filter={filter}
             />
+          )}
           </div>
         </div>
       </div>
-
+      {authContext.token && authContext.token && (
       <ModalGenerico
         show={modalOpen.value}
         itemData={itemData}
@@ -245,6 +218,7 @@ export default component$(() => {
           itemData?.id && itemData?.id ? `Editar ${infoTitle.titulo}` : `Nuevo ${infoTitle.titulo}`
         }
       />
+      )}
 
       <Confirm
         msg={infoConfirm.msg}
