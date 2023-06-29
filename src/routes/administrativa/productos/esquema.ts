@@ -96,10 +96,20 @@ export const validationSchema = z.object({
   imagen: z.string().min(1, "Ingrese una imagen."),
   sub_rubro_id: z.union([z.string().min(1, "Ingrese un subrubro."), z.number().min(1, "Ingrese un subrubro.")]),
   sector_id: z.union([z.string().min(1, "Ingrese un sector."), z.number().min(1, "Ingrese un sector.")]),
-
 });
 
 export type FormField = "id" | "nombre" | "descripcion" | "precio" | "disponible" | "imagen" | "sub_rubro_id" | "sector_id";
+
+/* export type FormField = {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  precio: string;
+  disponible: string;
+  imagen: string;
+  sub_rubro_id: string;
+  sector_id: string;
+} */
 
 export const dataInicial = {
   id: "",

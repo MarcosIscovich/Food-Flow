@@ -1,6 +1,7 @@
 import { component$, useSignal } from '@builder.io/qwik';
 import { selectOption } from '~/interfaces/iTableFieldConfiguratio';
 
+
 export interface InputType {
   field: any,
   fie: any,
@@ -8,8 +9,8 @@ export interface InputType {
 }
 
 export const InputType = component$<InputType>((props) => {
-  const { field, fie, propss } = props;
-  const count = useSignal(0);
+  const { field, fie } = props;
+  
   return (
     <>
       <div class="grid grid-cols-4 gap-4 mt-7 ">

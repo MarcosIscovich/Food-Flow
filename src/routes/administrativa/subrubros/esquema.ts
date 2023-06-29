@@ -50,7 +50,13 @@ export const validationSchema = z.object({
 
 export type FormField = "id" | "nombre" | "rubro_id";
 
-export let dataInicial = {
+/* export type FormField = {
+  id: string;
+  nombre: string;
+  rubro_id: string;
+}; */
+
+export const dataInicial = {
   id: "",
   nombre: "",
   rubro_id: "",
