@@ -37,7 +37,7 @@ export const ModalGenerico = component$<parametros>((props) => {
     validate: zodForm$(validationSchema),
   });
 
-  useTask$(({ track }) => {    
+  useTask$(({ track }) => {
     track(() => [_itemData, show]);
 
     if (_itemData != undefined && genericForm != undefined) {
@@ -75,10 +75,9 @@ export const ModalGenerico = component$<parametros>((props) => {
             <div class="  ">
               <Form
                 onSubmit$={$((values, event) => {
-                  console.log("values", values , event);
+                  console.log("values", values);
                   handleSubmit(values, event);
                 })}
-                
               >
                 <div class="grid grid-cols-1 gap-x-2 gap-y-8 md:grid-cols-2">
                   {tableFields != undefined &&

@@ -30,7 +30,7 @@ export const lista = async (
       }
     );
   
-    const data = await resp.json();
+    const data =  resp.json();
       console.log("llega a lista: ", data);
     return data;
   };
@@ -53,7 +53,7 @@ export const lista = async (
       body: JSON.stringify(item),
     });
   
-    const data = await resp.json();
+    const data =  resp.json();
     console.log("llega cupon/create", data);  
     return data;
   };
@@ -80,7 +80,7 @@ export const update = async (
       }
     );
     
-    const respuesta = await resp.json();
+    const respuesta =  resp.json();
     console.log("llega cupon/update", respuesta);
     return respuesta;
   };

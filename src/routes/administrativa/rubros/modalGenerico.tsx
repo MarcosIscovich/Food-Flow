@@ -62,7 +62,7 @@ export const ModalGenerico = component$<parametros>((props) => {
   });
 
   return (
-    
+    <div class=" ">
       <Modal
         show={show}
         onClose$={$(() => {
@@ -70,73 +70,69 @@ export const ModalGenerico = component$<parametros>((props) => {
         })}
         title={title}
       >
-        
-          <Form
-          onSubmit$={$((values, event) => {
-            console.log("values", values, event);
-            handleSubmit(values, event);
-          })}
-
-        >
-          <div class="grid grid-cols-1 gap-x-2 gap-y-8 md:grid-cols-2">
-            {tableFields != undefined &&
-              tableFields
-                .filter((item) => item.fieldName !== "id")
-                .map((field, index) => {
-                  return (
-                    <div key={index}>
-
-                      <Field name={field.fieldName as FormField}>
-                        {(fie, props) => (
-                          <div class="">
-                            {/* <label for={field.fieldName}>
+        <div class="border-b border-gray-900/10 pb-4 pt-0 mt-0">
+          <div class=" ">
+            <div class="  ">
+              <Form
+                onSubmit$={$((values, event) => {
+                  console.log("values", values);
+                  handleSubmit(values, event);
+                })}
+              >
+                <div class="grid grid-cols-1 gap-x-2 gap-y-8 md:grid-cols-2">
+                  {tableFields != undefined &&
+                    tableFields
+                      .filter((item) => item.fieldName !== "id")
+                      .map((field, index) => {
+                        return (
+                          <div key={index}>
+                            <Field name={field.fieldName as FormField}>
+                              {(fie, props) => (
+                                <div>
+                                  {/* <label for={field.fieldName}>
                                     <span class="   !text-xs">
                                       {field.title}
                                     </span>
                                   </label> */}
-
-                            <InputType field={field} fie={fie} propss={props} />
-                            {/* <input
+                                  <InputType field={field} fie={fie} propss={props} />
+                                  {/* <input
                                     class="block p-2 w-full input input-sm max-w-xs rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                                     {...props}
                                     type={field.type}
                                     value={fie.value}
                                   /> */}
-                            {fie.value && fie.error && (
-                              <div class="text-error">{fie.error}</div>
-                            )}
+                                  {fie.value && fie.error && (
+                                    <div>{fie.error}</div>
+                                  )}
+                                </div>
+                              )}
+                            </Field>
                           </div>
-                        )}
-                      </Field>
-                    </div>
-                  );
-                })}
-          </div>
-          <div class="w-full ">
-            <div class="modal-action ">
-              <label
-                for="my-modal-6"
-                class="btn btn-secondary "
-                onClick$={onClose$}
-              >
-                Cerrar
-              </label>
-              <button
-                type="submit"
-                class="btn btn-primary "
-              >
-                Guardar
-              </button>
+                        );
+                      })}
+                </div>
+                <div class="w-full flex justify-end">
+                  <div class="modal-action">
+                    <label
+                      for="my-modal-6"
+                      class="btn btn-secondary flex justify-end"
+                      onClick$={onClose$}
+                    >
+                      Cerrar
+                    </label>
+                    <button
+                      type="submit"
+                      class="btn btn-primary flex justify-end"
+                    >
+                      Guardar
+                    </button>
+                  </div>
+                </div>
+              </Form>
             </div>
           </div>
-        </Form>
-        
-
-
-        
-
-
+        </div>
       </Modal>
-    
+    </div>
   );
 });

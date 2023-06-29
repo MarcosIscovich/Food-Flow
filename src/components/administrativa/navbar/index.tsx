@@ -31,7 +31,7 @@ export const Navbar = component$(() => {
           url: "/administrativa/rubros",
         },
         {
-          id: 10,
+          id: 11,
           titulo: "SubRubros",
           //Roles: soloAdmins,
           url: "/administrativa/subrubros",
@@ -69,13 +69,13 @@ export const Navbar = component$(() => {
       url: "/administrativa/reservas",
     },
     {
-      id: 8,
+      id: 9,
       titulo: "Proveedores",
       //Roles: soloAdmins,
       url: "/administrativa/proveedores",
     },
     {
-      id: 8,
+      id: 10,
       titulo: "Insumos",
       //Roles: soloAdmins,
       url: "/administrativa/insumos",
