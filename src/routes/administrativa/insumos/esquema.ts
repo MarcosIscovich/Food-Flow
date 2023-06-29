@@ -3,13 +3,11 @@ import type { iPageData } from "~/interfaces/iPageData";
 import { z } from "@builder.io/qwik-city";
 
 export interface IInsumo {
-  id: number;
+  id?: string;
   nombre: string;
-  cantidad: number;
+  cantidad: string;
   unidad_medida_id: string;
   provedor_id: string;
-  // createdAt?: Date;
-  // updatedAt?: Date;
 };
 
 export  const infoTitle: iPageData = {
@@ -82,9 +80,9 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
  export type FormField = "id" | "nombre" | "cantidad" | "unidad_medida_id" | "provedor_id";
  
 export let dataInicial= {
-   id: 0,
+   id: "0",
    nombre: "",
-   cantidad: 0,
+   cantidad: "0",
    unidad_medida_id: "0",
    provedor_id: "0",
  };

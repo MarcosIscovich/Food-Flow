@@ -8,13 +8,11 @@ import {
   useTaskQrl,
 } from "@builder.io/qwik";
 import { z, type DocumentHead, routeLoader$ } from "@builder.io/qwik-city";
-
 import { Breadcrumbs } from "~/components/sharedComponents/utils/breadcrumbs";
 import { Confirm } from "~/components/sharedComponents/utils/confirm.component";
 import { Toast } from "~/components/sharedComponents/utils/toast.component";
 import { AuthContext } from "~/context/auth/auth.context";
-
-import { create, update, deleteItem, lista } from "~/services/generico.service";
+import { create, update, deleteItem, lista, selectItems } from "~/services/generico.service";
 import { ModalGenerico } from "./modalGenerico";
 import { IconQuestion } from "~/components/sharedComponents/icons";
 import { Table } from "~/components/sharedComponents/utils/table";
@@ -24,84 +22,38 @@ import { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
 
 interface IBaseCrud extends IInsumo {}
 
-// export const useProvedorLista = routeLoader$<selectOption[]> (async () => {
-//   //llamado al backend pidiento la lista de provedores
-//   const listado = await lista(
-//     authContext.token || "",
-//     1,
-//     8,
-//     inputTxt || "",
-//     order.value,
-//     orderSign.value,
-//     modeloURL,
-//     filter || "");
-
-//   console.log("lista", listado);
-//   const selectOptions: selectOption[] = listado.map((item: any) => {
-//     return { value: item.id, label: item.nombre };
-//   });
-//   return selectOptions;
-
-// });
-
-// export const useSelectOption = routeLoader$<selectOption[]> (() => {
-
-//   const selectOptions: selectOption[] = [
-//     { value: "1", label: "Litros" },
-//     { value: "2", label: "Mililitro" },
-//     { value: "3", label: "Kilogramo" },
-//     { value: "4", label: "Gramo" },
-//     { value: "5", label: "Unidad" },
-//     { value: "6", label: "Decena" },
-//   ];
-
-//   return selectOptions;
-
-// });
-
 export const useFormLoader = routeLoader$<InitialValues<IBaseCrud>>(() => {
-
   return dataInicial;
 });
 
 export default component$(() => {
-
-  
 
   const authContext = useContext(AuthContext);
   const itemData = useStore<IBaseCrud>(
     dataInicial
   );
 
-  useTask$(async({}) => {
-    console.log("useTask$");
-    const proveedor = await lista(
-      authContext.token || "",
-      1,
-      8,
-      "",
-      "",
-      "",
-      "provedor",
-      []);
+  useTask$(async({track}) => {
+    track(() => 
+      authContext.token
+    )
 
+    if(authContext?.token){
+    console.log("useTask$");
+    const proveedor = await selectItems(
+      authContext.token || "",
+      "provedor/select");
     console.log("lista", proveedor);
 
     const selectOptions: selectOption[] = proveedor.data.map((item: any) => {
       return { value: item.id, label: item.nombre };
     });
     tableFieldConfiguration[4].options = selectOptions;
-    console.log("tableFieldConfiguration", tableFieldConfiguration[4]);
 
-    const medida = await lista(
+    const medida = await selectItems(
       authContext.token || "",
-      1,
-      100,
-      "",
-      "",
-      "",
       "unidadmedida",
-      []);
+      );
 
     console.log("lista", medida);
 
@@ -109,6 +61,8 @@ export default component$(() => {
       return { value: item.id, label: item.nombre };
     });
     tableFieldConfiguration[3].options = selectOptionsM;
+  }
+
   });
 
 
@@ -130,32 +84,15 @@ export default component$(() => {
   const fillItemData = $((item: IBaseCrud | null) => {
     console.log("fillItemData", item);
     if (item === null) {
-
-      Object.entries(itemData).forEach(([key, value]) => {
-        //typeof value === "number" ? (itemData[key] = 0) : (itemData[key] = "");
+      Object.entries(itemData).forEach(([key]) => {
         const _key = key as keyof IBaseCrud;
         itemData[_key] =  "";
       });
-
-      console.log("fillItemData Null", itemData);
-      // itemData.id = "";
-      // itemData.cliente = "";
-      // itemData.telefono = "";
-      // itemData.hora = "";
-      // itemData.dia = "";
-      // itemData.cantpersonas = 0;
     } else {
-      Object.entries(itemData).forEach(([key, value]) => {
+      Object.entries(itemData).forEach(([key]) => {
         const _key = key as keyof IBaseCrud;
         itemData[_key] =  item[_key] || "";
       });
-      console.log("fillItemData Not Null", itemData);
-      // itemData.id = item.id;
-      // itemData.cliente = item.cliente;
-      // itemData.telefono = item.telefono;
-      // itemData.hora = item.hora;
-      // itemData.dia = item.dia;
-      // itemData.cantpersonas = item.cantpersonas;
     }
   });
 
@@ -268,36 +205,41 @@ export default component$(() => {
         <div class=" h-2"></div>
         <div class=" card bg-slate-300 rounded-box place-items-end">
           <div class="overflow-x-auto  w-full p-2">
-            <Table
-              fieldConfiguration={tableFieldConfiguration}
-              modeloURL={modeloUrl}
-              refreshData={refreshData.value}
-              inputTxt={inputTxt.value}
-              setItemData={setItemData}
-              confirmDeleteItem={confirmDeleteItem}
-              _order={"id"}
-              _orderSign={""}
-              filter={filter}
-            />
+            {authContext.token && authContext.token && (
+              <Table
+                fieldConfiguration={tableFieldConfiguration}
+                modeloURL={modeloUrl}
+                refreshData={refreshData.value}
+                inputTxt={inputTxt.value}
+                setItemData={setItemData}
+                confirmDeleteItem={confirmDeleteItem}
+                _order={"id"}
+                _orderSign={""}
+                filter={filter}
+              />
+            )}
           </div>
         </div>
       </div>
-
-      <ModalGenerico
-        show={modalOpen.value}
-        itemData={itemData}
-        tableFields={tableFieldConfiguration}
-        onSave$={$(async (data: any) => {
-          await setItemData(data);
-          itemSave();
-        })}
-        onClose$={$(() => {
-          modalOpen.value = false;
-        })}
-        title={
-          itemData?.id && itemData?.id ? `Editar ${infoTitle.titulo}` : `Nuevo ${infoTitle.titulo}`
-        }
-      />
+      {authContext.token && authContext.token && (
+        <ModalGenerico
+          show={modalOpen.value}
+          itemData={itemData}
+          tableFields={tableFieldConfiguration}
+          onSave$={$(async (data: any) => {
+            await setItemData(data);
+            itemSave();
+          })}
+          onClose$={$(() => {
+            modalOpen.value = false;
+          })}
+          title={
+            itemData?.id && itemData?.id
+              ? `Editar ${infoTitle.titulo}`
+              : `Nuevo ${infoTitle.titulo}`
+          }
+        />
+      )}
 
       <Confirm
         msg={infoConfirm.msg}

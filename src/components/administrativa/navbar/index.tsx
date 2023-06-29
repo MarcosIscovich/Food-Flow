@@ -1,5 +1,6 @@
-import { Slot, component$ } from '@builder.io/qwik';
+import { Slot, component$, useContext } from '@builder.io/qwik';
 import { Link } from '@builder.io/qwik-city';
+import { AuthContext } from '~/context/auth/auth.context';
 //import styles from './administrativa.module.css';
 
 
@@ -8,7 +9,8 @@ export const Navbar = component$(() => {
   /* const rolesTodos = ["ADM", "SUP", "OPE"];
   const soloSUP = ["SUP"];
   const soloAdmins = ["ADM", "SUP"]; */
-
+  const authContext = useContext(AuthContext);
+  
   const menuItems = [
     {
       id: 1,
@@ -95,7 +97,7 @@ export const Navbar = component$(() => {
             <div class="navbar-center ">
               <span class="font-bold text-white">FOODFLOW</span>
             </div>
-            <div class="navbar-end">
+            <div class="navbar-end" style="z-index:10000">
               <div class="dropdown dropdown-end">
                 <label tabIndex={0} class="btn btn-ghost btn-circle avatar ">
                   <div class="w-10 rounded-full ">
@@ -103,7 +105,9 @@ export const Navbar = component$(() => {
                   </div>
                 </label>
                 <ul tabIndex={0} class="mt-3 p-2 shadow menu menu-sm dropdown-content rounded-box w-52 text-white hover:bg-indigo-500 bg-colorblue">
-                  <li><a>Logout</a></li>
+                  <li><button onClick$={() => {authContext.token = "";
+                                              localStorage.removeItem("token");
+                                                 window.location.href="/" }}>Logout</button></li>
                 </ul>
               </div>
             </div>
@@ -116,36 +120,6 @@ export const Navbar = component$(() => {
         </div>
         <div class="drawer-side ">
           <label for="my-drawer-3" class="drawer-overlay"></label>
-          {/* <ul class="menu p-4 w-60 h-full  text-base-content mt-16 bg-colorblue">
-            <li>
-              <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/personal">Personal</Link>
-            </li>
-            <li>
-              <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/roles">Roles</Link>
-            </li>
-            <li>
-              <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/productos">Productos</Link>
-            </li>
-
-            <li>
-              <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/mapas">Mapas</Link>
-            </li>
-            <li>
-              <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/clientes">Clientes</Link>
-            </li>
-            <li>
-              <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/proveedores">Proveedores</Link>
-            </li>
-            <li>
-              <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/informes">Informes</Link>
-            </li>
-            <li>
-              <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/reservas">Reservas</Link>
-            </li>
-            <li>
-              <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/configuracion">Configuracion</Link>
-            </li>
-          </ul> */}
           <ul class="menu p-4 w-56  mt-16 bg-colorblue ">
             {
               menuItems.map((item, idx) => {
