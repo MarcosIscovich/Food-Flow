@@ -38,8 +38,8 @@ export const InputType = component$<InputType>((props) => {
           {field.type === "select" && (
             <select
               class={`${field.key
-                ? "hidden"
-                : "input input-bordered input-primary w-auto  "
+                  ? "hidden"
+                  : "input input-bordered input-primary w-auto  "
                 }`}
               {...props}
               value={fie.value}
@@ -73,8 +73,8 @@ export const InputType = component$<InputType>((props) => {
             field.type === "email") && (
               <input
                 class={`${field.key
-                  ? "hidden"
-                  : "input input-bordered input-primary w-auto"
+                    ? "hidden"
+                    : "input input-bordered input-primary w-auto"
                   }`}
                 {...props}
                 type={field.type}
