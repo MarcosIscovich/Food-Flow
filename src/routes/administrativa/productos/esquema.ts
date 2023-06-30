@@ -64,7 +64,7 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     hiddenInMobile: true,
     visibleInTable: true,
     defaultValue: "",
-    type: "text",
+    type: "image",
   },
   {
     title: "SubRubro",
