@@ -159,34 +159,27 @@ export const Table = component$<parametros>((props) => {
                             fieldItem.options.map((option: any) => {
                               if (option.value == item[fieldItem.fieldName]) {
                                 return (
-                                  <th
-                                    key={index}
-                                    class={`${fieldItem.hiddenInMobile ? "hidden md:table-cell" : ""}  `}
-                                  >
+                                  <th key={index} class={`${fieldItem.hiddenInMobile ? "hidden md:table-cell" : ""}  `} >
                                     {option.label}
                                   </th>
                                 );
                               }
                             })
-                            ) : fieldItem.type === "checkbox" ? (
+                          ) : fieldItem.type === "checkbox" ? (
                             <th key={index} class={`${fieldItem.hiddenInMobile ? "hidden md:table-cell " : ""}  `}>
                               <div class="flex justify-center">
-
                                 {item[fieldItem.fieldName] == 1 ? <IconCheck size="30px" /> : <IconClose size="30px" />}
                               </div>
                             </th>
-                          ): fieldItem.fieldName === "imagen" ? (
-                              <th key={index} class={`${fieldItem.hiddenInMobile ? "hidden md:table-cell " : ""}  `}>
-                                <img src={item[fieldItem.fieldName]} class="p-3"
-                                  width="100"
-                                  height="100"
-                                  alt="Imagen" />
-                              </th>
-                            ): (
-                                <th key={index} class={`${fieldItem.hiddenInMobile ? "hidden md:table-cell" : ""}  `}>
-                                  {item[fieldItem.fieldName]}
-                                </th>
-                              )}
+                          ) : fieldItem.fieldName === "imagen" ? (
+                            <th key={index} class={`${fieldItem.hiddenInMobile ? "hidden md:table-cell " : ""}  `}>
+                              <img src={item[fieldItem.fieldName]} class="p-3" width="100" height="100" alt="Imagen" />
+                            </th>
+                          ) : (
+                            <th key={index} class={`${fieldItem.hiddenInMobile ? "hidden md:table-cell" : ""}  `}>
+                              {item[fieldItem.fieldName]}
+                            </th>
+                          )}
                         </>
                       );
                     })}
