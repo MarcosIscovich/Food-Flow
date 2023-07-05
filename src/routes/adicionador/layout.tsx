@@ -1,9 +1,10 @@
 import { component$, Slot } from '@builder.io/qwik';
+import { Navbar } from '../../components/administrativa/navbar';
 
 export default component$(() => {
   return (
-  <div class="flex flex-col h-screen items-center justify-center">
+  <Navbar>
     <Slot />
-  </div>
+  </Navbar>
   )
 });

@@ -1,6 +1,6 @@
 import { component$ , useSignal} from '@builder.io/qwik';
-import { Link, type DocumentHead } from '@builder.io/qwik-city';
-import { IcoAdicionador, IcoAdmin, IcoCajero } from '../../components/router-head/iconos/iconos';
+import {type DocumentHead } from '@builder.io/qwik-city';
+import { ModalClave } from '~/components/modalClave';
 
 export default component$(() => {
   const count = useSignal(0);
@@ -8,6 +8,7 @@ export default component$(() => {
   //para probar commit
   return (
     <>
+      <ModalClave />
       <h1 class="text-7xl">Adicionador 👋</h1>
     </>
   );
