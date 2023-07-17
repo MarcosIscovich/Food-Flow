@@ -1,14 +1,13 @@
-import { component$ , useSignal} from '@builder.io/qwik';
+import { component$ } from '@builder.io/qwik';
 import {type DocumentHead } from '@builder.io/qwik-city';
-import { ModalClave } from '~/components/modalClave';
+//import { ModalClave } from '~/components/modalClave';
 
 export default component$(() => {
-  const count = useSignal(0);
-  console.log("contador" , count.value);
+ 
   //para probar commit
   return (
     <>
-      <ModalClave />
+      {/* <ModalClave /> */}
       <h1 class="text-7xl">Adicionador 👋</h1>
     </>
   );

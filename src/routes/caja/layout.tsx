@@ -1,9 +1,13 @@
 import { component$, Slot } from '@builder.io/qwik';
-import { Navbar } from '../../components/administrativa/navbar';
+//import { ModalClave } from '~/components/modalClave';
+
 
 
 export default component$(() => {
-  return <Navbar >
-  <Slot />;
-  </Navbar >;
+  return  <>
+    {/* <ModalClave /> */}
+  <Slot />
+  </>
+
+  
 });

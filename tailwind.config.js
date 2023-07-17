@@ -13,6 +13,9 @@ module.exports = {
         info: "#facc15", 
         colorgray: "#d1d5db",
       },
+      boxShadow: {
+        '3d': '0 1px 2px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(0, 0, 0, 0.1)',
+      },
     },
   },
   plugins: [
