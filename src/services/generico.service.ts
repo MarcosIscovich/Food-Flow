@@ -10,11 +10,9 @@ export const lista = async (
   url: string = "",
   filter: string[]
 ): Promise<any> => {
-  console.log("llega a lista filter: ", filter);
 
   const filtro = filter.length > 0 ? filter.map((item) => `&filter[${item}]=${searchText}`).join(",") : "";
   const fil = filtro == "" ? "" : filtro;
-  console.log("llega a lista filtro: ", filtro);
   const encoded = encodeURI(`${configuration.api}${url}?page=${pageNumber}${fil}&limit=${pageSize}&sort=${orderSign == "-" ? "-" : ""}${order}`)//?page=${pageNumber}&per_page=${pageSize}&sort=${order}`) //&searchText=${searchText});${orderSign == "-" ? "-": "" }
   console.log("Encoded", encoded);
   console.log("order", order)
@@ -30,7 +28,6 @@ export const lista = async (
   );
 
   const data = resp.json();
-  console.log("llega a lista: ", data);
   return data;
 };
 
@@ -138,7 +135,7 @@ export const loginOperario = async (
   url: string
 ): Promise<any> => {
   console.log("llega a loginOperario: ", clave, `${configuration.api}${url}/`);
-  
+
 
   const resp = await fetch(
     `${configuration.api}${url}/`,
@@ -148,7 +145,7 @@ export const loginOperario = async (
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({clave: clave}),
+      body: JSON.stringify({ clave: clave }),
     }
   );
 

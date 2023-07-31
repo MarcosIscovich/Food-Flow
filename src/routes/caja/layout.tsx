@@ -6,7 +6,10 @@ import { component$, Slot } from '@builder.io/qwik';
 export default component$(() => {
   return  <>
     {/* <ModalClave /> */}
-  <Slot />
+    <div style="height: 100vh; width: 100vw; overflow: hidden;">
+        <Slot />
+      </div>
+  
   </>
 
   

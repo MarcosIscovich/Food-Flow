@@ -6,7 +6,7 @@ module.exports = {
     extend: {
       colors: {
         colorblue: "#060879",
-        colororange: "#ea580c",
+        colororange: "#F88821",
         accept: "#65a30d",
         error: "#dc2626",
         warning: "#bc7700",
