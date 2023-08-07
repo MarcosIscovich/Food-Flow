@@ -107,18 +107,18 @@ export const TableMesas = component$(() => {
                         </tbody>
                     </table>
                 </div>
-                <div class="stats shadow">
-                    <div class="stat place-items-center">
-                        <div class="stat-title">Camarero</div>
-                        <div class="stat-value">Camarero 1</div>                        
+                <div class="stats shadow p-6">
+                    <div class="stat place-items-center bg-colorbluesoft rounded ">
+                        <div class="stat-title text-white">Camarero</div>
+                        <div class="stat-value text-white">Camarero 1</div>                        
                     </div>
-                    <div class="stat place-items-center">
+                    <div class="stat place-items-center rounded">
                         <div class="stat-title">Apertura</div>
                         <div class="stat-value text-secondary">21:00hs</div>                        
                     </div>
-                    <div class="stat place-items-center">
-                        <div class="stat-title">Total</div>
-                        <div class="stat-value">$1,200</div>
+                    <div class="stat place-items-center bg-colorbluesoft rounded">
+                        <div class="stat-title text-white">Total</div>
+                        <div class="stat-value text-white">$1,200</div>
                     </div>
 
                 </div>
