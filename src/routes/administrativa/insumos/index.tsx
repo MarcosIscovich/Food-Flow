@@ -133,7 +133,7 @@ export default component$(() => {
     refreshData.value = !refreshData.value;
 
     console.log(resp);
-    if (resp && (resp?.data.id || tipoAccion == "editado y guardado")) {
+    if (resp.data.id && (resp?.data.id || tipoAccion == "editado y guardado")) {
       // show toast
       infoToast.msg = `Se ha ${tipoAccion} el elemento correctamente`;
       infoToast.type = "success";

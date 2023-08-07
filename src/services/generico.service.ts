@@ -1,6 +1,7 @@
 import { url } from "inspector";
 import { configuration } from "~/config/env.config";
 
+
 export const lista = async (
     token: string,
     pageNumber: number = 0,
@@ -15,10 +16,10 @@ export const lista = async (
 
     const filtro = filter.length > 0 ? filter.map((item) => `&filter[${item}]=${searchText}`).join(",") : "";
     const fil = filtro == "" ? "" : filtro;
-    console.log("llega a lista filtro: ", filtro);
+   // console.log("llega a lista filtro: ", filtro);
     const encoded = encodeURI(`${configuration.api}${url}?page=${pageNumber}${fil}&limit=${pageSize}&sort=${orderSign == "-" ? "-": "" }${order}`)//?page=${pageNumber}&per_page=${pageSize}&sort=${order}`) //&searchText=${searchText});${orderSign == "-" ? "-": "" }
     console.log("Encoded",encoded);
-    console.log("order", order)
+    //console.log("order", order)
     const resp = await fetch(
     encoded,
       {
@@ -30,7 +31,7 @@ export const lista = async (
       }
     );
   
-    const data =  resp.json();
+    const data = await resp.json();
       console.log("llega a lista: ", data);
     return data;
   };
@@ -53,7 +54,7 @@ export const lista = async (
       body: JSON.stringify(item),
     });
   
-    const data =  resp.json();
+    const data = await resp.json();
     console.log("llega cupon/create", data);  
     return data;
   };
@@ -80,7 +81,7 @@ export const update = async (
       }
     );
     
-    const respuesta =  resp.json();
+    const respuesta = await resp.json();
     console.log("llega cupon/update", respuesta);
     return respuesta;
   };
@@ -133,3 +134,27 @@ export const update = async (
     return data;
   }
   
+  export const selectwis = async (
+    token: string,
+    //url: string
+  ): Promise<any> => {
+
+    // const url = "https://www.cloud.wispro.co/api/v1/invoicing/invoices?client_custom_id_eq=2054"
+
+    // const resp = await fetch(
+    //   `${url}`,
+    //   {
+    //     method: "GET",
+    //     headers: {
+    //       "accept": "application/json",
+    //       Authorization: `49a1a1f0-85ef-4c72-908f-c5bd87127a6e`,
+    //     },
+    //   }
+    // );
+  
+    // const data = await resp.json();
+    // console.log("llega WIS", data);
+
+
+    //return data;
+  }
