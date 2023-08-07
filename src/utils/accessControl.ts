@@ -12,7 +12,7 @@ export enum Acciones {
 const access = [
     {
         rol: rolesComanda,
-        action: Acciones.ACCESO_COMANDA,        
+        action: "ACCESO-COMANDA",        
     },
     {
         rol: 'Administrador', 

@@ -6,12 +6,17 @@ module.exports = {
     extend: {
       colors: {
         colorblue: "#060879",
-        colororange: "#ea580c",
+        colorbluesoft: "#383994",
+        colororange: "#F88821",
+        colororangesoft: "#faaf6a",
         accept: "#65a30d",
         error: "#dc2626",
         warning: "#bc7700",
         info: "#facc15", 
         colorgray: "#d1d5db",
+      },
+      boxShadow: {
+        '3d': '0 1px 2px rgba(0, 0, 0, 0.25), 0 0 0 3px rgba(0, 0, 0, 0.1)',
       },
     },
   },

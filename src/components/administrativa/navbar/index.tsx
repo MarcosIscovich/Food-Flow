@@ -101,7 +101,7 @@ export const Navbar = component$(() => {
               <div class="dropdown dropdown-end">
                 <label tabIndex={0} class="btn btn-ghost btn-circle avatar ">
                   <div class="w-10 rounded-full ">
-                    <img src="" alt="logoFF" />
+                    <img src="" width={200} height={200} alt="logoFF" />
                   </div>
                 </label>
                 <ul tabIndex={0} class="mt-3 p-2 shadow menu menu-sm dropdown-content rounded-box w-52 text-white hover:bg-indigo-500 bg-colorblue">

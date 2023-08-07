@@ -1,9 +1,7 @@
 import { $, component$, useContext, useSignal,} from '@builder.io/qwik';
 import { AuthContext } from '~/context/auth/auth.context';
 import { loginOperario } from '~/services/generico.service';
-import accessControl, { Acciones } from '~/utils/accessControl';
-
-
+import accessControl from '~/utils/accessControl';
 
 export const ModalClave = component$(() => {
     const clave = useSignal<string>("");
@@ -14,7 +12,9 @@ export const ModalClave = component$(() => {
             console.log("llega al action", clave.value);
 
             const resp = await loginOperario( authContext.token || "" , clave.value , "loginOperario");
-            if(!accessControl(resp.role.nombre , Acciones.ACCESO_COMANDA)){
+            console.log("respuesta de login", resp)
+            
+            if(!accessControl(resp.role.nombre , "ACCESO-COMANDA")){
                 alert("No tiene permisos para acceder a esta seccion");
                 return;
             }
@@ -32,7 +32,7 @@ export const ModalClave = component$(() => {
 
     return (
         <div>
-            <dialog id="my_modal_1" class={authContext.user?.operario.id ? 'modal' : 'modal modal-open'}>
+            <dialog id="my_modal_1" class={authContext.user?.operario?.id ? 'modal' : 'modal modal-open'}>
             <div class="hero min-h-screen bg-base-200">
         <div class="hero-content flex-col ">
           <div class="text-center lg:text-left">
