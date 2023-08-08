@@ -1,5 +1,6 @@
 import { configuration } from "~/config/env.config";
 
+
 export const lista = async (
   token: string,
   pageNumber: number = 0,
@@ -11,25 +12,29 @@ export const lista = async (
   filter: string[]
 ): Promise<any> => {
 
-  const filtro = filter.length > 0 ? filter.map((item) => `&filter[${item}]=${searchText}`).join(",") : "";
-  const fil = filtro == "" ? "" : filtro;
-  const encoded = encodeURI(`${configuration.api}${url}?page=${pageNumber}${fil}&limit=${pageSize}&sort=${orderSign == "-" ? "-" : ""}${order}`)//?page=${pageNumber}&per_page=${pageSize}&sort=${order}`) //&searchText=${searchText});${orderSign == "-" ? "-": "" }
-  console.log("Encoded", encoded);
-  console.log("order", order)
-  const resp = await fetch(
-    encoded,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
 
-  const data = resp.json();
-  return data;
-};
+    const filtro = filter.length > 0 ? filter.map((item) => `&filter[${item}]=${searchText}`).join(",") : "";
+    const fil = filtro == "" ? "" : filtro;
+   // console.log("llega a lista filtro: ", filtro);
+    const encoded = encodeURI(`${configuration.api}${url}?page=${pageNumber}${fil}&limit=${pageSize}&sort=${orderSign == "-" ? "-": "" }${order}`)//?page=${pageNumber}&per_page=${pageSize}&sort=${order}`) //&searchText=${searchText});${orderSign == "-" ? "-": "" }
+    console.log("Encoded",encoded);
+    //console.log("order", order)
+    const resp = await fetch(
+    encoded,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  
+    const data = await resp.json();
+      console.log("llega a lista: ", data);
+    return data;
+  };
+
 
 export const create = async (
   token: string,
@@ -53,8 +58,6 @@ export const create = async (
   console.log("llega cupon/create", data);
   return data;
 };
-
-
 
 export const update = async (
   token: string,
@@ -99,18 +102,19 @@ export const deleteItem = async (
       body: JSON.stringify(item),
     }
   );
+  
+    const data = await resp.json();
+    console.log("llega cupon/create", data);  
+    return data;
+  };
 
-  const data = resp;
-  console.log("llega cupon/delete", data);
-
-  return data;
-};
 
 
 export const selectItems = async (
   token: string,
   url: string
 ): Promise<any> => {
+
 
   const resp = await fetch(
     `${configuration.api}${url}`,
@@ -122,7 +126,7 @@ export const selectItems = async (
       },
     }
   );
-
+  
   const data = await resp.json();
   console.log("llega selectItems", data);
 
