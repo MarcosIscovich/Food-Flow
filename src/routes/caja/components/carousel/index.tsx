@@ -36,16 +36,16 @@ export const CarouselItems = component$(() => {
     }
   });
 
-  const showItems = $((item: string , action: string) => {
-    console.log("showItems", item);
+  const showItems = $((id: string, action: string) => {
+    console.log("showItems", id);
     if (action === "showSubrubros") {
       showRubros.value = false;
-      selectedRubro.value = item;
+      selectedRubro.value = id;
       showSubrubros.value = true;
     }
     if (action === "showProductos") {
       showSubrubros.value = false;
-      selectedSubrubro.value = item;
+      selectedSubrubro.value = id;
       showProductos.value = true;
     }
   });
@@ -60,16 +60,15 @@ export const CarouselItems = component$(() => {
     <>
       <div class="grid grid-cols-2 bg-gray-200 ml-7 mr-7 rounded h-6">
         <div class="flex justify-start">
-          <button onClick$={() => clearShow()}>volver</button>
+          <button onClick$={() => clearShow()}>Volver</button>
         </div>
         <div>
 
           <span>
             {
-              showRubros.value ? "Rubros" : 
-             ( showSubrubros.value || !showRubros.value) ? "Subrubros" : 
-             ( showProductos.value || !showSubrubros.value) ? "Productos" : ""             
-
+              showRubros.value && "Rubros" || 
+              showSubrubros.value && "Subrubros" || 
+              showProductos.value && "Productos"
             }
           </span>
         </div>
@@ -80,7 +79,7 @@ export const CarouselItems = component$(() => {
           rubrosData.value.map((rubro, idx) => (
             <div class="grid h-full" key={idx}>
               <button class="h-24 w-28 bg-colorblue hover:bg-blue-400 text-white font-bold border-colorblue hover:border-blue-500 rounded flex"
-                onClick$={() => rubro.id !== undefined && showItems(rubro.id , "showSubrubros")}>
+                onClick$={() => rubro.id !== undefined && showItems(rubro.id, "showSubrubros")}>
                 {rubro.nombre}
               </button>
             </div>
@@ -94,7 +93,7 @@ export const CarouselItems = component$(() => {
             .map((subrubro, idx) => (
               <button class="h-24 w-28 bg-colorblue hover:bg-blue-400 text-white font-bold border-colorblue hover:border-blue-500 rounded flex"
                 key={idx}
-                onClick$={() => subrubro.id !== undefined && showItems(subrubro.id , "showProductos")}>
+                onClick$={() => subrubro.id !== undefined && showItems(subrubro.id, "showProductos")}>
                 {subrubro.nombre}
               </button>
             ))}
