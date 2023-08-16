@@ -108,7 +108,7 @@ export const TableMesas = component$(() => {
                     </table>
                 </div>
                 <div class="stats shadow p-6">
-                    <div class="stat place-items-center bg-primary-400 rounded ">
+                    <div class="stat place-items-center bg-colorbluesoft rounded ">
                         <div class="stat-title text-white">Camarero</div>
                         <div class="stat-value text-white">Camarero 1</div>                        
                     </div>
@@ -116,7 +116,7 @@ export const TableMesas = component$(() => {
                         <div class="stat-title">Apertura</div>
                         <div class="stat-value text-secondary">21:00hs</div>                        
                     </div>
-                    <div class="stat place-items-center bg-primary-400 rounded">
+                    <div class="stat place-items-center bg-colorbluesoft rounded">
                         <div class="stat-title text-white">Total</div>
                         <div class="stat-value text-white">$1,200</div>
                     </div>

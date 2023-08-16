@@ -6,7 +6,7 @@ export interface User {
     name: string;
     rol: string;
     imagen: string;
-    operario: {
+    operario : {
         id: number;
         clave: string;
         nombre: string;

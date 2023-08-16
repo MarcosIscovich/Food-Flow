@@ -58,7 +58,7 @@ export const CarouselItems = component$(() => {
 
   return (
     <>
-      <div class="grid grid-cols-2 bg-gray-200 ml-7 mr-7 rounded h-6">
+      <div class="grid grid-cols-2 bg-neutral-200 ml-7 mr-7 rounded h-6">
         <div class="flex justify-start">
           <button onClick$={() => clearShow()}>Volver</button>
         </div>
@@ -78,7 +78,7 @@ export const CarouselItems = component$(() => {
         <div class="grid grid-cols-10 justify-center mt-3 ml-7 mr-7">
           {rubrosData.value.map((rubro, idx) => (
               <div class="grid h-full" key={idx}>
-                <button class="h-24 w-28 bg-colorblue hover:bg-blue-400 text-white font-bold border-colorblue hover:border-blue-500 rounded flex"
+                <button class="h-24 w-28 bg-primary-500 hover:bg-blue-400 text-white font-bold border-primary-500 hover:border-blue-500 rounded flex"
                   onClick$={() => rubro.id !== undefined && showItems(rubro.id, "showSubrubros")}>
                   {rubro.nombre}
                 </button>
@@ -92,7 +92,7 @@ export const CarouselItems = component$(() => {
           {subrubrosData.value
             .filter(subrubro => subrubro.rubro_id === selectedRubro.value)
             .map((subrubro, idx) => (
-              <button class="h-24 w-28 bg-colorblue hover:bg-blue-400 text-white font-bold border-colorblue hover:border-blue-500 rounded flex"
+              <button class="h-24 w-28 bg-primary-500 hover:bg-blue-400 text-white font-bold border-primary-500 hover:border-blue-500 rounded flex"
                 key={idx}
                 onClick$={() => subrubro.id !== undefined && showItems(subrubro.id, "showProductos")}>
                 {subrubro.nombre}
@@ -106,7 +106,7 @@ export const CarouselItems = component$(() => {
           {productosData.value
             .filter(producto => producto.sub_rubro_id === selectedSubrubro.value)
             .map((producto, idx) => (
-              <div class="h-24 w-28 bg-colorblue hover:bg-blue-400 text-white font-bold border-colorblue hover:border-blue-500 rounded flex" key={idx}>
+              <div class="h-24 w-28 bg-primary-500 hover:bg-blue-400 text-white font-bold border-primary-500 hover:border-blue-500 rounded flex" key={idx}>
                 <span>{producto.nombre}</span>
               </div>
             ))}
