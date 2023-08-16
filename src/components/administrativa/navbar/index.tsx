@@ -88,7 +88,7 @@ export const Navbar = component$(() => {
         <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
         <div class="drawer-content flex flex-col ">
 
-          <div class="w-full navbar bg-colorblue ">
+          <div class="w-full navbar bg-primary-500 ">
             <div class="flex-none navbar-start ">
               <label for="my-drawer-3" class="btn btn-square btn-ghost text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
@@ -104,7 +104,7 @@ export const Navbar = component$(() => {
                     <img src="" width={200} height={200} alt="logoFF" />
                   </div>
                 </label>
-                <ul tabIndex={0} class="mt-3 p-2 shadow menu menu-sm dropdown-content rounded-box w-52 text-white hover:bg-indigo-500 bg-colorblue">
+                <ul tabIndex={0} class="mt-3 p-2 shadow menu menu-sm dropdown-content rounded-box w-52 text-white hover:bg-indigo-500 bg-primary-500">
                   <li><button onClick$={() => {authContext.token = "";
                                               localStorage.removeItem("token");
                                                  window.location.href="/" }}>Logout</button></li>
@@ -118,9 +118,9 @@ export const Navbar = component$(() => {
             <Slot />
           </div>
         </div>
-        <div class="drawer-side ">
+        <div class="drawer-side " style="z-index : 1000">
           <label for="my-drawer-3" class="drawer-overlay"></label>
-          <ul class="menu p-4 w-56  mt-16 bg-colorblue ">
+          <ul class="menu p-4 w-56  mt-16 bg-primary-500 ">
             {
               menuItems.map((item, idx) => {
                 return (
@@ -155,7 +155,7 @@ export const Navbar = component$(() => {
         </div>
       </div>
       {/* <div class={styles.menu}>
-        <div class="bg-colorblue pb-10">
+        <div class="bg-primary-500 pb-10">
           <label tabIndex={0} class="btn btn-ghost btn-circle avatar ">
             <div class="w-10 rounded-full ">
               <img src="" alt="logoFF" />
@@ -176,10 +176,10 @@ export const Navbar = component$(() => {
             </ul>
           </div>
         </div>
-        <div class="bg-colorblue text-white pt-5 pb-5 flex justify-center">
+        <div class="bg-primary-500 text-white pt-5 pb-5 flex justify-center">
           <span>FOODFLOW</span>
         </div>
-        <ul class="menu h-full bg-colorblue">
+        <ul class="menu h-full bg-primary-500">
           <li>
             <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/personal">Personal</Link>
           </li>

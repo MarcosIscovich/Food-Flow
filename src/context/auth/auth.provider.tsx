@@ -29,9 +29,16 @@ export const AuthProvider = component$(() => {
                 console.log("newToken**********", newToken);   
                 authStore.user = {id: newToken.user.id,
                     email: newToken.user.email,
-                    name: newToken.user.name,
+                    name: newToken.user.nombre,
                     rol: newToken.user.role.nombre,
-                    imagen: newToken.user.imagen
+                    imagen: newToken.user.imagen,
+                    operario : {
+                        id: newToken.user.id,
+                        clave: newToken.user.clave,
+                        nombre: newToken.user.nombre,
+                        rol: newToken.user.role.nombre,
+                    }
+                    
                 }
                 console.log("authStore.user**********", authStore.user);
             }

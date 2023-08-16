@@ -3,7 +3,7 @@ import { type DocumentHead } from '@builder.io/qwik-city';
 import { TableMesas } from './components/tableMesas';
 import { ViewMesas } from './components/viewMesas';
 import { CarouselItems } from './components/carousel';
-//import { ModalClave } from '~/components/modalClave';
+import { ModalClave } from '~/components/modalClave';
 
 
 const funcionalidades = [
@@ -31,7 +31,8 @@ export default component$(() => {
 
   return (
     <>
-      <div class="grid grid-rows-2 bg-colororange">
+      <ModalClave />
+      <div class="grid grid-rows-2 bg-secondary-400">
         <div class="grid grid-cols-2">
           <div class="p-7" style="display: flex;">
             {
@@ -51,7 +52,7 @@ export default component$(() => {
                   {funcionalidades.map((funcionalidad, idx) => (
                     <div class="grid h-full" key={idx}>
                       <div class="w-full h-full">
-                        <button class="w-full h-24 bg-colorblue hover:bg-blue-400 text-white font-bold border-colorblue hover:border-blue-500 rounded">
+                        <button class="w-full h-24 bg-primary-500 hover:bg-blue-400 text-white font-bold border-primary-500 hover:border-blue-500 rounded">
                           {funcionalidad.nombre}
                         </button>
                       </div>
@@ -66,7 +67,8 @@ export default component$(() => {
         <div >
           <CarouselItems />
         </div>
-      </div>
+     
+    </div>
     </>
   );
 });

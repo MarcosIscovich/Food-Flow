@@ -1,10 +1,12 @@
 import { component$, Slot } from '@builder.io/qwik';
-import { Navbar } from '../../components/administrativa/navbar';
+
 
 export default component$(() => {
   return (
-  <Navbar>
+   /*  style="height: 100vh; width: 100vw; overflow: hidden;" */
+    <div >
     <Slot />
-  </Navbar>
+  </div>
+  
   )
 });

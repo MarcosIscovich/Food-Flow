@@ -1,14 +1,21 @@
 import { component$ } from '@builder.io/qwik';
 import {type DocumentHead } from '@builder.io/qwik-city';
-//import { ModalClave } from '~/components/modalClave';
+import { ViewMesasAdicionador } from './components/viewMesasAdicionador';
+import { UserLogged } from './components/userLogged';
+
+
 
 export default component$(() => {
  
   //para probar commit
   return (
-    <>
-      {/* <ModalClave /> */}
-      <h1 class="text-7xl">Adicionador 👋</h1>
+    <>     
+    <div class="p-7 bg-secondary-400" >      
+      <div class="flex justify-end mb-5">
+      <UserLogged />
+      </div>
+      <ViewMesasAdicionador />
+      </div> 
     </>
   );
 });

@@ -1,5 +1,5 @@
 import { component$, Slot } from '@builder.io/qwik';
-//import { ModalClave } from '~/components/modalClave';
+// import { ModalClave } from '~/components/modalClave';
 
 
 
