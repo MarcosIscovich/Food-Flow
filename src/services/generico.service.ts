@@ -43,6 +43,8 @@ export const create = async (
 
 ): Promise<any> => {
   console.log("llega a crear: ", item);
+  console.log("llega a crear: ", token);
+  
   const encoded = encodeURI(`${configuration.api}${url}/`)
   console.log(encoded);
   const resp = await fetch(encoded, {
