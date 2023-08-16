@@ -3,7 +3,7 @@ import { type DocumentHead } from '@builder.io/qwik-city';
 import { TableMesas } from './components/tableMesas';
 import { ViewMesas } from './components/viewMesas';
 import { CarouselItems } from './components/carousel';
-//import { ModalClave } from '~/components/modalClave';
+import { ModalClave } from '~/components/modalClave';
 
 
 const funcionalidades = [
@@ -31,6 +31,7 @@ export default component$(() => {
 
   return (
     <>
+      <ModalClave />
       <div class="grid grid-rows-2 bg-secondary-400">
         <div class="grid grid-cols-2">
           <div class="p-7" style="display: flex;">
