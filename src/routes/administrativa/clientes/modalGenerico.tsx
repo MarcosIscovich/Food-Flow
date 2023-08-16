@@ -90,7 +90,7 @@ export const ModalGenerico = component$<parametros>((props) => {
                             <Field name={field.fieldName as any}>
                               {(fie, props) => (
                                 <div>
-                                  <InputType field={field} fie={fie} propss={props} />
+                                  <InputType field={field} fie={fie}  />
                                   {fie.value && fie.error && (
                                     <div>{fie.error}</div>
                                   )}
