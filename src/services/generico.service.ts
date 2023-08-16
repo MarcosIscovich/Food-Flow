@@ -42,8 +42,8 @@ export const create = async (
   url: string
 
 ): Promise<any> => {
-  console.log("llega a crear: ", item);
-  console.log("llega a crear: ", token);
+  console.log("llega a crear payload ", item);
+  console.log("llega a crear token ", token);
   
   const encoded = encodeURI(`${configuration.api}${url}/`)
   console.log(encoded);
@@ -51,13 +51,13 @@ export const create = async (
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(item),
   });
 
   const data = resp.json();
-  console.log("llega cupon/create", data);
+  // console.log("llega cupon/create", data);
   return data;
 };
 
@@ -108,9 +108,7 @@ export const deleteItem = async (
     const data = await resp.json();
     console.log("llega cupon/create", data);  
     return data;
-  };
-
-
+};
 
 export const selectItems = async (
   token: string,
