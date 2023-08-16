@@ -1,4 +1,4 @@
-import { component$, $, type PropFunction, useTask$ } from "@builder.io/qwik";
+import { component$, $, type PropFunction, useTask$, useSignal } from "@builder.io/qwik";
 import type { SubmitHandler } from "@modular-forms/qwik";
 import { setValue, useForm, zodForm$, clearError } from "@modular-forms/qwik";
 import type { z } from "@builder.io/qwik-city";
@@ -35,7 +35,10 @@ export const ModalGenerico = component$<parametros>((props) => {
   const [genericForm, { Form, Field }] = useForm<IBaseSchema>({
     loader: useFormLoader(),
     validate: zodForm$(validationSchema),
+    //validateOn: 'change'
   });
+
+  const changePass = useSignal(false);
 
   useTask$(({ track }) => {
     track(() => [_itemData, show]);
@@ -44,13 +47,25 @@ export const ModalGenerico = component$<parametros>((props) => {
       Object.entries(_itemData).forEach(([key, value]) => {
         if (_itemData.id > 0) {
           setValue(genericForm, key as FormField, value as any);
+          changePass.value =false;
         } else {
           setValue(genericForm, key as FormField, "");
+          setValue(genericForm, "changePassword", "1");
+          changePass.value =true;
         }
         clearError(genericForm, key as FormField);
       });
     }
   });
+
+  useTask$(({ track }) => {
+    track(() => [_itemData.changePassword, changePass.value]);
+    console.log("changePass", changePass.value);
+    if (_itemData.changePassword) {
+      changePass.value = !changePass.value;
+    }
+  });
+
 
   const handleSubmit: SubmitHandler<IBaseSchema> = $((values) => {
     console.log("handle", values);
@@ -69,7 +84,7 @@ export const ModalGenerico = component$<parametros>((props) => {
           onClose$();
         })}
         title={title}
-        size="4xl"
+        size="2xl"
       >
         <div class="border-b border-gray-900/10 pb-4 pt-0 mt-5">
           <div class=" ">
@@ -85,15 +100,14 @@ export const ModalGenerico = component$<parametros>((props) => {
                     tableFields
                       .filter((item) => item.fieldName !== "id")
                       .map((field, index) => {
+                        // console.log("field type", field.type);
                         return (
                           <div key={index}>
-                            <Field name={field.fieldName as any}>
+                            <Field name={field.fieldName as any} >
                               {(fie, props) => (
                                 <div>
-                                  <InputType field={field} fie={fie}  />
-                                  {fie.value && fie.error && (
-                                    <div>{fie.error}</div>
-                                  )}
+                                  <InputType field={field} fie={fie} props={props} pass={changePass}/>
+                                 
                                 </div>
                               )}
                             </Field>

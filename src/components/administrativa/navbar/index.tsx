@@ -41,20 +41,28 @@ export const Navbar = component$(() => {
           titulo: "Sectores",
           //Roles: soloAdmins,
           url: "/administrativa/sectores",
-        }
-      ]
-    },
-    {
-      id: 5,
-      titulo: "Roles",
-      //Roles: soloAdmins,
-      url: "/administrativa/roles",
+        },
+      ],
     },
     {
       id: 6,
       titulo: "Personal",
       //Roles: soloAdmins,
       url: "/administrativa/personal",
+      child: [
+        {
+          id: 1,
+          titulo: "Personal",
+          //Roles: soloAdmins,
+          url: "/administrativa/personal",
+        },
+        {
+          id: 2,
+          titulo: "Roles",
+          //Roles: soloAdmins,
+          url: "/administrativa/roles",
+        },
+      ],
     },
     {
       id: 7,
@@ -80,7 +88,7 @@ export const Navbar = component$(() => {
       //Roles: soloAdmins,
       url: "/administrativa/insumos",
     },
-  ]
+  ];
 
   return (
     <>
@@ -128,7 +136,7 @@ export const Navbar = component$(() => {
                     {
                       item.child ? (
                         <li key={idx} >
-                          <details open>
+                          <details >
                             <summary class="text-white hover:bg-slate-400 hover:rounded-md">{item.titulo}</summary>
                             <ul >
                               {
@@ -142,7 +150,7 @@ export const Navbar = component$(() => {
                           </details>
                         </li>
                       ) : (
-                        <li class="text-white  hover:bg-slate-400 hover:rounded-md" key={idx}><Link href={item.url}>{item.titulo}</Link></li>
+                        <li class="text-white  hover:bg-slate-400 hover:rounded-md" key={idx} ><Link href={item.url}>{item.titulo}</Link></li>
                       )
                     }
                   </>
@@ -154,66 +162,14 @@ export const Navbar = component$(() => {
           </ul>
         </div>
       </div>
-      {/* <div class={styles.menu}>
-        <div class="bg-primary-500 pb-10">
-          <label tabIndex={0} class="btn btn-ghost btn-circle avatar ">
-            <div class="w-10 rounded-full ">
-              <img src="" alt="logoFF" />
-            </div>
-          </label>
-        </div>
-        <div class="fixed top-4 right-4">
-          
-          <div class="dropdown dropdown-end">
-          <label tabIndex={0} class="btn btn-ghost btn-circle avatar">
-        <div class="w-10 rounded-full">
-          <img src="/images/stock/photo-1534528741775-53994a69daeb.jpg" />
-        </div>
-      </label>
-            <ul tabIndex={0} class="dropdown-content menu p-2 shadow bg-clorblue rounded-box w-52">
-              <li><a>Cerrar Sesion</a></li>
-
-            </ul>
-          </div>
-        </div>
-        <div class="bg-primary-500 text-white pt-5 pb-5 flex justify-center">
-          <span>FOODFLOW</span>
-        </div>
-        <ul class="menu h-full bg-primary-500">
-          <li>
-            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/personal">Personal</Link>
-          </li>
-          <li>
-            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/roles">Roles</Link>
-          </li>
-          <li>
-            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/productos">Productos</Link>
-          </li>
-          <li>
-            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/mapas">Mapas</Link>
-          </li>
-          <li>
-            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/clientes">Clientes</Link>
-          </li>
-          <li>
-            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/proveedores">Proveedores</Link>
-          </li>
-          <li>
-            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/informes">Informes</Link>
-          </li>
-          <li>
-            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/reservas">Reservas</Link>
-          </li>
-          <li>
-            <Link class="text-white text-xl hover:bg-indigo-500" href="/administrativa/configuracion">Configuracion</Link>
-          </li>
-        </ul>
-      </div>
-
-      <div class={styles.content}>
-        <Slot />
-      </div> */}
-
+    
+      <script>
+        {`
+        $("a").click(function(){
+          $("drawer-side").toggleClass('open', 'close');
+        });
+        `}
+      </script>
 
     </>
   );

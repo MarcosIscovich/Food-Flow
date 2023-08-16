@@ -73,14 +73,14 @@ export const ModalGenerico = component$<parametros>((props) => {
       >
         <div class="border-b border-gray-900/10 pb-4 pt-0 mt-5">
           <div class=" ">
-            <div class="  ">
+            <div class="">
               <Form
                 onSubmit$={$((values, event) => {
                   console.log("values", values);
                   handleSubmit(values, event);
                 })}
               >
-                <div class="grid grid-cols-1 gap-x-2 gap-y-1 md:grid-cols-2 justify-center">
+                <div class="grid grid-cols-1 gap-x-2 gap-y-1 md:grid-cols-2">
                   {tableFields != undefined &&
                     tableFields
                       .filter((item) => item.fieldName !== "id")
@@ -89,8 +89,8 @@ export const ModalGenerico = component$<parametros>((props) => {
                           <div key={index}>
                             <Field name={field.fieldName as any}>
                               {(fie, props) => (
-                                <div>
-                                  <InputType field={field} fie={fie}  />
+                                <div >
+                                  <InputType field={field} fie={fie} propss={props} />
                                   {fie.value && fie.error && (
                                     <div>{fie.error}</div>
                                   )}

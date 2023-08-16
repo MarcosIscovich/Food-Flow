@@ -94,7 +94,7 @@ export const Table = component$<parametros>((props) => {
         filter || ""
       );
 
-      console.log("response", response);
+      //console.log("response", response);
       if (response?.meta && response?.meta.last_page) {
         pagination.totalPages = response.meta.last_page;
 
@@ -103,7 +103,7 @@ export const Table = component$<parametros>((props) => {
         pagination.totalPages = 1;
       }
 
-      console.log("Llegan los users", response.data);
+      console.log("Llegan los "+ modeloURL, response.data);
 
       return response.data; //.data.rows;
     }
@@ -117,7 +117,7 @@ export const Table = component$<parametros>((props) => {
         <thead>
           <tr>
             {fieldConfiguration.filter((item: any) => item.visibleInTable).map((item: any, index: number) => {
-              console.log("configuration", item)
+              
               return (
                 <th
                   key={index}

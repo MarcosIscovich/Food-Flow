@@ -10,7 +10,7 @@ export interface iTableFieldConfiguration {
     hiddenInMobile: boolean;
     visibleInTable: boolean;
     defaultValue: any;
-    type : string;
+    type : string | number | boolean | string[] | File | File[] | Date | undefined | selectOption[];
     options?: selectOption[];
     ordenable?: boolean;
     label?: string;
