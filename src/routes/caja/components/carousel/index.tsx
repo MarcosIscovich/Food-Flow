@@ -66,25 +66,26 @@ export const CarouselItems = component$(() => {
 
           <span>
             {
-              showRubros.value && "Rubros" || 
-              showSubrubros.value && "Subrubros" || 
+              showRubros.value && "Rubros" ||
+              showSubrubros.value && "Subrubros" ||
               showProductos.value && "Productos"
             }
           </span>
         </div>
 
       </div>
-      <div class="grid grid-cols-10 justify-center mt-3 ml-7 mr-7">
-        {showRubros.value &&
-          rubrosData.value.map((rubro, idx) => (
-            <div class="grid h-full" key={idx}>
-              <button class="h-24 w-28 bg-colorblue hover:bg-blue-400 text-white font-bold border-colorblue hover:border-blue-500 rounded flex"
-                onClick$={() => rubro.id !== undefined && showItems(rubro.id, "showSubrubros")}>
-                {rubro.nombre}
-              </button>
-            </div>
-          ))}
-      </div>
+      {showRubros.value && (
+        <div class="grid grid-cols-10 justify-center mt-3 ml-7 mr-7">
+          {rubrosData.value.map((rubro, idx) => (
+              <div class="grid h-full" key={idx}>
+                <button class="h-24 w-28 bg-colorblue hover:bg-blue-400 text-white font-bold border-colorblue hover:border-blue-500 rounded flex"
+                  onClick$={() => rubro.id !== undefined && showItems(rubro.id, "showSubrubros")}>
+                  {rubro.nombre}
+                </button>
+              </div>
+            ))}
+        </div>
+      )}
 
       {showSubrubros.value && (
         <div class="grid grid-cols-10 justify-center mt-3 ml-7 mr-7">

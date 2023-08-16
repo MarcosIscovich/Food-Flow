@@ -1,4 +1,4 @@
-import { component$, useSignal} from '@builder.io/qwik';
+import { component$, useSignal } from '@builder.io/qwik';
 import { type DocumentHead } from '@builder.io/qwik-city';
 import { TableMesas } from './components/tableMesas';
 import { ViewMesas } from './components/viewMesas';
@@ -36,10 +36,10 @@ export default component$(() => {
           <div class="p-7" style="display: flex;">
             {
               changeView.value ? <div style="flex: 1;" onClick$={() => changeView.value = !changeView.value}>
-                  <TableMesas /> 
-                  </div> : <div style="flex: 1;" onClick$={() => changeView.value = !changeView.value}>
-                  <ViewMesas />
-                </div>
+                <TableMesas />
+              </div> : <div style="flex: 1;" onClick$={() => changeView.value = !changeView.value}>
+                <ViewMesas />
+              </div>
             }
           </div>
           <div class="p-7" style="flex: 1">
@@ -57,14 +57,14 @@ export default component$(() => {
                       </div>
                     </div>
                   ))}
-                  
+
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div >
-          <CarouselItems />     
+          <CarouselItems />
         </div>
       </div>
     </>
