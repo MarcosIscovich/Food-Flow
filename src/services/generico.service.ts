@@ -45,7 +45,7 @@ export const create = async (
   console.log("llega a crear payload ", item);
   console.log("llega a crear token ", token);
   
-  const encoded = encodeURI(`${configuration.api}${url}/`)
+  const encoded = encodeURI(`${configuration.api}${url}`)
   console.log(encoded);
   const resp = await fetch(encoded, {
     method: "POST",

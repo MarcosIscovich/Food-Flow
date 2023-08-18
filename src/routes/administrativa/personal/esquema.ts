@@ -6,7 +6,7 @@ export interface IPersonal {
     id?: string;
     nombre: string;
     apellido: string;
-    telefono: number;
+    telefono: string;
     dni: string;
     clave: string;
     role_id: string;
@@ -146,9 +146,9 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
       nombre: z.string().min(1, "Please enter your name."),
       apellido: z.string().min(1, "Please enter your last name."),
       telefono: z
-        .number()
-        .min(6, "Ingrese un nro telefono")
-        .transform((data) => Number(data)),
+        .string()
+        .min(6, "Ingrese un nro telefono"),
+        //.transform((data) => Number(data)),
       dni: z
         .string()
         .min(6, "Ingrese un nro DNI minimo 6 digitos")

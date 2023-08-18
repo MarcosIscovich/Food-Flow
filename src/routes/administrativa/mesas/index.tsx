@@ -88,7 +88,7 @@ export default component$(() => {
         "estado",
         []);
 
-      console.log("SUBRUBROS", estado);
+      console.log("Estados", estado);
 
       const selectOptions: selectOption[] = estado.map((item: any) => {
         return { value: item.id, label: item.nombre };

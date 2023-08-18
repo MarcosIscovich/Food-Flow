@@ -5,12 +5,12 @@ import type { selectOption } from '~/interfaces/iTableFieldConfiguratio';
 export interface InputType {
   field: any,
   fie: any,
-  props: any,
+  propss: any,
   pass: any
 }
 
 export const InputType = component$<InputType>((props) => {
-  const { field, fie, pass } = props;
+  const { field, fie, pass, propss } = props;
 
   return (
     <div class="">
