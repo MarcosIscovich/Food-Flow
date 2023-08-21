@@ -1,8 +1,11 @@
 import { component$ } from '@builder.io/qwik';
 
-export const TableMesas = component$(() => {
+export const TableMesas = component$((mesa) => {
+    
+    
+    
     return <>
-        <div class="card  bg-white" style="height: 100%;">
+        <div class="card  bg-secondary-100" style="height: 100%;">
 
             <div class="card-body p-7">
                 <h2 class="card-title flex justify-center">MESA X click poara cambiar</h2>

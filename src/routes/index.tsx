@@ -101,7 +101,7 @@ export default component$(() => {
                   </label>
                 </div>
                 <div class="form-control mt-6">
-                  <button class="btn bg-primary-500 text-white" type='submit'>Login</button>
+                  <button class=" bg-primary-500 text-white" type='submit'>Login</button>
                 </div>
               </Form>
 
