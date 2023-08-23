@@ -1,13 +1,18 @@
-import { $, component$, useContext, useSignal, useTask$, useTaskQrl } from '@builder.io/qwik';
+import { $, PropFunction, component$, useContext, useSignal, useTask$ } from '@builder.io/qwik';
 import { AuthContext } from '~/context/auth/auth.context';
 import { lista } from '~/services/generico.service';
 import type { IRubros } from '~/interfaces/iRubros';
 import type { ISubRubros } from '~/interfaces/iSubRubro';
 import type { IProductos } from '~/interfaces/iProductos';
 
+interface parametros {
+  sendProducto: PropFunction<(mesa:any)=>any>;
+}
 
+export const CarouselItems = component$((props: parametros) => {
 
-export const CarouselItems = component$(() => {
+  const {sendProducto} = props;
+
   const authContext = useContext(AuthContext);
   const rubrosData = useSignal<IRubros[]>([]);
   const subrubrosData = useSignal<ISubRubros[]>([]);
@@ -197,7 +202,7 @@ export const CarouselItems = component$(() => {
                       "#" + (slides.value.length - 1 - idx).toString();
                     const ref2 = "#" + (idx + 1);
                     return (
-                      <div id={idx} class="carousel-item relative w-full ">
+                      <div id={idx} class="carousel-item relative w-full " key={idx}>
                         <div class="flex justify-between mx-auto">
                           {slide.map((item, idxi) => (
                             <div
@@ -252,7 +257,7 @@ export const CarouselItems = component$(() => {
                       "#" + (slidesSubProductos.value.length - 1 - idx).toString();
                     const ref2 = "#" + (idx + 1);
                     return (
-                      <div id={idx} class="carousel-item relative w-full ">
+                      <div id={idx} class="carousel-item relative w-full " key={idx}>
                         <div class="flex justify-between mx-auto">
                           {slide.map((item, idxi) => (
                             <div
@@ -327,7 +332,7 @@ export const CarouselItems = component$(() => {
                       "#" + (slidesProductos.value.length - 1 - idx).toString();
                     const ref2 = "#" + (idx + 1);
                     return (
-                      <div id={idx} class="carousel-item relative w-full ">
+                      <div id={idx} class="carousel-item relative w-full " key={idx}>
                         <div class="flex justify-between mx-auto">
                           {slide.map((item, idxi) => (
                             <div
@@ -343,7 +348,7 @@ export const CarouselItems = component$(() => {
                                   class="btn-rubro btn--azul"
                                   onClick$={() =>
                                     item.id !== undefined &&
-                                    addItems(item.id, "vemos")
+                                    sendProducto(item)
                                   }
                                 >
                                   <span class="text-white font-bold">
