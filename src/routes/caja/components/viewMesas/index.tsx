@@ -1,7 +1,15 @@
-import { component$ } from '@builder.io/qwik';
-import mesas from './mesas';
+import  { type PropFunction, component$} from '@builder.io/qwik';
+import mesas from './mesas'
 
-export const ViewMesas = component$(() => {
+interface parametros {
+    sendMesa: PropFunction<(mesa:any)=>any>;
+}
+export const ViewMesas = component$((props: parametros) => {
+
+  const {sendMesa} = props;
+
+  
+
     return (
       <>
         <div class="card  bg-secondary-100" style="height: 100%;">
@@ -28,7 +36,7 @@ export const ViewMesas = component$(() => {
                       <button
                         class={$class}
                         onClick$={() => {
-                            console.log("Mesa: ", mesa.id);
+                            sendMesa(mesa)
                         }}
                       >
                         {mesa.id}

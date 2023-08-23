@@ -133,6 +133,29 @@ export const selectItems = async (
   return data;
 }
 
+export const findUsers = async (
+  token: string,
+  url: string
+): Promise<any> => {
+
+
+  const resp = await fetch(
+    `${configuration.api}${url}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  
+  const data = await resp.json();
+  console.log("llega Users", data);
+
+  return data;
+}
+
 export const loginOperario = async (
   token: string,
   clave: string,
