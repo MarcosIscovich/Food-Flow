@@ -1,17 +1,17 @@
-import { $, component$, useContext, useSignal, useStore, useTask$ } from '@builder.io/qwik';
-import { Form, routeAction$ } from '@builder.io/qwik-city';
+import { $, type PropFunction, component$, useContext, useSignal, useStore, useTask$ } from '@builder.io/qwik';
 import { AuthContext } from '~/context/auth/auth.context';
 import { findUsers } from "~/services/generico.service";
-import { useForm } from '@modular-forms/qwik';
 
 interface parametros {
     mesaSelected: any;
     productoSelected: any;
+    guardarComandaFlag: any;
+    newComanda: PropFunction<(productoSelected: any , camarero:any , total:any) => any>;
 }
 
 export const TableMesas = component$((props: parametros) => {
 
-    const { mesaSelected, productoSelected } = props;
+    const { mesaSelected, productoSelected , guardarComandaFlag , newComanda } = props;
     const authContext = useContext(AuthContext);
     const users = useStore<any>([]);
     const camareroID = useStore<any>({});
@@ -51,6 +51,17 @@ export const TableMesas = component$((props: parametros) => {
         if (productoSelected) {
             openModalProducto.value = true;
         }
+    });
+
+    useTask$(async ({ track }) => {
+        track(() => {guardarComandaFlag.value})
+      console.log("Guardar Comanda Flag", guardarComandaFlag.value);
+      
+        if(guardarComandaFlag){
+            console.log("Guardar Comanda" , total.value);
+            newComanda(productos , camareroSelected.value?.id, total.value );
+        }
+        
     });
 
     const addProducto = $(() => {

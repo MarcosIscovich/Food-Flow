@@ -1,9 +1,11 @@
-import { $, component$, useSignal, useStore} from '@builder.io/qwik';
+import { $, component$, useContext, useSignal, useStore} from '@builder.io/qwik';
 import { type DocumentHead } from '@builder.io/qwik-city';
 import { TableMesas } from './components/tableMesas';
 import { ViewMesas } from './components/viewMesas';
 import { CarouselItems } from './components/carousel';
 import { ModalClave } from '~/components/modalClave';
+import { newOrden } from '~/services/orden.service';  
+import { AuthContext } from '~/context/auth/auth.context';
 
 
 
@@ -12,7 +14,11 @@ import { ModalClave } from '~/components/modalClave';
 
 export default component$(() => {
 
+  const authContext = useContext(AuthContext);
+
+
   const changeView = useSignal<boolean>(false);
+  const guardarComandaFlag = useSignal<boolean>(false);
   const mesaSelected = useStore<any>({});
   const productoSelected = useStore<any>({});
   const funcionalidades = [
@@ -25,7 +31,7 @@ export default component$(() => {
     { id: 6, nombre: "Agrupar Items", icono: "fas fa-object-group", class: "btn-func btn--azul" },
     { id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul" },
     { id: 8, nombre: "Cambiar Camarero", icono: "fas fa-user-edit", class: "btn-func btn--azul" },
-    { id: 9, nombre: "Guardar Comanda", icono: "fas fa-save", class: "btn-func btn--verde" },
+    { id: 9, nombre: "Guardar Comanda", icono: "fas fa-save", class: "btn-func btn--verde" ,  action: $(() =>  { guardarComandaFlag.value = true} )  },
     { id: 10, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul" },
     { id: 11, nombre: "Cancelar", icono: "fas fa-ban", class: "btn-func btn--rojo", action: $(() => { changeView.value = false }) },
 
@@ -47,6 +53,22 @@ export default component$(() => {
     productoSelected.value = producto;
   })
 
+  const newComanda = $(async (productos:any , camarero:any , total:any) => {
+    console.log("Nueva Comanda" , productos);
+    const data = {
+      mesa_id: mesaSelected.value.id,
+      user_id: camarero,
+      productos: productos,
+      totalACobrar: total
+    }
+    if(guardarComandaFlag.value){
+   const resp =  await newOrden( authContext.token, data);
+   console.log("Respuesta", resp);
+   
+    }
+    
+  })
+
 
   return (
     <>
@@ -60,7 +82,7 @@ export default component$(() => {
                   style="flex: 1;"
                 // onClick$={() => (changeView.value = !changeView.value)}
                 >
-                  <TableMesas mesaSelected={mesaSelected.value} productoSelected={productoSelected.value} />
+                  <TableMesas mesaSelected={mesaSelected.value} productoSelected={productoSelected.value} newComanda={newComanda} guardarComandaFlag={guardarComandaFlag} />
                 </div>
               ) : (
                 <div
