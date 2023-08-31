@@ -29,7 +29,7 @@ export default component$(() => {
     { id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul" },
     { id: 5, nombre: "Dividir Mesa", icono: "fas fa-columns", class: "btn-func btn--azul" },
     { id: 6, nombre: "Agrupar Items", icono: "fas fa-object-group", class: "btn-func btn--azul" },
-    { id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul" },
+    { id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul" , action: $(() =>  { guardarComandaFlag.value = true} ) },
     { id: 8, nombre: "Cambiar Camarero", icono: "fas fa-user-edit", class: "btn-func btn--azul" },
     { id: 9, nombre: "Guardar Comanda", icono: "fas fa-save", class: "btn-func btn--verde" ,  action: $(() =>  { guardarComandaFlag.value = true} )  },
     { id: 10, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul" },
@@ -63,6 +63,11 @@ export default component$(() => {
     }
     if(guardarComandaFlag.value){
    const resp =  await newOrden( authContext.token, data);
+   //todo: hacer validacion 
+   changeView.value = false;
+    guardarComandaFlag.value = false;
+    productoSelected.value = null;
+
    console.log("Respuesta", resp);
    
     }
