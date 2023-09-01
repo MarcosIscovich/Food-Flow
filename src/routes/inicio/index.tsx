@@ -1,11 +1,9 @@
-import { component$, useContext, useSignal } from '@builder.io/qwik';
+import { component$, useContext } from '@builder.io/qwik';
 import { Link, type DocumentHead } from '@builder.io/qwik-city';
 import { IcoAdicionador, IcoAdmin, IcoCajero } from '../../components/router-head/iconos/iconos';
 import { AuthContext } from '~/context/auth/auth.context';
 
 export default component$(() => {
-  const count = useSignal(0);
-  console.log("contador", count.value);
 
   const authcontext = useContext(AuthContext);
 

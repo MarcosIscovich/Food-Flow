@@ -1,6 +1,7 @@
 import { $, type PropFunction, component$, useContext, useSignal, useStore, useTask$ } from '@builder.io/qwik';
 import { AuthContext } from '~/context/auth/auth.context';
 import { findUsers } from "~/services/generico.service";
+import { getMesa } from '~/services/mesa.service';
 
 interface parametros {
   mesaSelected: any;
@@ -70,10 +71,46 @@ export const TableMesas = component$((props: parametros) => {
       //todo: limpiar variables
       clearData();
     }
-
   });
 
-  
+  useTask$(async ({ track }) => {
+    track(() => { mesaSelected.estado_id })
+    if(mesaSelected.estado_id == "2"){
+      console.log("Mesa Ocupada", mesaSelected);
+      getMesa(authContext.token, mesaSelected.id).then((item) => {
+        console.log("Mesa DATA", item.mesa.orden.comandas[0].productos);
+        if(item) {
+          console.log("Camarero", camareroSelected.value);
+          camareroSelected.value = {
+            nombre : item.mesa.orden.user.nombre
+          }
+         item.mesa.orden.comandas.map((comanda: any) => {
+            comanda.productos.map((producto: any) => {
+              productos.push( {
+                id: producto.id,
+                nombre: producto.nombre,
+                precio: producto.pivot.precio,
+                cantidad: producto.pivot.cantidad,
+                preferencia: producto.pivot.preferencia,
+                procesada: producto.pivot.procesada
+              })
+            })
+          })
+
+          total.value = item.mesa.orden.totalACobrar;
+          
+          console.log("Total", total);
+          console.log("productos", productos);
+          
+          
+          
+          
+        }
+       
+      })
+
+    }
+});
 
   const addProducto = $(() => {
     console.log("data", data);
@@ -102,24 +139,30 @@ export const TableMesas = component$((props: parametros) => {
           <div class="overflow-x-auto " style="height:400px">
             {!camareroSelected.value ? (
               <div class="flex justify-center">
-                <select
-                  class="select select-primary w-full max-w-xs"
-                  onChange$={(e) => {
-                    camareroID.value = e.target.value;
-                  }}
-                >
-                  <option disabled selected>
-                    Seleccione un Camarero
-                  </option>
-                  {users.value &&
-                    users.value.map((user: any, idx: number) => {
-                      return (
-                        <option value={user.id} key={idx}>
-                          {user.nombre}
-                        </option>
-                      );
-                    })}
-                </select>
+                {
+                  mesaSelected?.estado_id != "2" && (
+                    <select
+                      class="select select-primary w-full max-w-xs"
+                      onChange$={(e) => {
+                        camareroID.value = e.target.value;
+                      }}
+                    >
+                      <option disabled selected>
+                        Seleccione un Camarero
+                      </option>
+                      {users.value &&
+                        users.value.map((user: any, idx: number) => {
+                          return (
+                            <option value={user.id} key={idx}>
+                              {user.nombre}
+                            </option>
+                          );
+                        })}
+                    </select>
+                  )
+
+                }
+
               </div>
             ) : (
               <>
@@ -149,7 +192,7 @@ export const TableMesas = component$((props: parametros) => {
                                   type="string"
                                   placeholder="Cantidad"
                                   name="cantidad"
-                                  bind: value={cantidad}
+                                  bind:value={cantidad}
                                   class="input input-bordered"
                                 />
                               </div>
@@ -161,7 +204,7 @@ export const TableMesas = component$((props: parametros) => {
                                   type="string"
                                   placeholder="Preferencia"
                                   name="preferencia"
-                                  bind: value={preferencia}
+                                  bind:value={preferencia}
                                   class="input input-bordered"
                                 />
                               </div>

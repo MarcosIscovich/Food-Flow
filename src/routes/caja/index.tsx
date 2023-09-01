@@ -43,7 +43,7 @@ export default component$(() => {
 
 
   const sendMesa = $((mesa: any) => {
-    console.log("Mesa: ", mesa);
+    console.log("Mesa IN CAJA ", mesa);
     mesaSelected.value = mesa;
     changeView.value = true
   })
