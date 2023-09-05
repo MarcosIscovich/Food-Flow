@@ -1,3 +1,11 @@
+
+.contenedorInicial {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
 .credentialing {
   --bg-color: #f9a04d;
   --bg-color-light: #f5dfcb;

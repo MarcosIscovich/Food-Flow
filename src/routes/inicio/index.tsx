@@ -11,10 +11,10 @@ export default component$(() => {
   const authcontext = useContext(AuthContext);
 
   return (
-    <>
+    <div >
 
       {authcontext.isAutenticated ? (
-        <>
+        <div class={styles.contenedorInicial}>
           <div class="h-full flex flex-col items-center justify-center">
             <div class="flex flex-row items-center justify-center space-x-6">
               {authcontext.user?.rol === "Administrador" && (
@@ -64,13 +64,13 @@ export default component$(() => {
               )}
             </div>
           </div>
-        </>
+        </div>
       ) :
         (
           <progress class="progress w-56"></progress>
         )
       }
-    </>
+    </div>
   );
 
 
