@@ -8,11 +8,13 @@ interface parametros {
   productoSelected: any;
   guardarComandaFlag: any;
   newComanda: PropFunction<(productoSelected: any, camarero: any, total: any) => any>;
+  editComanda: PropFunction<(productos: any, total: any, orden: any) => any>;
+  closeTable: PropFunction<() => any>;
 }
 
 export const TableMesas = component$((props: parametros) => {
 
-  const { mesaSelected, productoSelected, guardarComandaFlag, newComanda } = props;
+  const { mesaSelected, productoSelected, guardarComandaFlag, newComanda , closeTable , editComanda } = props;
   const authContext = useContext(AuthContext);
   const users = useStore<any>([]);
   const camareroID = useStore<any>({});
@@ -23,6 +25,7 @@ export const TableMesas = component$((props: parametros) => {
   const cantidad = useSignal<string>('');
   const preferencia = useSignal<string>('');
   const total = useSignal<number>(0);
+  const orden = useStore<any>({});
 
 
   console.log("Mesa: ", mesaSelected);
@@ -32,6 +35,8 @@ export const TableMesas = component$((props: parametros) => {
     camareroSelected.value = null;
     productos.length = 0;
     total.value = 0;
+    mesaSelected.value = null;
+    orden.value = null;
   })
 
   useTask$(async ({ track }) => {
@@ -67,7 +72,28 @@ export const TableMesas = component$((props: parametros) => {
 
     if (guardarComandaFlag) {
       console.log("Guardar Comanda", total.value);
-      await newComanda(productos, camareroSelected.value?.id, total.value);
+      const _productos: any = []
+      let flagProcesada = false;
+      productos.map((producto: any) => {
+        console.log("PRODUCTOS EN COMANDA", producto);
+        if (!producto.procesada) {
+          _productos.push(producto)
+        } 
+        if(producto.procesada){
+          flagProcesada = true;
+        }
+      })
+      console.log("Productos no ENviados", _productos);
+      if (_productos.length > 0 && flagProcesada) {        
+        editComanda(_productos , total.value, orden.value.id )
+      } else if(productos.length > 0 && !flagProcesada ) {      
+        await newComanda(productos, camareroSelected.value?.id, total.value);
+      }
+      else {   
+        if(guardarComandaFlag.value){
+          closeTable();
+        }    
+      }
       //todo: limpiar variables
       clearData();
     }
@@ -75,18 +101,19 @@ export const TableMesas = component$((props: parametros) => {
 
   useTask$(async ({ track }) => {
     track(() => { mesaSelected.estado_id })
-    if(mesaSelected.estado_id == "2"){
+    if (mesaSelected.estado_id == "2") {
       console.log("Mesa Ocupada", mesaSelected);
       getMesa(authContext.token, mesaSelected.id).then((item) => {
         console.log("Mesa DATA", item.mesa.orden.comandas[0].productos);
-        if(item) {
+        if (item) {
+          orden.value = item.mesa.orden;
           console.log("Camarero", camareroSelected.value);
           camareroSelected.value = {
-            nombre : item.mesa.orden.user.nombre
+            nombre: item.mesa.orden.user.nombre
           }
-         item.mesa.orden.comandas.map((comanda: any) => {
+          item.mesa.orden.comandas.map((comanda: any) => {
             comanda.productos.map((producto: any) => {
-              productos.push( {
+              productos.push({
                 id: producto.id,
                 nombre: producto.nombre,
                 precio: producto.pivot.precio,
@@ -96,21 +123,14 @@ export const TableMesas = component$((props: parametros) => {
               })
             })
           })
-
           total.value = item.mesa.orden.totalACobrar;
-          
           console.log("Total", total);
           console.log("productos", productos);
-          
-          
-          
-          
         }
-       
       })
 
     }
-});
+  });
 
   const addProducto = $(() => {
     console.log("data", data);

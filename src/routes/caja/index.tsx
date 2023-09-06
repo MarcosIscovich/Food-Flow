@@ -4,7 +4,7 @@ import { TableMesas } from './components/tableMesas';
 import { ViewMesas } from './components/viewMesas';
 import { CarouselItems } from './components/carousel';
 import { ModalClave } from '~/components/modalClave';
-import { newOrden } from '~/services/orden.service';  
+import { newOrden , editOrden } from '~/services/orden.service';  
 import { AuthContext } from '~/context/auth/auth.context';
 
 
@@ -68,10 +68,25 @@ export default component$(() => {
     guardarComandaFlag.value = false;
     productoSelected.value = null;
 
-   console.log("Respuesta", resp);
-   
+   console.log("Respuesta", resp);   
+    }    
+  })
+
+  const editComanda = $(async (_productos:any, total:any , ordenID:any) => {
+    console.log("Editar Comanda" , _productos , total , ordenID);
+    const data = {
+      productos : _productos,
+      mesa_id : mesaSelected.value.id,
+      totalACobrar : total
     }
-    
+   const resp = await editOrden( authContext.token, data , ordenID);
+
+    closeTable();
+  })
+
+  const closeTable = $(() => {
+    changeView.value = false;
+    guardarComandaFlag.value = false;
   })
 
 
@@ -87,7 +102,7 @@ export default component$(() => {
                   style="flex: 1;"
                 // onClick$={() => (changeView.value = !changeView.value)}
                 >
-                  <TableMesas mesaSelected={mesaSelected.value} productoSelected={productoSelected.value} newComanda={newComanda} guardarComandaFlag={guardarComandaFlag} />
+                  <TableMesas editComanda={editComanda} closeTable={closeTable} mesaSelected={mesaSelected.value} productoSelected={productoSelected.value} newComanda={newComanda} guardarComandaFlag={guardarComandaFlag} />
                 </div>
               ) : (
                 <div
