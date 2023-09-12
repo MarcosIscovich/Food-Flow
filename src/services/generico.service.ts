@@ -181,5 +181,30 @@ export const loginOperario = async (
 
   return data;
 }
+export const loginSupervisor = async (
+  token: string,
+  clave: string,
+  url: string
+): Promise<any> => {
+  console.log("llega a loginSupervisor: ", clave, `${configuration.api}${url}/`);
+
+
+  const resp = await fetch(
+    `${configuration.api}${url}/`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ clave: clave }),
+    }
+  );
+
+  const data = await resp.json();
+  console.log("llega selectItems", data);
+
+  return data;
+}
 
 

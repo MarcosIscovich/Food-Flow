@@ -2,19 +2,25 @@ import { $, type PropFunction, component$, useContext, useSignal, useStore, useT
 import { AuthContext } from '~/context/auth/auth.context';
 import { findUsers } from "~/services/generico.service";
 import { getMesa } from '~/services/mesa.service';
+import { ModalSupervisor } from '../modalSupervisor/index';
+import { deleteProducto } from '~/services/comanda.service';
 
 interface parametros {
   mesaSelected: any;
   productoSelected: any;
   guardarComandaFlag: any;
+  marcharComandaFlag: any;
+  eliminarProductoFlag: any;
+  cancelBtn: any;
   newComanda: PropFunction<(productoSelected: any, camarero: any, total: any) => any>;
   editComanda: PropFunction<(productos: any, total: any, orden: any) => any>;
   closeTable: PropFunction<() => any>;
+  cancelData: PropFunction<() => any>;
 }
 
 export const TableMesas = component$((props: parametros) => {
 
-  const { mesaSelected, productoSelected, guardarComandaFlag, newComanda , closeTable , editComanda } = props;
+  const { mesaSelected, productoSelected, guardarComandaFlag, marcharComandaFlag, eliminarProductoFlag, cancelBtn, cancelData, newComanda, closeTable, editComanda } = props;
   const authContext = useContext(AuthContext);
   const users = useStore<any>([]);
   const camareroID = useStore<any>({});
@@ -26,17 +32,23 @@ export const TableMesas = component$((props: parametros) => {
   const preferencia = useSignal<string>('');
   const total = useSignal<number>(0);
   const orden = useStore<any>({});
+  const filaSeleccinada = useSignal<any>(null);
+  const itemSelected = useStore<any>({});
+  const openModalClave = useSignal<boolean>(false);
+  const tienePermiso = useSignal<boolean>(false);
 
 
   console.log("Mesa: ", mesaSelected);
 
 
   const clearData = $(() => {
+    console.log("Clear Data");
     camareroSelected.value = null;
     productos.length = 0;
     total.value = 0;
     mesaSelected.value = null;
     orden.value = null;
+    openModalProducto.value = false
   })
 
   useTask$(async ({ track }) => {
@@ -57,6 +69,14 @@ export const TableMesas = component$((props: parametros) => {
     camareroSelected.value = users.value.find((user: any) => user.id == camareroID.value)
     console.log("CamareroSelected", camareroSelected.value);
   });
+  useTask$(async ({ track }) => {
+    track(() => cancelBtn.value)
+    if (cancelBtn.value) {
+      console.log("Cancel Btn");
+      clearData();
+      cancelData();
+    }
+  });
 
   useTask$(async ({ track }) => {
     track(() => { productoSelected })
@@ -65,37 +85,58 @@ export const TableMesas = component$((props: parametros) => {
       openModalProducto.value = true;
     }
   });
+  useTask$(async ({ track }) => {
+    track(() => { eliminarProductoFlag.value })
+    console.log("ELiminar Producto", eliminarProductoFlag.value,);
+    if (eliminarProductoFlag.value) {
+      console.log("ELiminar Producto", itemSelected.value);
+
+      if (itemSelected.value.procesada === 1) {
+        openModalClave.value = true;
+        eliminarProductoFlag.value = false;
+      } else {
+        productos.splice(filaSeleccinada.value, 1);
+        total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
+        eliminarProductoFlag.value = false;
+        alert("Producto Eliminado");
+      }
+    }
+  });
 
   useTask$(async ({ track }) => {
-    track(() => { guardarComandaFlag.value })
+    track(() => { guardarComandaFlag.value, marcharComandaFlag.value })
     console.log("Guardar Comanda Flag", guardarComandaFlag.value);
 
-    if (guardarComandaFlag) {
+    if (guardarComandaFlag || marcharComandaFlag) {
       console.log("Guardar Comanda", total.value);
       const _productos: any = []
       let flagProcesada = false;
       productos.map((producto: any) => {
-        console.log("PRODUCTOS EN COMANDA", producto);
+
         if (!producto.procesada) {
           _productos.push(producto)
-        } 
-        if(producto.procesada){
+        }
+        if (producto.procesada) {
           flagProcesada = true;
         }
       })
       console.log("Productos no ENviados", _productos);
-      if (_productos.length > 0 && flagProcesada) {        
-        editComanda(_productos , total.value, orden.value.id )
-      } else if(productos.length > 0 && !flagProcesada ) {      
+      if (_productos.length > 0 && flagProcesada) {
+        editComanda(_productos, total.value, orden.value.id)
+      } else if (productos.length > 0 && !flagProcesada) {
         await newComanda(productos, camareroSelected.value?.id, total.value);
       }
-      else {   
-        if(guardarComandaFlag.value){
+      else {
+        if (guardarComandaFlag.value && !marcharComandaFlag.value) {
+          console.log("ENTRA CLOSE TABLE");
           closeTable();
-        }    
+        }
       }
-      //todo: limpiar variables
-      clearData();
+      //todo: limpiar variables 
+      if (guardarComandaFlag.value) {
+        clearData();
+      }
+
     }
   });
 
@@ -119,7 +160,9 @@ export const TableMesas = component$((props: parametros) => {
                 precio: producto.pivot.precio,
                 cantidad: producto.pivot.cantidad,
                 preferencia: producto.pivot.preferencia,
-                procesada: producto.pivot.procesada
+                procesada: producto.pivot.procesada,
+                comanda_id: producto.pivot.comanda_id,
+                orden_id: producto.pivot.orden_id
               })
             })
           })
@@ -130,6 +173,24 @@ export const TableMesas = component$((props: parametros) => {
       })
 
     }
+  });
+  useTask$(async ({ track }) => {
+    track(() => { tienePermiso.value })
+    if (tienePermiso.value) {
+      console.log("Tiene Permiso" , itemSelected.value);
+      deleteProducto(authContext.token, itemSelected.value).then((resp) => {
+        console.log("DELTE PRODUCTO", resp);
+        if(resp.success){
+          productos.splice(filaSeleccinada.value, 1);
+          eliminarProductoFlag.value = false;
+          tienePermiso.value = false;
+          total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
+        }
+        
+        
+    })
+    }
+    
   });
 
   const addProducto = $(() => {
@@ -148,9 +209,17 @@ export const TableMesas = component$((props: parametros) => {
     openModalProducto.value = false;
   })
 
+  const selectProducto = $((producto: any) => {
+    console.log("Select Producto", producto);
+    itemSelected.value = producto;
+  })
+
 
   return (
     <>
+
+      <ModalSupervisor openModalClave={openModalClave} tienePermiso={tienePermiso} />
+
       <div class="card  bg-secondary-100" style="height: 100%;">
         <div class="card-body p-7">
           <h2 class="card-title flex justify-center">
@@ -256,7 +325,7 @@ export const TableMesas = component$((props: parametros) => {
                     </div>
                   </div>
                 </dialog>
-                <table class="table table-zebra bg-white table-pin-rows">
+                <table class="table  bg-white table-pin-rows">
                   <thead>
                     <tr>
                       <th>Producto</th>
@@ -269,11 +338,15 @@ export const TableMesas = component$((props: parametros) => {
                     {productos.length > 0 &&
                       productos.map((producto: any, idx: number) => {
                         return (
-                          <tr key={idx}>
-                            <td>{producto.nombre}</td>
-                            <td>{producto?.cantidad}</td>
-                            <td>{producto.precio}</td>
-                            <td>{producto?.preferencia}</td>
+                          <tr class={`${filaSeleccinada.value === idx ? 'bg-primary-300' : ''
+                            } hover:bg-primary-300 hover:cursor-pointer`} key={idx} onClick$={() => {
+                              selectProducto(producto);
+                              filaSeleccinada.value = idx;
+                            }}>
+                            <td >{producto.nombre}</td>
+                            <td >{producto?.cantidad}</td>
+                            <td >{producto.precio}</td>
+                            <td >{producto?.preferencia}</td>
                           </tr>
                         );
                       })}
@@ -295,7 +368,7 @@ export const TableMesas = component$((props: parametros) => {
             </div>
             <div class="stat place-items-center bg-primary-400 rounded">
               <div class="stat-title text-white">Total</div>
-              <div class="stat-value text-white">{total}</div>
+              <div class="stat-value text-white">${total}</div>
             </div>
           </div>
         </div>

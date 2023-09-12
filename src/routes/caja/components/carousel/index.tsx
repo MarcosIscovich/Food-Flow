@@ -338,7 +338,7 @@ export const CarouselItems = component$((props: parametros) => {
                             <div
                               class="grid h-full"
                               key={idx}
-                              style="z-index : 1000"
+                              style="z-index : 500"
                             >
                               <div
                                 class="flex justify-center items-center h-32 w-32 p-4"
