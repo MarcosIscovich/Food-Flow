@@ -6,6 +6,7 @@ import { CarouselItems } from './components/carousel';
 import { ModalClave } from '~/components/modalClave';
 import { newOrden , editOrden } from '~/services/orden.service';  
 import { AuthContext } from '~/context/auth/auth.context';
+import { ModalBuscar } from './components/modalBuscar';
 
 
 
@@ -21,6 +22,7 @@ export default component$(() => {
   const guardarComandaFlag = useSignal<boolean>(false);
   const marcharComandaFlag = useSignal<boolean>(false);
   const eliminarProductoFlag = useSignal<boolean>(false);
+  const modalBuscar = useSignal<boolean>(false);
   const cancelBtn = useSignal<boolean>(false);
   const mesaSelected = useStore<any>({});
   const productoSelected = useStore<any>({});
@@ -35,7 +37,7 @@ export default component$(() => {
     { id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul" , action: $(() =>  { marcharComandaFlag.value = true} ) },
     { id: 8, nombre: "Cambiar Camarero", icono: "fas fa-user-edit", class: "btn-func btn--azul" },
     { id: 9, nombre: "Guardar Comanda", icono: "fas fa-save", class: "btn-func btn--verde" ,  action: $(() =>  { guardarComandaFlag.value = true} )  },
-    { id: 10, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul" },
+    { id: 10, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul" , action: $(() =>  { modalBuscar.value = true} ) },
     { id: 11, nombre: "Cancelar", icono: "fas fa-ban", class: "btn-func btn--rojo", action: $(() => { changeView.value = !changeView.value , cancelBtn.value = true }) },
 
     // { id: 12, nombre: "funcionalidad 2", icono: "fas fa-search" },
@@ -111,6 +113,7 @@ export default component$(() => {
   return (
     <>
       <ModalClave />
+      <ModalBuscar show={modalBuscar.value} onClose$={$(() => { modalBuscar.value = false;})} title={"Buscar Producto"} />
       <div class="">
         <div class="flex flex-col">
           <div class="grid grid-cols-2">
@@ -143,10 +146,7 @@ export default component$(() => {
                       {funcionalidades.map((funcionalidad, idx) => (
                         <div class="grid h-full" key={idx}>
                           <div class="w-full h-full">
-                            <button class={funcionalidad.class} onClick$={() => 
-                            {
-                              funcionalidad?.action()
-                            }} >
+                            <button class={funcionalidad.class} onClick$={() => { funcionalidad?.action() }}>
                               {funcionalidad.nombre}
 
                             </button>
