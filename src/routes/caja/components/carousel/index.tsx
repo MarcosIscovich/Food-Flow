@@ -174,8 +174,9 @@ export const CarouselItems = component$((props: parametros) => {
                 (showProductos.value && "Productos")}
             </span>
           </div>
-          <div class="flex justify-start">
-            <button class="btn btn--verde" onClick$={() => clearShow()}>Volver</button>
+          <div class="flex" >
+            <button class="btn-func btn--verde" style="width: 100px; height: 50px" onClick$={() => clearShow()}>
+              <span>Volver</span> </button>
           </div>
         </div>
         {/* {showRubros.value && (
@@ -195,7 +196,7 @@ export const CarouselItems = component$((props: parametros) => {
             <>
               {slides.value && (
                 <div class="carousel w-full">
-                  {slides.value.map((slide, idx) => {
+                  {slides.value.map((slide:any, idx:any) => {
                     const totalSlider = slides.value.length;
                     console.log("totalSlider", totalSlider);
                     const ref1 =
@@ -204,7 +205,7 @@ export const CarouselItems = component$((props: parametros) => {
                     return (
                       <div id={idx} class="carousel-item relative w-full " key={idx}>
                         <div class="flex justify-between mx-auto">
-                          {slide.map((item, idxi) => (
+                          {slide.map((item:any, idxi:any) => (
                             <div
                               class="grid h-full"
                               key={idx}
@@ -250,7 +251,7 @@ export const CarouselItems = component$((props: parametros) => {
             <>
                 {slidesSubProductos.value && (
                 <div class="carousel w-full">
-                  {slidesSubProductos.value.map((slide, idx) => {
+                  {slidesSubProductos.value.map((slide:any, idx:any) => {
                     const totalSlider = slidesSubProductos.value.length;
                     console.log("totalSlider", totalSlider);
                     const ref1 =
@@ -259,7 +260,7 @@ export const CarouselItems = component$((props: parametros) => {
                     return (
                       <div id={idx} class="carousel-item relative w-full " key={idx}>
                         <div class="flex justify-between mx-auto">
-                          {slide.map((item, idxi) => (
+                          {slide.map((item:any, idxi:any) => (
                             <div
                               class="grid h-full"
                               key={idx}
@@ -325,7 +326,7 @@ export const CarouselItems = component$((props: parametros) => {
             <>
                 {slidesProductos.value && (
                 <div class="carousel w-full">
-                  {slidesProductos.value.map((slide, idx) => {
+                  {slidesProductos.value.map((slide:any, idx:any) => {
                     const totalSlider = slidesProductos.value.length;
                     console.log("totalSlider", totalSlider);
                     const ref1 =
@@ -334,7 +335,7 @@ export const CarouselItems = component$((props: parametros) => {
                     return (
                       <div id={idx} class="carousel-item relative w-full " key={idx}>
                         <div class="flex justify-between mx-auto">
-                          {slide.map((item, idxi) => (
+                          {slide.map((item:any, idxi:any) => (
                             <div
                               class="grid h-full"
                               key={idx}
