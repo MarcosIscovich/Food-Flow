@@ -43,7 +43,7 @@ export const ViewMesas = component$((props: parametros) => {
                       ? "mesa--reservada"
                       : "mesa--libre"
                    //console.log($class);
-                   $class = "mesa m-1 w-16 " + $class 
+                   $class = "mesa m-1 w-16 btn-func " + $class 
 
                 return (
                   <div class="grid" key={idx}>
