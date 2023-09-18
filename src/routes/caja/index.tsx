@@ -6,10 +6,7 @@ import { CarouselItems } from './components/carousel';
 import { ModalClave } from '~/components/modalClave';
 import { newOrden, editOrden } from '~/services/orden.service';
 import { AuthContext } from '~/context/auth/auth.context';
-import { ModalBuscar } from './components/modalBuscar';
-
-
-
+import { Modal } from './components/modal';
 
 
 export default component$(() => {
@@ -37,7 +34,7 @@ export default component$(() => {
     { id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul" , classDisabled:"btn-func btn--verdeDisabled btn-disabled", action: $(() => { marcharComandaFlag.value = true }) },
     { id: 8, nombre: "Cambiar Camarero", icono: "fas fa-user-edit", class: "btn-func btn--azul", classDisabled:"btn-func btn--verdeDisabled btn-disabled" },
     { id: 12, nombre: "Editar Producto", icono: "fas fa-ban", class: "btn-func btn--azul" , classDisabled:"btn-func btn--verdeDisabled btn-disabled", action: $(() => { cancelBtn.value = true }) },
-    { id: 10, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul" , classDisabled:"btn-func btn--verdeDisabled btn-disabled", action: $(() => { modalBuscar.value = true }) },
+    { id: 10, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul" , classDisabled:"btn-func btn--verdeDisabled btn-disabled", action: $(() => my_modal_2.showModal()) },
     { id: 11, nombre: "Volver a Mesas", icono: "fas fa-ban", class: "btn-func btn--rojo" , classDisabled:"btn-func btn--verdeDisabled btn-disabled", action: $(() => { changeView.value = !changeView.value, cancelBtn.value = true }) },
     { id: 9, nombre: "Guardar Comanda", icono: "fas fa-save", class: "btn-func btn--verde" , classDisabled:"btn-func btn--verdeDisabled btn-disabled", action: $(() => { guardarComandaFlag.value = true }) },
   ]
@@ -110,7 +107,10 @@ export default component$(() => {
   return (
     <>
       <ModalClave />
-      <ModalBuscar show={modalBuscar.value} onClose$={$(() => { modalBuscar.value = false; })} title={"Buscar Producto"} />
+      {/* <ModalBuscar show={modalBuscar.value} onClose$={$(() => { modalBuscar.value = false; })} title={"Buscar Producto"} /> */}
+      <Modal >
+        Hola Mundo
+        </Modal>
       <div class="">
         <div class="flex flex-col">
           <div class="grid grid-cols-2">
