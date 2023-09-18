@@ -55,7 +55,7 @@ export const TableMesas = component$((props: parametros) => {
     openModalProducto.value = false
   })
 
-  
+
   const quitarProducto = $(() => {
     deleteProducto(authContext.token, itemSelected.value).then((resp) => {
       if (resp.success) {
@@ -68,7 +68,7 @@ export const TableMesas = component$((props: parametros) => {
         }
       }
     })
-   
+
 
   })
 
@@ -225,9 +225,8 @@ export const TableMesas = component$((props: parametros) => {
           console.log("hay solo 1 producto");
           quitarProducto();
           deleteMesa(authContext.token, mesaSelected).then((resp) => {
-            console.log("RESPONSE ELIMINAR MESA", resp);  
+            console.log("RESPONSE ELIMINAR MESA", resp);
             if (resp.status === 200) {
-              console.log("entro");
               eliminarProductoFlag.value = false;
               tienePermiso.value = false;
               clearData();
@@ -236,9 +235,9 @@ export const TableMesas = component$((props: parametros) => {
           })
 
         } else {
-          console.log("hay mas de 1 producto");          
+          console.log("hay mas de 1 producto");
           quitarProducto();
-          
+
 
         }
       }
