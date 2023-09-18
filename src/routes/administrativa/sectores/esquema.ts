@@ -3,13 +3,13 @@ import type { iPageData } from "~/interfaces/iPageData";
 import { z } from "@builder.io/qwik-city";
 
 
-export  const infoTitle: iPageData = {
-    titulo: "Sectores",
-    subTitulo: "Utilidad para gestionar sectores",
-    ayuda:
-      "Permite administrar los sectores del sistema",
-  };
-  
+export const infoTitle: iPageData = {
+  titulo: "Sectores",
+  subTitulo: "Utilidad para gestionar sectores",
+  ayuda:
+    "Permite administrar los rubros para luego asociarlo a los productos.",
+};
+
 export const modeloUrl = "sectores";
 export const filter = ["nombre"];
 
@@ -21,6 +21,7 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     visibleInTable: true,
     defaultValue: 0,
     type: "number",
+    ordenable: true,
   },
   {
     title: "Nombre",
@@ -30,21 +31,30 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     defaultValue: "",
     type: "text",
   },
-  
+  {
+    title: "Impresora",
+    fieldName: "impresora",
+    hiddenInMobile: false,
+    visibleInTable: true,
+    defaultValue: "",
+    type: "text",
+  },
 ];
- 
- export const validationSchema = z.object({
-   id: z.string().optional(),
-   nombre: z.string().min(1, "Ingrese el nombre del sector."),
-  
- });
- 
- export type FormField = "id" | "nombre" ;
- 
-export const dataInicial= {
-   id: "",
-   nombre: "",
-   impresora: ""
-   
- };
- 
+
+export const validationSchema = z.object({
+  id: z.string().optional(),
+  nombre: z.string().min(1, "Ingrese el nombre del sector."),
+  impresora: z.string().min(1, "Ingrese una impresora."),
+});
+
+export type FormField = {
+  id: string;
+  nombre: string;
+  impresora: string;
+};
+
+export const dataInicial = {
+  id: "",
+  nombre: "",
+  impresora: "",
+};

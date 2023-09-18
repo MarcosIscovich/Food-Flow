@@ -2,15 +2,20 @@ import type { iTableFieldConfiguration } from "~/interfaces/iTableFieldConfigura
 import type { iPageData } from "~/interfaces/iPageData";
 import { z } from "@builder.io/qwik-city";
 
+export interface IRol {
+  id?: string;
+  nombre: string;
+};
 
 export  const infoTitle: iPageData = {
-    titulo: "Rubros",
-    subTitulo: "Utilidad para gestionar Rubros",
+    titulo: "Roles",
+    subTitulo: "Utilidad para gestionar roles",
     ayuda:
-      "Agregar los rubros al sistema para poder cargar productos",
+      "Permite administrar los roles",
   };
   
-export const modeloUrl = "rubros";
+export const modeloUrl = "roles";
+
 export const filter = ["nombre"];
 
 export const tableFieldConfiguration: iTableFieldConfiguration[] = [
@@ -21,6 +26,7 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     visibleInTable: true,
     defaultValue: 0,
     type: "number",
+    ordenable: true,
   },
   {
     title: "Nombre",
@@ -29,19 +35,25 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     visibleInTable: true,
     defaultValue: "",
     type: "text",
-  },
-  
+  }
+
 ];
  
  export const validationSchema = z.object({
    id: z.string().optional(),
-   nombre: z.string().min(1, "Ingrese el nombre del rubro."),
+   nombre: z.string().min(1, "Ingrese el nombre del insumo."),  
  });
  
- export type FormField = "id" | "nombre" ;
+ export type FormField = "id" | "nombre";
  
-export const dataInicial= {
-   id: "",
+export let dataInicial= {
+   id: "0",
    nombre: "",
  };
+ 
+
+
+
+
+
  

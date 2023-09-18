@@ -1,14 +1,21 @@
-import { component$ , useSignal} from '@builder.io/qwik';
-import { Link, type DocumentHead } from '@builder.io/qwik-city';
-import { IcoAdicionador, IcoAdmin, IcoCajero } from '../../components/router-head/iconos/iconos';
+import { component$ } from '@builder.io/qwik';
+import {type DocumentHead } from '@builder.io/qwik-city';
+import { ViewMesasAdicionador } from './components/viewMesasAdicionador';
+import { UserLogged } from './components/userLogged';
+
+
 
 export default component$(() => {
-  const count = useSignal(0);
-  console.log("contador" , count.value);
+ 
   //para probar commit
   return (
-    <>
-      <h1 class="text-7xl">Adicionador 👋</h1>
+    <>     
+    <div class="p-7 bg-secondary-400" >      
+      <div class="flex justify-end mb-5">
+      <UserLogged />
+      </div>
+      <ViewMesasAdicionador />
+      </div> 
     </>
   );
 });

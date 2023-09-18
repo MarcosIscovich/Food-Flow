@@ -1,5 +1,5 @@
-export interface ISubRubro {
-    id?: string;
-    nombre: string;
-    rubroId: string;
-  }
+export interface ISubRubros {
+  id?: string;
+  nombre: string;
+  rubro_id: string;
+}

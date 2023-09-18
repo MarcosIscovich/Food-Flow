@@ -69,8 +69,9 @@ export const ModalGenerico = component$<parametros>((props) => {
           onClose$();
         })}
         title={title}
+        size="4xl"
       >
-        <div class="border-b border-gray-900/10 pb-4 pt-0 mt-0">
+        <div class="border-b border-gray-900/10 pb-4 pt-0 mt-5">
           <div class=" ">
             <div class="  ">
               <Form
@@ -79,14 +80,14 @@ export const ModalGenerico = component$<parametros>((props) => {
                   handleSubmit(values, event);
                 })}
               >
-                <div class="grid grid-cols-1 gap-x-2 gap-y-8 md:grid-cols-2">
+                <div class="grid grid-cols-1 gap-x-2 gap-y-1 md:grid-cols-2">
                   {tableFields != undefined &&
                     tableFields
                       .filter((item) => item.fieldName !== "id")
                       .map((field, index) => {
                         return (
                           <div key={index}>
-                            <Field name={field.fieldName as FormField}>
+                            <Field name={field.fieldName as any}>
                               {(fie, props) => (
                                 <div>
                                   {/* <label for={field.fieldName}>

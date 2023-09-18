@@ -1,9 +1,12 @@
 import { component$, Slot } from '@builder.io/qwik';
 
+
 export default component$(() => {
   return (
-  <div class="flex flex-col h-screen items-center justify-center">
+   /*  style="height: 100vh; width: 100vw; overflow: hidden;" */
+    <div >
     <Slot />
   </div>
+  
   )
 });

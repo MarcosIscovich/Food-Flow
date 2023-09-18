@@ -35,3 +35,170 @@ body {
   padding: 0;
   line-height: inherit;
 }
+
+@layer components {
+
+  /* btn funciones */
+  .btn-func {
+    /* background-color: theme('colors.white');
+    border-radius: theme('borderRadius.md');
+    padding: theme('spacing.6');
+    box-shadow: theme('boxShadow.xl');
+    width: 100%;
+    height: 6rem; */
+    --bg: #e74c3c;
+    --text-color: #fff;
+    position: relative;
+    width: 190px;
+    height: 6rem;
+    border: none;
+    background: var(--bg);
+    color: var(--text-color);
+    padding: 1em;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: 0.2s;
+    border-radius: 5px;
+    opacity: 0.8;
+    letter-spacing: 1px;
+    box-shadow: #fddaba 0px 7px 2px, #000 0px 8px 5px;
+  }
+
+  .btn-func:hover {
+    background-color: theme('colors.blue.400');
+    color: white;
+    opacity: 1;
+  }
+  .btn-func:active {
+    background-color: theme('colors.blue.600');
+    color: white;
+    top: 4px;
+    box-shadow: #fddaba 0px 3px 2px,#000 0px 3px 5px;
+  }
+  .btn-func:focus {
+    outline: none;
+  }
+  .btn-func:disabled {
+    background-color: theme('colors.gray.400');
+    color: white;
+  }
+  .btn-func .btn__icon {
+    margin-right: theme('spacing.2');
+  }
+  .btn-func .btn__text {
+    font-size: theme('fontSize.lg');
+  }
+  .btn-func .btn__icon--left {
+    margin-right: theme('spacing.2');
+  }
+  .btn-func .btn__icon--right {
+    margin-left: theme('spacing.2');
+  }
+
+  /* btn productos rubros y subrubros*/
+  /* flex justify-center items-center w-full h-full bg-primary-500 hover:bg-blue-400 text-white font-bold border-primary-500 hover:border-blue-500 rounded mouse-pointer */
+  .btn-rubro {
+    background-color: theme('colors.white');
+    border-radius: theme('borderRadius.md');
+    padding: theme('spacing.6');
+    box-shadow: theme('boxShadow.xl');
+    width: 100%;
+    height: 100%;
+  }
+  .btn-rubro:hover {
+    background-color: theme('colors.blue.400');
+    color: white;
+  }
+  .btn-rubro span {
+    font-size: theme('fontSize.xs');
+    
+  }
+
+  .btn--verde {
+    background-color: theme('colors.terciary.200');
+    color: black;
+  }
+  .btn--verdeDisabled {
+    background-color:grey;
+    cursor: not-allowed !important;
+    color: black;
+  }
+  .btn--verdeDisabled:hover {
+    background-color:grey;
+    cursor: not-allowed !important;
+    color: black;
+  }
+  .btn--verde:hover {
+    background-color: theme('colors.terciary.600');
+    color: white;
+  }
+  .btn--verde:hover {
+    background-color: theme('colors.terciary.600');
+    color: white;
+  }
+  .btn--rojo {
+    background-color: theme('colors.error.200');
+    color: black;
+  }
+  .btn--rojo:hover {
+    background-color: theme('colors.error.600');
+    color: white;
+  }
+  .btn--azul {
+    background-color: theme('colors.primary.300');
+    color: white;
+  }
+  .btn--azul:hover {
+    background-color: theme('colors.primary.600');
+    color: white;
+  }
+
+  .mesa{
+    flex:0 0 100px;
+    height: 50px;
+    width: 50px;
+    background: theme('colors.terciary.200');
+    padding: 0px;
+    margin:-3px -3px 0 0 ;   
+    text-align: center;
+    justify-content: space-around;
+    align-content: space-around;
+    font-size: x-large;
+
+}
+.mesa:hover{
+  background-color: theme('colors.terciary.600');
+  cursor: pointer;
+  color: white;
+}
+
+.mesa--ocupada{
+  background: theme('colors.error.300');
+  cursor: pointer;
+}
+.mesa--ocupada:hover{
+  background: theme('colors.error.600');
+  color: white;
+  cursor: pointer;
+}
+
+.mesa--reservada{
+  background: theme('colors.secondary.300');
+  cursor: pointer;
+}
+.mesa--reservada:hover{
+  background: theme('colors.secondary.600');
+  color: white;
+  cursor: pointer;
+}
+
+.mesa--cerrada{
+  background: theme('colors.neutral.300');
+}
+.mesa--cerrada:hover{
+  background: theme('colors.neutral.300');
+  cursor: not-allowed;
+  color: black;
+}
+  /* ... */
+}

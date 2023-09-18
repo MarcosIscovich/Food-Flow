@@ -4,18 +4,18 @@ import {
   useStore,
   $,
   useContext,
-  Slot,
 } from "@builder.io/qwik";
-import { type DocumentHead, routeLoader$ } from "@builder.io/qwik-city";
+import { z, type DocumentHead, routeLoader$ } from "@builder.io/qwik-city";
 
 import { Breadcrumbs } from "~/components/sharedComponents/utils/breadcrumbs";
 import { Confirm } from "~/components/sharedComponents/utils/confirm.component";
 import { Toast } from "~/components/sharedComponents/utils/toast.component";
 import { AuthContext } from "~/context/auth/auth.context";
 
-import { create, update, deleteItem } from "~/services/generico.service";
+import { create, update, deleteItem, lista } from "~/services/generico.service";
 import { ModalGenerico } from "./modalGenerico";
 import { IconQuestion } from "~/components/sharedComponents/icons";
+import type { ISector } from "~/interfaces/iSector";
 import { Table } from "~/components/sharedComponents/utils/table";
 import type { InitialValues } from "@modular-forms/qwik";
 import type { iTableFieldConfiguration } from "~/interfaces/iTableFieldConfiguratio";
@@ -23,59 +23,42 @@ import type { iPageData } from "~/interfaces/iPageData";
 import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial, filter } from './esquema';
 import type { FormField } from "./esquema";
 import { info, table } from "console";
-/* import { selectOption } from '../../../interfaces/iTableFieldConfiguratio'; */
-import type { ISector } from "~/interfaces/iSector";
+// import { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
 
 interface IBaseCrud extends ISector { }
 
-/* export const useSelectOption = routeLoader$<selectOption[]> (() => {
-
-  const selectOptions: selectOption[] = [
-    { value: "1", label: "1" },
-    { value: "2", label: "2" },
-    { value: "3", label: "3" },
-    { value: "4", label: "4" },
-    { value: "5", label: "5" },
-    { value: "6", label: "6" },
-    { value: "7", label: "7" },
-    { value: "8", label: "8" },
-    { value: "9", label: "9" },
-    { value: "10", label: "10" },
-  ];
-
-  return selectOptions;
-
-}); */
+/*   export const useSelectOption = routeLoader$<selectOption[]> (() => {
+  
+    const selectOptions: selectOption[] = [
+      { value: "1", label: "1" },
+      { value: "2", label: "2" },
+      { value: "3", label: "3" },
+      { value: "4", label: "4" },
+      { value: "5", label: "5" },
+      { value: "6", label: "6" },
+      { value: "7", label: "7" },
+      { value: "8", label: "8" },
+      { value: "9", label: "9" },
+      { value: "10", label: "10" },
+    ];
+  
+    return selectOptions;
+  
+  }); */
 
 export const useFormLoader = routeLoader$<InitialValues<IBaseCrud>>(() => {
 
   return dataInicial;
-  // const data = {
-  //   id: "",
-  //   cliente: "",
-  //   telefono: "",
-  //   hora: "",
-  //   dia: "",
-  //   cantpersonas: 0,
-  // };
-
 });
 
 export default component$(() => {
 
-  /* tableFieldConfiguration[5].options = useSelectOption().value; */
+  //tableFieldConfiguration[5].options = useSelectOption().value;
 
   const authContext = useContext(AuthContext);
   const itemData = useStore<IBaseCrud>(
     dataInicial
-    //   {
-    //   id: "",
-    //   cliente: "",
-    //   telefono: "",
-    //   hora: "",
-    //   dia: "",
-    //   cantpersonas: 0,
-    // }
+
   );
 
   const infoToast = useStore({
@@ -225,7 +208,7 @@ export default component$(() => {
                     modalOpen.value = true;
                   }}
                 >
-                  Nuevo Sector
+                  Nuevo
                 </button>
               </div>
             </div>

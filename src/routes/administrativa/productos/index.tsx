@@ -4,66 +4,117 @@ import {
   useStore,
   $,
   useContext,
-  Slot,
+  useTask$,
 } from "@builder.io/qwik";
-import { type DocumentHead, routeLoader$ } from "@builder.io/qwik-city";
+import {  type DocumentHead, routeLoader$ } from "@builder.io/qwik-city";
 
 import { Breadcrumbs } from "~/components/sharedComponents/utils/breadcrumbs";
 import { Confirm } from "~/components/sharedComponents/utils/confirm.component";
 import { Toast } from "~/components/sharedComponents/utils/toast.component";
 import { AuthContext } from "~/context/auth/auth.context";
 
-import { create, update, deleteItem } from "~/services/generico.service";
+import { create, update, deleteItem, lista } from "~/services/generico.service";
 import { ModalGenerico } from "./modalGenerico";
 import { IconQuestion } from "~/components/sharedComponents/icons";
 import { Table } from "~/components/sharedComponents/utils/table";
+import type { IProductos } from "~/interfaces/iProductos";
 import type { InitialValues } from "@modular-forms/qwik";
-import type { iTableFieldConfiguration } from "~/interfaces/iTableFieldConfiguratio";
-import type { iPageData } from "~/interfaces/iPageData";
-import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial, filter } from './esquema';
-import type { FormField } from "./esquema";
-import { info, table } from "console";
-import { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
-import type { IRubros } from "~/interfaces/iRubros";
+import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial, filter } from "./esquema";
+import type { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
 
-export const useSelectOption = routeLoader$<selectOption[]>(() => {
+interface IBaseCrud extends IProductos { }
 
-  const selectOptions: selectOption[] = [
-    { value: "1", label: "1" },
-    { value: "2", label: "2" },
-    { value: "3", label: "3" },
-    { value: "4", label: "4" },
-    { value: "5", label: "5" },
-    { value: "6", label: "6" },
-    { value: "7", label: "7" },
-    { value: "8", label: "8" },
-    { value: "9", label: "9" },
-    { value: "10", label: "10" },
-  ];
+// export const useProvedorLista = routeLoader$<selectOption[]> (async () => {
+//   //llamado al backend pidiento la lista de provedores
+//   const listado = await lista(
+//     authContext.token || "",
+//     1,
+//     8,
+//     inputTxt || "",
+//     order.value,
+//     orderSign.value,
+//     modeloURL,
+//     filter || "");
 
-  return selectOptions;
+//   console.log("lista", listado);
+//   const selectOptions: selectOption[] = listado.map((item: any) => {
+//     return { value: item.id, label: item.nombre };
+//   });
+//   return selectOptions;
 
-});
+// });
+
+// export const useSelectOption = routeLoader$<selectOption[]> (() => {
+
+//   const selectOptions: selectOption[] = [
+//     { value: "1", label: "Litros" },
+//     { value: "2", label: "Mililitro" },
+//     { value: "3", label: "Kilogramo" },
+//     { value: "4", label: "Gramo" },
+//     { value: "5", label: "Unidad" },
+//     { value: "6", label: "Decena" },
+//   ];
+
+//   return selectOptions;
+
+// });
 
 export const useFormLoader = routeLoader$<InitialValues<IBaseCrud>>(() => {
 
-  return dataInicial;
+  return dataInicial as InitialValues<IBaseCrud>;
 });
 
 export default component$(() => {
 
+
+
   const authContext = useContext(AuthContext);
   const itemData = useStore<IBaseCrud>(
-    /*  dataInicial */
-    {
-      id: "",
-      nombre: "",
-      //   telefono: "",
-      //   hora: "",
-      //   dia: "",
-      //   cantpersonas: 0,
-    }
+    dataInicial
   );
+
+  useTask$(async ({ track }) => {
+
+    track(() => authContext.token)
+    if (authContext.token) {
+      console.log("useTask$");
+      const subrubros = await lista(
+        authContext.token || "",
+        1,
+        20,
+        "",
+        "",
+        "",
+        "subrubros",
+        []);
+
+      console.log("SUBRUBROS", subrubros);
+
+      const selectOptions: selectOption[] = subrubros.data.map((item: any) => {
+        return { value: item.id, label: item.nombre };
+      });
+      tableFieldConfiguration[6].options = selectOptions;
+      console.log("tableFieldConfiguration", tableFieldConfiguration[6]);
+
+      const sectores = await lista(
+        authContext.token || "",
+        1,
+        20,
+        "",
+        "",
+        "",
+        "sectores",
+        []);
+
+      console.log("SECTORES", sectores);
+
+      const selectOptionsM: selectOption[] = sectores.data.map((item: any) => {
+        return { value: item.id, label: item.nombre };
+      });
+      tableFieldConfiguration[7].options = selectOptionsM;
+    }
+  });
+
 
   const infoToast = useStore({
     msg: "",
@@ -84,7 +135,7 @@ export default component$(() => {
     console.log("fillItemData", item);
     if (item === null) {
 
-      Object.entries(itemData).forEach(([key, value]) => {
+      Object.entries(itemData).forEach(([key]) => {
         //typeof value === "number" ? (itemData[key] = 0) : (itemData[key] = "");
         const _key = key as keyof IBaseCrud;
         itemData[_key] = "";
@@ -98,7 +149,7 @@ export default component$(() => {
       // itemData.dia = "";
       // itemData.cantpersonas = 0;
     } else {
-      Object.entries(itemData).forEach(([key, value]) => {
+      Object.entries(itemData).forEach(([key]) => {
         const _key = key as keyof IBaseCrud;
         itemData[_key] = item[_key] || "";
       });
@@ -169,87 +220,122 @@ export default component$(() => {
     modalOpen.value = true;
   });
 
+  return (
+    <div class="m-2">
+      <div class="flex flex-col w-full border-opacity-50">
+        <div class="grid card bg-base-200 rounded-box  place-items-center">
+          <div class="w-full place-content-start ">
+            <Breadcrumbs />
+          </div>
+          <div class="text-center flex flex-col  ">
+            <div
+              class="tooltip tooltip-bottom  tooltip-warning -mb-5 "
+              data-tip={infoTitle.ayuda}
+            >
+              <button class="btn btn-circle btn-ghost ">
+                <IconQuestion />
+              </button>{" "}
+            </div>
 
-  return <div>
-  <Breadcrumbs />
-  <div class="flex justify-center">
-    <span class="text-3xl font-bold mb-7">Productos</span>
-  </div>
+            <div class="  pt-0">
+              <h1 class="text-3xl font-bold  mt-3">
+                {infoTitle.titulo}
 
-  <div class="grid grid-cols-2 gap-4">
-    <div class="col-span-1">
-      <div class="bg-white p-4 rounded shadow">
-        <h2 class="text-xl font-bold mb-4">Tabla</h2>
-        <div class="flex mb-4">
-          <input type="text" class="flex-1 px-4 py-2 border rounded-l" placeholder="Buscar..." />
-          <button class="px-4 py-2 bg-blue-500 text-white rounded-r">Buscar</button>
+                <p class=" mt-0 text-sm ">{infoTitle.subTitulo}</p>
+              </h1>
+            </div>
+
+            <div class="grid  grid-cols-1 md:grid-cols-3   gap-1 p-4 w-full  ">
+              <div></div>
+              <div class="  first-line: text-center">
+                <input
+                  type="text"
+                  bind:value={inputTxt}
+                  placeholder="Búsqueda por texto"
+                  class="input input-bordered w-full max-w-xs "
+                />
+              </div>
+              <div class=" text-right ">
+                <button
+                  class="btn  mt-2 mr-5  btn-warning  "
+                  onClick$={async () => {
+                    await setItemData(null);
+                    modalOpen.value = true;
+                  }}
+                >
+                  Nuevo
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
-        <Table
-          fieldConfiguration={tableFieldConfiguration}
-          modeloURL={modeloUrl}
-          refreshData={refreshData.value}
-          inputTxt={inputTxt.value}
-          setItemData={setItemData}
-          confirmDeleteItem={confirmDeleteItem}
-          _order={"id"}
-          _orderSign={""}
-          filter={filter}
+        <div class=" h-2"></div>
+        <div class=" card bg-slate-300 rounded-box place-items-end">
+          <div class="overflow-x-auto  w-full p-2">
+            {
+              authContext.token &&
+              <Table
+                fieldConfiguration={tableFieldConfiguration}
+                modeloURL={modeloUrl}
+                refreshData={refreshData.value}
+                inputTxt={inputTxt.value}
+                setItemData={setItemData}
+                confirmDeleteItem={confirmDeleteItem}
+                _order={"id"}
+                _orderSign={""}
+                filter={filter}
+              />
+            }
+
+          </div>
+        </div>
+      </div>
+
+      {
+        authContext.token && <ModalGenerico
+          show={modalOpen.value}
+          itemData={itemData}
+          tableFields={tableFieldConfiguration}
+          onSave$={$(async (data: any) => {
+            await setItemData(data);
+            itemSave();
+          })}
+          onClose$={$(() => {
+            modalOpen.value = false;
+          })}
+          title={
+            itemData?.id && itemData?.id ? `Editar ${infoTitle.titulo}` : `Nuevo ${infoTitle.titulo}`
+          }
         />
-      </div>
+      }
+
+
+      <Confirm
+        msg={infoConfirm.msg}
+        show={infoConfirm.show}
+        resultOk$={$(() => {
+          itemDelete(itemData);
+        })}
+        resultCancel$={$(() => {
+          infoConfirm.show = false;
+        })}
+      />
+      <Toast
+        msg={infoToast.msg}
+        show={infoToast.show}
+        type={infoToast.type}
+        onFinish={$(() => (infoToast.show = false))}
+      />
     </div>
-
-    <div class="col-span-1">
-      <div class="bg-white p-4 rounded shadow">
-        <h2 class="text-xl font-bold mb-4">Agregar Nuevo Producto</h2>
-        <div class="grid grid-cols-2 gap-4">
-          <div class="col-span-2">
-            <label for="nombre" class="block mb-2">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" class="w-full px-4 py-2 border rounded mb-4" />
-
-            <label for="descripcion" class="block mb-2">Descripción:</label>
-            <input type="text" id="descripcion" name="descripcion" class="w-full px-4 py-2 border rounded mb-4" />
-          </div>
-
-          <div class="col-span-2">
-            <label for="disponible" class="flex items-center mb-2">
-              <input type="checkbox" id="disponible" name="disponible" class="mr-2" />
-              Disponible
-            </label>
-            Precio:
-            <input type="text" id="precio" name="precio" class="w-full px-4 py-2 border rounded mb-4" />
-          </div>
-
-          <div class="col-span-2">
-            <label for="imagen" class="block mb-2">Imagen:</label>
-            <input type="file" id="imagen" name="imagen" class="w-full px-4 py-2 border rounded mb-4" />
-          </div>
-
-          <div class="col-span-2">
-            <label for="subrubro" class="block mb-2">Subrubro:</label>
-            <select id="subrubro" name="subrubro" class="w-full px-4 py-2 border rounded mb-4">
-              <option value="1">Opción 1</option>
-              <option value="2">Opción 2</option>
-            </select>
-
-            <label for="sector" class="block mb-2">Sector:</label>
-            <select id="sector" name="sector" class="w-full px-4 py-2 border rounded mb-4">
-              <option value="1">Opción 1</option>
-              <option value="2">Opción 2</option>
-            </select>
-          </div>
-        </div>
-        <div class="flex justify-evenly">
-          <button class="px-4 py-2 bg-blue-500 text-white rounded">Guardar</button>
-          <button class="px-4 py-2 bg-blue-500 text-white rounded">Editar</button>
-          <button class="px-4 py-2 bg-blue-500 text-white rounded">Deshabilitar</button>
-          <button class="px-4 py-2 bg-blue-500 text-white rounded">Eliminar</button>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
+  );
 });
+
+export const head: DocumentHead = {
+  title: infoTitle.titulo,
+  meta: [
+    {
+      name: "description",
+      content: infoTitle.subTitulo,
+    },
+  ],
+};

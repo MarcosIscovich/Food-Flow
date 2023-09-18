@@ -4,7 +4,7 @@ import {
   useStore,
   $,
   useContext,
-  useVisibleTask$,
+  useTask$,
 } from "@builder.io/qwik";
 import { type DocumentHead, routeLoader$ } from "@builder.io/qwik-city";
 import { Breadcrumbs } from "~/components/sharedComponents/utils/breadcrumbs";
@@ -31,8 +31,9 @@ export default component$(() => {
   const itemData = useStore<IBaseCrud>(
     dataInicial
   );
+  const load = useSignal<boolean>(false);
 
-  useVisibleTask$(async({track}) => {
+  useTask$(async({track}) => {
     track(() => authContext.token);
     if(authContext?.token){
       console.log("useTask$");
@@ -42,7 +43,8 @@ export default component$(() => {
       const selectOptions: selectOption[] = iva.data.map((item: any) => {
         return { value: item.id, label: item.nombre };
       });
-      tableFieldConfiguration[10].options = selectOptions;
+      tableFieldConfiguration[9].options = selectOptions;
+      load.value = true;
     }
   });
 
@@ -186,7 +188,7 @@ export default component$(() => {
         <div class=" h-2"></div>
         <div class=" card bg-slate-300 rounded-box place-items-end">
           <div class="overflow-x-auto  w-full p-2">
-          {authContext.token && authContext.token && (
+          {authContext.token && load && (
             <Table
               fieldConfiguration={tableFieldConfiguration}
               modeloURL={modeloUrl}
@@ -202,7 +204,7 @@ export default component$(() => {
           </div>
         </div>
       </div>
-      {authContext.token && authContext.token && (
+      {authContext.token && load && (
       <ModalGenerico
         show={modalOpen.value}
         itemData={itemData}

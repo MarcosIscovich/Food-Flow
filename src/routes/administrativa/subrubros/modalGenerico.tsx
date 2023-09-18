@@ -37,7 +37,7 @@ export const ModalGenerico = component$<parametros>((props) => {
     validate: zodForm$(validationSchema),
   });
 
-  useTask$(({ track }) => {    
+  useTask$(({ track }) => {
     track(() => [_itemData, show]);
 
     if (_itemData != undefined && genericForm != undefined) {
@@ -75,10 +75,9 @@ export const ModalGenerico = component$<parametros>((props) => {
             <div class="  ">
               <Form
                 onSubmit$={$((values, event) => {
-                  console.log("values", values , event);
+                  console.log("values", values);
                   handleSubmit(values, event);
                 })}
-                
               >
                 <div class="grid grid-cols-1 gap-x-2 gap-y-8 md:grid-cols-2">
                   {tableFields != undefined &&
@@ -87,21 +86,10 @@ export const ModalGenerico = component$<parametros>((props) => {
                       .map((field, index) => {
                         return (
                           <div key={index}>
-                            <Field name={field.fieldName as FormField}>
+                            <Field name={field.fieldName as any}>
                               {(fie, props) => (
                                 <div>
-                                  {/* <label for={field.fieldName}>
-                                    <span class="   !text-xs">
-                                      {field.title}
-                                    </span>
-                                  </label> */}
                                   <InputType field={field} fie={fie} propss={props} />
-                                  {/* <input
-                                    class="block p-2 w-full input input-sm max-w-xs rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                                    {...props}
-                                    type={field.type}
-                                    value={fie.value}
-                                  /> */}
                                   {fie.value && fie.error && (
                                     <div>{fie.error}</div>
                                   )}

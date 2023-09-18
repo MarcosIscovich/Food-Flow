@@ -5,9 +5,9 @@ import { z } from "@builder.io/qwik-city";
 
 export  const infoTitle: iPageData = {
     titulo: "Rubros",
-    subTitulo: "Utilidad para gestionar Rubros",
+    subTitulo: "Utilidad para gestionar rubros",
     ayuda:
-      "Agregar los rubros al sistema para poder cargar productos",
+      "Permite administrar los rubros para luego asociarlo a los subrubros.",
   };
   
 export const modeloUrl = "rubros";
@@ -30,17 +30,16 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     defaultValue: "",
     type: "text",
   },
-  
 ];
  
  export const validationSchema = z.object({
    id: z.string().optional(),
-   nombre: z.string().min(1, "Ingrese el nombre del rubro."),
+   nombre: z.string().min(1, "Ingrese el nombre del usuario."), 
  });
  
  export type FormField = "id" | "nombre" ;
  
-export let dataInicial= {
+export const dataInicial= {
    id: "",
    nombre: "",
  };

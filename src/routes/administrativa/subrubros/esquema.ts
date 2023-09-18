@@ -4,10 +4,10 @@ import { z } from "@builder.io/qwik-city";
 
 
 export const infoTitle: iPageData = {
-  titulo: "Subrubros",
+  titulo: "SubRubros",
   subTitulo: "Utilidad para gestionar Subrubros",
   ayuda:
-    "Agregar los Subrubros al sistema para poder cargar productos",
+    "Permite administrar los subrubros para luego asociarlo a los productos.",
 };
 
 export const modeloUrl = "subrubros";
@@ -21,14 +21,7 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     visibleInTable: true,
     defaultValue: 0,
     type: "number",
-  },
-  {
-    title: "Rubro",
-    fieldName: "rubroId",
-    hiddenInMobile: false,
-    visibleInTable: true,
-    defaultValue: "",
-    type: "select",
+    ordenable: true,
   },
   {
     title: "Nombre",
@@ -38,20 +31,33 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     defaultValue: "",
     type: "text",
   },
-
-
+  {
+    title: "Rubro",
+    fieldName: "rubro_id",
+    hiddenInMobile: false,
+    visibleInTable: true,
+    defaultValue: "",
+    options: [],
+    type: "select",
+  },
 ];
 
 export const validationSchema = z.object({
   id: z.string().optional(),
   nombre: z.string().min(1, "Ingrese el nombre del rubro."),
-  rubroId: z.string().min(1, "Ingrese el rubro."),
+  rubro_id: z.union([z.string().min(1, "Ingrese un Rubro."), z.number().min(1, "Ingrese un Rubro.")]),
 });
 
-export type FormField = "id" | "nombre";
+export type FormField = "id" | "nombre" | "rubro_id";
+
+/* export type FormField = {
+  id: string;
+  nombre: string;
+  rubro_id: string;
+}; */
 
 export const dataInicial = {
   id: "",
   nombre: "",
-  rubroId: "",
+  rubro_id: "",
 };

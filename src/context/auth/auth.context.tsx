@@ -6,6 +6,12 @@ export interface User {
     name: string;
     rol: string;
     imagen: string;
+    operario : {
+        id: number;
+        clave: string;
+        nombre: string;
+        rol: string;
+    }
 }
 
 export interface AuthState {
