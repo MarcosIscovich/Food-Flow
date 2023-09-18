@@ -41,13 +41,7 @@ export const ModalSupervisor = component$((props: parametros) => {
                     openModalClave.value = false;
                 }
             }
-
-
-
         });
-
-
-
     });
 
     return (

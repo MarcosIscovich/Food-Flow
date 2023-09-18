@@ -4,6 +4,7 @@ import { findUsers } from "~/services/generico.service";
 import { getMesa } from '~/services/mesa.service';
 import { ModalSupervisor } from '../modalSupervisor/index';
 import { deleteProducto } from '~/services/comanda.service';
+import { deleteMesa } from '~/services/mesa.service';
 
 interface parametros {
   mesaSelected: any;
@@ -11,6 +12,7 @@ interface parametros {
   guardarComandaFlag: any;
   marcharComandaFlag: any;
   eliminarProductoFlag: any;
+  eliminarMesaFlag: any;
   cancelBtn: any;
   newComanda: PropFunction<(productoSelected: any, camarero: any, total: any) => any>;
   editComanda: PropFunction<(productos: any, total: any, orden: any) => any>;
@@ -20,7 +22,9 @@ interface parametros {
 
 export const TableMesas = component$((props: parametros) => {
 
-  const { mesaSelected, productoSelected, guardarComandaFlag, marcharComandaFlag, eliminarProductoFlag, cancelBtn, cancelData, newComanda, closeTable, editComanda } = props;
+  const { mesaSelected, productoSelected, guardarComandaFlag,
+    marcharComandaFlag, eliminarProductoFlag, eliminarMesaFlag,
+    cancelBtn, cancelData, newComanda, closeTable, editComanda } = props;
   const authContext = useContext(AuthContext);
   const users = useStore<any>([]);
   const camareroID = useStore<any>({});
@@ -49,6 +53,23 @@ export const TableMesas = component$((props: parametros) => {
     mesaSelected.value = null;
     orden.value = null;
     openModalProducto.value = false
+  })
+
+  
+  const quitarProducto = $(() => {
+    deleteProducto(authContext.token, itemSelected.value).then((resp) => {
+      if (resp.success) {
+        console.log("RESPONSE ELMINIAR PRODUCTO", resp);
+        if (productos.length === 1) {
+          productos.splice(filaSeleccinada.value, 1);
+          eliminarProductoFlag.value = false;
+          tienePermiso.value = false;
+          total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
+        }
+      }
+    })
+   
+
   })
 
   useTask$(async ({ track }) => {
@@ -93,13 +114,21 @@ export const TableMesas = component$((props: parametros) => {
 
       if (itemSelected.value.procesada === 1) {
         openModalClave.value = true;
-        eliminarProductoFlag.value = false;
+
       } else {
         productos.splice(filaSeleccinada.value, 1);
         total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
         eliminarProductoFlag.value = false;
         alert("Producto Eliminado");
       }
+    }
+  });
+
+  useTask$(async ({ track }) => {
+    track(() => { eliminarMesaFlag.value })
+    console.log("ELiminar Mesa", eliminarMesaFlag.value,);
+    if (eliminarMesaFlag.value) {
+      openModalClave.value = true;
     }
   });
 
@@ -145,7 +174,7 @@ export const TableMesas = component$((props: parametros) => {
     if (mesaSelected.estado_id == "2") {
       console.log("Mesa Ocupada", mesaSelected);
       getMesa(authContext.token, mesaSelected.id).then((item) => {
-        console.log("Mesa DATA", item.mesa.orden.comandas[0].productos);
+        console.log("Mesa DATA", item.mesa);
         if (item) {
           orden.value = item.mesa.orden;
           console.log("Camarero", camareroSelected.value);
@@ -177,21 +206,46 @@ export const TableMesas = component$((props: parametros) => {
   useTask$(async ({ track }) => {
     track(() => { tienePermiso.value })
     if (tienePermiso.value) {
-      console.log("Tiene Permiso" , itemSelected.value);
-      deleteProducto(authContext.token, itemSelected.value).then((resp) => {
-        console.log("DELTE PRODUCTO", resp);
-        if(resp.success){
-          productos.splice(filaSeleccinada.value, 1);
-          eliminarProductoFlag.value = false;
-          tienePermiso.value = false;
-          total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
+      if (eliminarMesaFlag.value) {
+        console.log("ENTRA ELIMINAR MESA", mesaSelected);
+        deleteMesa(authContext.token, mesaSelected).then((resp) => {
+          console.log("RESPONSE ELIMINAR MESA", resp);
+          if (resp.status === 200) {
+            console.log("entro");
+            eliminarMesaFlag.value = false;
+            tienePermiso.value = false;
+            clearData();
+            closeTable();
+          }
+        })
+      }
+      if (eliminarProductoFlag.value) {
+        console.log("ENTRA ELIMINAR PRODUCTO");
+        if (productos.length == 1) {
+          console.log("hay solo 1 producto");
+          quitarProducto();
+          deleteMesa(authContext.token, mesaSelected).then((resp) => {
+            console.log("RESPONSE ELIMINAR MESA", resp);  
+            if (resp.status === 200) {
+              console.log("entro");
+              eliminarProductoFlag.value = false;
+              tienePermiso.value = false;
+              clearData();
+              closeTable();
+            }
+          })
+
+        } else {
+          console.log("hay mas de 1 producto");          
+          quitarProducto();
+          
+
         }
-        
-        
-    })
+      }
     }
-    
+
   });
+
 
   const addProducto = $(() => {
     console.log("data", data);

@@ -24,6 +24,7 @@ export default component$(() => {
   const guardarComandaFlag = useSignal<boolean>(false);
   const marcharComandaFlag = useSignal<boolean>(false);
   const eliminarProductoFlag = useSignal<boolean>(false);
+  const eliminarMesaFlag = useSignal<boolean>(false);
   const modalBuscar = useSignal<boolean>(false);
   const cancelBtn = useSignal<boolean>(false);
   const mesaSelected = useStore<any>({});
@@ -31,7 +32,7 @@ export default component$(() => {
   const funcionalidades = [
     { id: 1, nombre: "Cobrar Mesa", icono: "fas fa-cash-register", class: "btn-func btn--verde" },
     { id: 2, nombre: "Reservar Mesa", icono: "fas fa-search", class: "btn-func btn--azul" },
-    { id: 3, nombre: "Eliminar Mesa", icono: "fas fa-trash", class: "btn-func btn--rojo" },
+    { id: 3, nombre: "Eliminar Mesa", icono: "fas fa-trash", class: "btn-func btn--rojo" , action: $(() => { eliminarMesaFlag.value = true })},
     { id: 3, nombre: "Eliminar Producto", icono: "fas fa-trash", class: "btn-func btn--azul", action: $(() => { eliminarProductoFlag.value = true }) },
     { id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul" },
     { id: 5, nombre: "Dividir Mesa", icono: "fas fa-columns", class: "btn-func btn--azul" },
@@ -40,7 +41,7 @@ export default component$(() => {
     { id: 8, nombre: "Cambiar Camarero", icono: "fas fa-user-edit", class: "btn-func btn--azul" },
     { id: 9, nombre: "Guardar Comanda", icono: "fas fa-save", class: "btn-func btn--verde", action: $(() => { guardarComandaFlag.value = true }) },
     { id: 10, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul", action: $(() => { modalBuscar.value = true }) },
-    { id: 11, nombre: "Cancelar Mesa", icono: "fas fa-ban", class: "btn-func btn--rojo", action: $(() => { changeView.value = !changeView.value, cancelBtn.value = true }) },
+    { id: 11, nombre: "Volver a Mesas", icono: "fas fa-ban", class: "btn-func btn--rojo", action: $(() => { changeView.value = !changeView.value, cancelBtn.value = true }) },
 
     // { id: 12, nombre: "funcionalidad 2", icono: "fas fa-search" },
     // { id: 13, nombre: "funcionalidad 3", icono: "fas fa-search" },
@@ -128,7 +129,7 @@ export default component$(() => {
                     cancelBtn={cancelBtn}
                     cancelData={cancelData}
                     eliminarProductoFlag={eliminarProductoFlag}
-
+                    eliminarMesaFlag={eliminarMesaFlag}
                   />
                 </div>
               ) : (
