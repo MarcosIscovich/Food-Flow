@@ -101,38 +101,34 @@ export const TableMesas = component$((props: parametros) => {
   })
 
   const agruparProductos = $(() => {
-    const productosAgrupados: any = []
-    const productosAgrupadosMap: any = {};
-
+    const productosAgrupados: any = {};
+    const productosAgrupadosArray: any[] = [];
+  
     productos.forEach((producto) => {
-      if (!productosAgrupadosMap[producto.nombre]) {
-        productosAgrupadosMap[producto.nombre] = { ...producto };
+      if (!(producto.nombre in productosAgrupados)) {
+        productosAgrupados[producto.nombre] = { ...producto };
       } else {
-        productosAgrupadosMap[producto.nombre].cantidad +=  producto.cantidad;
+        productosAgrupados[producto.nombre].cantidad += producto.cantidad;
       }
     });
-
-    for (const key in productosAgrupadosMap) {
-      if (productosAgrupadosMap.hasOwnProperty(key)) {
-        productosAgrupados.push(productosAgrupadosMap[key]);
+  
+    for (const key in productosAgrupados) {
+      if (Object.prototype.hasOwnProperty.call(productosAgrupados, key)) {
+        productosAgrupadosArray.push(productosAgrupados[key]);
       }
     }
-    console.log("Productos Agrupados", productosAgrupados);
-
-    return productosAgrupados;
-
-
-  })
+    console.log("Productos Agrupados", productosAgrupadosArray);
+  
+    return productosAgrupadosArray;
+  });
 
   useTask$(async ({ track }) => {
     track(() => authContext.token)
     if (authContext.token) {
       console.log("useTask$");
-      const response = await findUsers(authContext.token, "findusers");
-      console.log("Response", response);
-
+      const response = await findUsers(authContext.token, "findusers");     
       users.value = response.filter((user: any) => user.role.nombre === "Camarero")
-      console.log("Users", users);
+      
     }
   });
 
@@ -142,40 +138,26 @@ export const TableMesas = component$((props: parametros) => {
       console.log("Agrupar Flag", productos);
 
       const procesada = productos.some((producto: any) => producto.procesada === 1);
-      console.log("procesada", procesada);
+      const noAgrupa = productos.some((producto: any) => producto.procesada === 1 && !productoSelected.procesada);      
+      
+      if (noAgrupa) {
+        alert("No se puede agrupar productos comandados junto a los no comandados");
+        clearData();
+        refreshMesa.value = !refreshMesa.value;
+        return
+      }
+      const data = await agruparProductos();
+      productos.length = 0;
+      productos.push(...data);
+
       if (procesada) {
-        const resp = await agruparProductos();
-        agruparItems(authContext.token, orden.value.id, resp).then((resp) => {          
-          if (resp.success) {
+        agruparItems(authContext.token, orden.value.id, data).then((resp) => {          
+          if (resp.success) {data
             refreshMesa.value = !refreshMesa.value;
             clearData();
           }
         })
       }
-      else {        
-        const newProduct = await agruparProductos();
-        productos.length = 0;
-        newProduct.map((newProducto: any) => {
-          productos.push({
-            id: newProducto.id,
-            nombre: newProducto.nombre,
-            precio: newProducto.precio,
-            cantidad: newProducto.cantidad,
-            preferencia: newProducto.preferencia,
-            procesada: newProducto.procesada,
-            comanda_id: newProducto.comanda_id,
-            orden_id: newProducto.orden_id
-          })
-          
-        })
-        console.log(" ELSE Productos Agrupados", productos.values);
-
-
-      }
-
-
-
-
     }
   });
 
@@ -378,8 +360,6 @@ export const TableMesas = component$((props: parametros) => {
 
   })
 
-
-
   const selectProducto = $((producto: any) => {
     console.log("Select Producto", producto);
     itemSelected.value = producto;
@@ -388,7 +368,6 @@ export const TableMesas = component$((props: parametros) => {
 
   return (
     <>
-
       <ModalSupervisor openModalClave={openModalClave} tienePermiso={tienePermiso} />
 
       <div class="card  bg-secondary-100" style="height: 100%;">
@@ -448,10 +427,10 @@ export const TableMesas = component$((props: parametros) => {
                                   <span class="label-text">Cantidad</span>
                                 </label>
                                 <input
-                                  type="string"
+                                  type="number"
                                   placeholder="Cantidad"
                                   name="cantidad"
-                                  bind: value={cantidad}
+                                  bind:value={cantidad}
                                   class="input input-bordered"
                                 />
                               </div>
@@ -465,7 +444,7 @@ export const TableMesas = component$((props: parametros) => {
                                       type="string"
                                       placeholder="Preferencia"
                                       name="preferencia"
-                                      bind: value={preferencia}
+                                      bind:value={preferencia}
                                       class="input input-bordered"
                                     />
                                   </div>
