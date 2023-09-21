@@ -3,8 +3,9 @@ import { AuthContext } from '~/context/auth/auth.context';
 import { findUsers } from "~/services/generico.service";
 import { getMesa } from '~/services/mesa.service';
 import { ModalSupervisor } from '../modalSupervisor/index';
-import { deleteProducto } from '~/services/comanda.service';
+import { deleteProducto, updateProducto } from '~/services/comanda.service';
 import { deleteMesa } from '~/services/mesa.service';
+import { agruparItems } from '~/services/orden.service';
 
 interface parametros {
   mesaSelected: any;
@@ -13,6 +14,7 @@ interface parametros {
   marcharComandaFlag: any;
   eliminarProductoFlag: any;
   eliminarMesaFlag: any;
+  agruparFlag: any;
   cancelBtn: any;
   newComanda: PropFunction<(productoSelected: any, camarero: any, total: any) => any>;
   editComanda: PropFunction<(productos: any, total: any, orden: any) => any>;
@@ -23,7 +25,7 @@ interface parametros {
 export const TableMesas = component$((props: parametros) => {
 
   const { mesaSelected, productoSelected, guardarComandaFlag,
-    marcharComandaFlag, eliminarProductoFlag, eliminarMesaFlag,
+    marcharComandaFlag, eliminarProductoFlag, eliminarMesaFlag, agruparFlag,
     cancelBtn, cancelData, newComanda, closeTable, editComanda } = props;
   const authContext = useContext(AuthContext);
   const users = useStore<any>([]);
@@ -40,6 +42,7 @@ export const TableMesas = component$((props: parametros) => {
   const itemSelected = useStore<any>({});
   const openModalClave = useSignal<boolean>(false);
   const tienePermiso = useSignal<boolean>(false);
+  const refreshMesa = useSignal<boolean>(false);
 
 
   console.log("Mesa: ", mesaSelected);
@@ -52,7 +55,14 @@ export const TableMesas = component$((props: parametros) => {
     total.value = 0;
     mesaSelected.value = null;
     orden.value = null;
+    cantidad.value = "";
+    preferencia.value = "";
     openModalProducto.value = false
+    openModalClave.value = false;
+    tienePermiso.value = false;
+    itemSelected.value = null;
+    filaSeleccinada.value = null;
+    agruparFlag.value = false;
   })
 
 
@@ -64,10 +74,52 @@ export const TableMesas = component$((props: parametros) => {
           productos.splice(filaSeleccinada.value, 1);
           eliminarProductoFlag.value = false;
           tienePermiso.value = false;
+          openModalClave.value = false;
+          openModalProducto.value = false;
+          refreshMesa.value = !refreshMesa.value;
+        } else {
+          productos.splice(filaSeleccinada.value, 1);
           total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
+          eliminarProductoFlag.value = false;
+          openModalClave.value = false;
+          openModalProducto.value = false;
         }
       }
     })
+  })
+
+  const liberarMesa = $(() => {
+    deleteMesa(authContext.token, mesaSelected).then((resp) => {
+      console.log("RESPONSE ELIMINAR MESA", resp);
+      if (resp.status === 200) {
+        eliminarProductoFlag.value = false;
+        tienePermiso.value = false;
+        clearData();
+        closeTable();
+      }
+    })
+  })
+
+  const agruparProductos = $(() => {
+    const productosAgrupados: any = []
+    const productosAgrupadosMap: any = {};
+
+    productos.forEach((producto) => {
+      if (!productosAgrupadosMap[producto.nombre]) {
+        productosAgrupadosMap[producto.nombre] = { ...producto };
+      } else {
+        productosAgrupadosMap[producto.nombre].cantidad +=  producto.cantidad;
+      }
+    });
+
+    for (const key in productosAgrupadosMap) {
+      if (productosAgrupadosMap.hasOwnProperty(key)) {
+        productosAgrupados.push(productosAgrupadosMap[key]);
+      }
+    }
+    console.log("Productos Agrupados", productosAgrupados);
+
+    return productosAgrupados;
 
 
   })
@@ -83,6 +135,52 @@ export const TableMesas = component$((props: parametros) => {
       console.log("Users", users);
     }
   });
+
+  useTask$(async ({ track }) => {
+    track(() => agruparFlag.value)
+    if (agruparFlag.value) {
+      console.log("Agrupar Flag", productos);
+
+      const procesada = productos.some((producto: any) => producto.procesada === 1);
+      console.log("procesada", procesada);
+      if (procesada) {
+        const resp = await agruparProductos();
+        agruparItems(authContext.token, orden.value.id, resp).then((resp) => {          
+          if (resp.success) {
+            refreshMesa.value = !refreshMesa.value;
+            clearData();
+          }
+        })
+      }
+      else {        
+        const newProduct = await agruparProductos();
+        productos.length = 0;
+        newProduct.map((newProducto: any) => {
+          productos.push({
+            id: newProducto.id,
+            nombre: newProducto.nombre,
+            precio: newProducto.precio,
+            cantidad: newProducto.cantidad,
+            preferencia: newProducto.preferencia,
+            procesada: newProducto.procesada,
+            comanda_id: newProducto.comanda_id,
+            orden_id: newProducto.orden_id
+          })
+          
+        })
+        console.log(" ELSE Productos Agrupados", productos.values);
+
+
+      }
+
+
+
+
+    }
+  });
+
+
+
 
   useTask$(async ({ track }) => {
     track(() => camareroID.value)
@@ -107,13 +205,23 @@ export const TableMesas = component$((props: parametros) => {
     }
   });
   useTask$(async ({ track }) => {
-    track(() => { eliminarProductoFlag.value })
-    console.log("ELiminar Producto", eliminarProductoFlag.value,);
-    if (eliminarProductoFlag.value) {
+    track(() => { eliminarProductoFlag.value, tienePermiso.value })
+
+    if (eliminarProductoFlag.value && itemSelected.value) {
       console.log("ELiminar Producto", itemSelected.value);
 
       if (itemSelected.value.procesada === 1) {
         openModalClave.value = true;
+        if (eliminarProductoFlag.value && tienePermiso.value) {
+          if (itemSelected.value.cantidad === 1) {
+            quitarProducto();
+            if (productos.length === 1) {
+              liberarMesa();
+            }
+          } else {
+            openModalProducto.value = true;
+          }
+        }
 
       } else {
         productos.splice(filaSeleccinada.value, 1);
@@ -122,13 +230,28 @@ export const TableMesas = component$((props: parametros) => {
         alert("Producto Eliminado");
       }
     }
+
   });
 
   useTask$(async ({ track }) => {
-    track(() => { eliminarMesaFlag.value })
+    track(() => { eliminarMesaFlag.value, tienePermiso.value })
     console.log("ELiminar Mesa", eliminarMesaFlag.value,);
     if (eliminarMesaFlag.value) {
       openModalClave.value = true;
+    }
+
+    if (eliminarMesaFlag.value && tienePermiso.value) {
+      console.log("ENTRA ELIMINAR MESA", mesaSelected);
+      deleteMesa(authContext.token, mesaSelected).then((resp) => {
+        console.log("RESPONSE ELIMINAR MESA", resp);
+        if (resp.status === 200) {
+          console.log("entro");
+          eliminarMesaFlag.value = false;
+          tienePermiso.value = false;
+          clearData();
+          closeTable();
+        }
+      })
     }
   });
 
@@ -152,8 +275,12 @@ export const TableMesas = component$((props: parametros) => {
       console.log("Productos no ENviados", _productos);
       if (_productos.length > 0 && flagProcesada) {
         editComanda(_productos, total.value, orden.value.id)
+        refreshMesa.value = !refreshMesa.value;
+        openModalProducto.value = false
       } else if (productos.length > 0 && !flagProcesada) {
         await newComanda(productos, camareroSelected.value?.id, total.value);
+        refreshMesa.value = !refreshMesa.value;
+        openModalProducto.value = false
       }
       else {
         if (guardarComandaFlag.value && !marcharComandaFlag.value) {
@@ -170,8 +297,8 @@ export const TableMesas = component$((props: parametros) => {
   });
 
   useTask$(async ({ track }) => {
-    track(() => { mesaSelected.estado_id })
-    if (mesaSelected.estado_id == "2") {
+    track(() => { mesaSelected.estado_id, refreshMesa.value })
+    if (mesaSelected.estado_id == "2" || refreshMesa.value) {
       console.log("Mesa Ocupada", mesaSelected);
       getMesa(authContext.token, mesaSelected.id).then((item) => {
         console.log("Mesa DATA", item.mesa);
@@ -203,64 +330,55 @@ export const TableMesas = component$((props: parametros) => {
 
     }
   });
-  useTask$(async ({ track }) => {
-    track(() => { tienePermiso.value })
-    if (tienePermiso.value) {
-      if (eliminarMesaFlag.value) {
-        console.log("ENTRA ELIMINAR MESA", mesaSelected);
-        deleteMesa(authContext.token, mesaSelected).then((resp) => {
-          console.log("RESPONSE ELIMINAR MESA", resp);
-          if (resp.status === 200) {
-            console.log("entro");
-            eliminarMesaFlag.value = false;
-            tienePermiso.value = false;
-            clearData();
-            closeTable();
-          }
-        })
+
+  const editarProducto = $((item: any) => {
+    updateProducto(authContext.token, item).then((resp) => {
+      console.log("RESPONSE EDITAR PRODUCTO", resp);
+      if (resp.success) {
+        refreshMesa.value = true;
+        openModalProducto.value = false;
+        eliminarProductoFlag.value = false;
+        clearData();
       }
-      if (eliminarProductoFlag.value) {
-        console.log("ENTRA ELIMINAR PRODUCTO");
-        if (productos.length == 1) {
-          console.log("hay solo 1 producto");
-          quitarProducto();
-          deleteMesa(authContext.token, mesaSelected).then((resp) => {
-            console.log("RESPONSE ELIMINAR MESA", resp);
-            if (resp.status === 200) {
-              eliminarProductoFlag.value = false;
-              tienePermiso.value = false;
-              clearData();
-              closeTable();
-            }
-          })
 
-        } else {
-          console.log("hay mas de 1 producto");
-          quitarProducto();
-
-
-        }
-      }
-    }
-
-  });
-
+    })
+  })
 
   const addProducto = $(() => {
     console.log("data", data);
-    productos.push({
-      id: productoSelected?.id,
-      nombre: productoSelected?.nombre,
-      precio: productoSelected?.precio,
-      cantidad: cantidad.value,
-      preferencia: preferencia.value
-    })
-    console.log("Productos", productos);
-    total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
-    cantidad.value = "";
-    preferencia.value = "";
-    openModalProducto.value = false;
+    if (itemSelected.value) {
+      console.log("EDIT", itemSelected.value, cantidad.value, preferencia.value);
+      if (cantidad.value < itemSelected.value.cantidad) {
+        itemSelected.value.cantidad = cantidad.value;
+        editarProducto(itemSelected.value);
+      } else if (cantidad.value == itemSelected.value.cantidad) {
+        quitarProducto();
+        if (productos.length === 0) {
+          liberarMesa();
+        }
+      } else {
+        alert("No puede quitar mas cantidad de la que ya tiene");
+        return;
+      }
+
+    } else {
+      productos.push({
+        id: productoSelected?.id,
+        nombre: productoSelected?.nombre,
+        precio: productoSelected?.precio,
+        cantidad: cantidad.value,
+        preferencia: preferencia.value
+      })
+      console.log("Productos", productos);
+      total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
+      cantidad.value = "";
+      preferencia.value = "";
+      openModalProducto.value = false;
+    }
+
   })
+
+
 
   const selectProducto = $((producto: any) => {
     console.log("Select Producto", producto);
@@ -302,7 +420,6 @@ export const TableMesas = component$((props: parametros) => {
                         })}
                     </select>
                   )
-
                 }
 
               </div>
@@ -334,22 +451,26 @@ export const TableMesas = component$((props: parametros) => {
                                   type="string"
                                   placeholder="Cantidad"
                                   name="cantidad"
-                                  bind:value={cantidad}
+                                  bind: value={cantidad}
                                   class="input input-bordered"
                                 />
                               </div>
-                              <div class="form-control ml-1">
-                                <label class="label">
-                                  <span class="label-text">Preferencia</span>
-                                </label>
-                                <input
-                                  type="string"
-                                  placeholder="Preferencia"
-                                  name="preferencia"
-                                  bind:value={preferencia}
-                                  class="input input-bordered"
-                                />
-                              </div>
+                              {
+                                !itemSelected.value && (
+                                  <div class="form-control ml-1">
+                                    <label class="label">
+                                      <span class="label-text">Preferencia</span>
+                                    </label>
+                                    <input
+                                      type="string"
+                                      placeholder="Preferencia"
+                                      name="preferencia"
+                                      bind: value={preferencia}
+                                      class="input input-bordered"
+                                    />
+                                  </div>
+                                )
+                              }
                             </div>
                             <div class="grid grid-col-3 grid-flow-col gap-2 justify-between">
                               <div class="form-control mt-6 col-span-2">

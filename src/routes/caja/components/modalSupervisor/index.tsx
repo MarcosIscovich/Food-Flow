@@ -31,17 +31,19 @@ export const ModalSupervisor = component$((props: parametros) => {
             } else {
                 if (!accessControl(resp.data.role.nombre, "ACCESO-FULL")) {
                     alert("No tiene permisos para acceder a esta seccion");
+                    clave.value = "";
                     tienePermiso.value = false;
                     openModalClave.value = false;
-                    clave.value = "";
                     return;
                 } else {
-                    tienePermiso.value = true;
                     clave.value = "";
+                    tienePermiso.value = true;
                     openModalClave.value = false;
                 }
             }
         });
+
+
     });
 
     return (
