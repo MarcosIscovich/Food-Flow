@@ -11,7 +11,7 @@ interface parametros {
 
 export const CarouselItems = component$((props: parametros) => {
 
-  const {sendProducto} = props;
+  const {sendProducto } = props;
 
   const authContext = useContext(AuthContext);
   const rubrosData = useSignal<IRubros[]>([]);
@@ -125,18 +125,25 @@ export const CarouselItems = component$((props: parametros) => {
     track(() => authContext.token)
     if (authContext.token) {
       console.log("useTask$");
-      const subrubros = await lista(authContext.token || "", 1, 20, "", "", "", "subrubros", []);
+      const subrubros = await lista(authContext.token || "", 1, 100, "", "", "", "subrubros", []);
       console.log("SUBRUBROS", subrubros);
       subrubrosData.value = subrubros.data;
 
-      const rubros = await lista(authContext.token || "", 1, 20, "", "", "", "rubros", []);
+      const rubros = await lista(authContext.token || "", 1, 100, "", "", "", "rubros", []);
       rubrosData.value = rubros.data;
       console.log("Rubros", rubrosData.value);
 
-      const productos = await lista(authContext.token || "", 1, 20, "", "", "", "productos", []);
+      const productos = await lista(authContext.token || "", 1, 1000, "", "", "", "productos", []);
       productosData.value = productos.data;
       console.log("Productos", productosData.value);
     }
+  });
+
+  const clearShow = $(() => {
+    console.log("clearShow");    
+    showRubros.value = true;
+    showSubrubros.value = false;
+    showProductos.value = false;
   });
 
   const showItems = $((id: string, action: string) => {
@@ -157,11 +164,6 @@ export const CarouselItems = component$((props: parametros) => {
     console.log("addItems", id);
   });
 
-  const clearShow = $(() => {
-    showRubros.value = true;
-    showSubrubros.value = false;
-    showProductos.value = false;
-  });
 
   return (
     <div class="bg-secondary-100 rounded-2xl">

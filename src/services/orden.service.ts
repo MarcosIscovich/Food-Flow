@@ -49,6 +49,33 @@ export const editOrden = async (
     return data;
 
 }
+export const updateCamarero = async (
+    token: any,
+    item: any,
+    ordenId: any,
+): Promise<any> => {
+    console.log("llega updateCamarero ", ordenId);
+    console.log("llega a crear token ", token);    
+
+    const encoded = encodeURI(`${configuration.api}updateCamarero/${ordenId}`)
+    console.log(encoded);
+    
+    const resp = await fetch(encoded, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(item),
+    });
+
+    const data = resp.json();
+    // console.log("llega cupon/create", data);
+    return data;
+
+}
+
+
 export const agruparItems = async (
     token: any,
     ordenId: any,

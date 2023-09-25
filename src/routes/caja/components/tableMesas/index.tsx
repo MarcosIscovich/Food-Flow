@@ -6,6 +6,7 @@ import { ModalSupervisor } from '../modalSupervisor/index';
 import { deleteProducto, updateProducto } from '~/services/comanda.service';
 import { deleteMesa } from '~/services/mesa.service';
 import { agruparItems } from '~/services/orden.service';
+import { ModalCamarero } from '../modalCamarero/index';
 
 interface parametros {
   mesaSelected: any;
@@ -15,6 +16,7 @@ interface parametros {
   eliminarProductoFlag: any;
   eliminarMesaFlag: any;
   agruparFlag: any;
+  cambiarCamareroFlag: any;
   cancelBtn: any;
   newComanda: PropFunction<(productoSelected: any, camarero: any, total: any) => any>;
   editComanda: PropFunction<(productos: any, total: any, orden: any) => any>;
@@ -26,7 +28,7 @@ export const TableMesas = component$((props: parametros) => {
 
   const { mesaSelected, productoSelected, guardarComandaFlag,
     marcharComandaFlag, eliminarProductoFlag, eliminarMesaFlag, agruparFlag,
-    cancelBtn, cancelData, newComanda, closeTable, editComanda } = props;
+    cambiarCamareroFlag ,cancelBtn, cancelData, newComanda, closeTable, editComanda } = props;
   const authContext = useContext(AuthContext);
   const users = useStore<any>([]);
   const camareroID = useStore<any>({});
@@ -41,6 +43,7 @@ export const TableMesas = component$((props: parametros) => {
   const filaSeleccinada = useSignal<any>(null);
   const itemSelected = useStore<any>({});
   const openModalClave = useSignal<boolean>(false);
+  const openModalCamarero = useSignal<boolean>(false);
   const tienePermiso = useSignal<boolean>(false);
   const refreshMesa = useSignal<boolean>(false);
 
@@ -107,8 +110,9 @@ export const TableMesas = component$((props: parametros) => {
     productos.forEach((producto) => {
       if (!(producto.nombre in productosAgrupados)) {
         productosAgrupados[producto.nombre] = { ...producto };
+        productosAgrupados[producto.nombre].cantidad = Number(producto.cantidad);
       } else {
-        productosAgrupados[producto.nombre].cantidad += producto.cantidad;
+        productosAgrupados[producto.nombre].cantidad +=  Number(producto.cantidad);
       }
     });
   
@@ -138,7 +142,8 @@ export const TableMesas = component$((props: parametros) => {
       console.log("Agrupar Flag", productos);
 
       const procesada = productos.some((producto: any) => producto.procesada === 1);
-      const noAgrupa = productos.some((producto: any) => producto.procesada === 1 && !productoSelected.procesada);      
+      
+      const noAgrupa = productos.some((producto: any) => producto.procesada === 1 && productoSelected.procesada === undefined);      
       
       if (noAgrupa) {
         alert("No se puede agrupar productos comandados junto a los no comandados");
@@ -147,6 +152,7 @@ export const TableMesas = component$((props: parametros) => {
         return
       }
       const data = await agruparProductos();
+      
       productos.length = 0;
       productos.push(...data);
 
@@ -186,6 +192,18 @@ export const TableMesas = component$((props: parametros) => {
       openModalProducto.value = true;
     }
   });
+  useTask$(async ({ track }) => {
+    track(() => { cambiarCamareroFlag.value , tienePermiso.value })
+    if(cambiarCamareroFlag.value ){
+      openModalClave.value = true;
+    }
+    
+    if (cambiarCamareroFlag.value && tienePermiso.value) {
+      openModalCamarero.value = true;
+      openModalClave.value = false;
+    }
+  });
+
   useTask$(async ({ track }) => {
     track(() => { eliminarProductoFlag.value, tienePermiso.value })
 
@@ -313,6 +331,7 @@ export const TableMesas = component$((props: parametros) => {
     }
   });
 
+
   const editarProducto = $((item: any) => {
     updateProducto(authContext.token, item).then((resp) => {
       console.log("RESPONSE EDITAR PRODUCTO", resp);
@@ -320,6 +339,8 @@ export const TableMesas = component$((props: parametros) => {
         refreshMesa.value = true;
         openModalProducto.value = false;
         eliminarProductoFlag.value = false;
+        tienePermiso.value = false;
+        openModalClave.value = false;
         clearData();
       }
 
@@ -351,11 +372,13 @@ export const TableMesas = component$((props: parametros) => {
         cantidad: cantidad.value,
         preferencia: preferencia.value
       })
-      console.log("Productos", productos);
+      console.log("Productos", productoSelected);
       total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
       cantidad.value = "";
       preferencia.value = "";
       openModalProducto.value = false;
+      productoSelected.values = {};
+      
     }
 
   })
@@ -369,6 +392,7 @@ export const TableMesas = component$((props: parametros) => {
   return (
     <>
       <ModalSupervisor openModalClave={openModalClave} tienePermiso={tienePermiso} />
+      <ModalCamarero openModalCamarero={openModalCamarero}  orden={orden} refreshMesa={refreshMesa} openModalClave={openModalClave} />
 
       <div class="card  bg-secondary-100" style="height: 100%;">
         <div class="card-body p-7">

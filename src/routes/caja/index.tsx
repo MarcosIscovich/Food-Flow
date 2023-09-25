@@ -20,24 +20,24 @@ export default component$(() => {
   const eliminarProductoFlag = useSignal<boolean>(false);
   const eliminarMesaFlag = useSignal<boolean>(false);
   const agruparFlag = useSignal<boolean>(false);
+  const cambiarCamareroFlag = useSignal<boolean>(false);
   const modalBuscar = useSignal<boolean>(false);
   const cancelBtn = useSignal<boolean>(false);
   const mesaSelected = useStore<any>({});
   const productoSelected = useStore<any>({});
   const funcionalidades = [
-    { id: 1, nombre: "Cobrar Mesa", icono: "fas fa-cash-register", class: "btn-func btn--verde " , classDisabled:"btn-func btn--verdeDisabled btn-disabled" },
-    { id: 2, nombre: "Reservar Mesa", icono: "fas fa-search", class: "btn-func btn--azul" , classDisabled:"btn-func btn--verdeDisabled btn-disabled" },
-    { id: 3, nombre: "Eliminar Mesa", icono: "fas fa-trash", class: "btn-func btn--rojo" , classDisabled:"btn-func btn--verdeDisabled btn-disabled", action: $(() => { eliminarMesaFlag.value = true }) },
-    { id: 3, nombre: "Eliminar Producto", icono: "fas fa-trash", class: "btn-func btn--azul" , classDisabled:"btn-func btn--verdeDisabled btn-disabled", action: $(() => { eliminarProductoFlag.value = true }) },
-    { id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul" , classDisabled:"btn-func btn--verdeDisabled btn-disabled" },
-    { id: 5, nombre: "Dividir Mesa", icono: "fas fa-columns", class: "btn-func btn--azul", classDisabled:"btn-func btn--verdeDisabled btn-disabled" },
-    { id: 6, nombre: "Agrupar Items", icono: "fas fa-object-group", class: "btn-func btn--azul" , classDisabled:"btn-func btn--verdeDisabled btn-disabled" , action : $(() => { agruparFlag.value = true }) },
-    { id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul" , classDisabled:"btn-func btn--verdeDisabled btn-disabled", action: $(() => { marcharComandaFlag.value = true }) },
-    { id: 8, nombre: "Cambiar Camarero", icono: "fas fa-user-edit", class: "btn-func btn--azul", classDisabled:"btn-func btn--verdeDisabled btn-disabled" },
-    { id: 9, nombre: "Editar Producto", icono: "fas fa-ban", class: "btn-func btn--azul" , classDisabled:"btn-func btn--verdeDisabled btn-disabled", action: $(() => { cancelBtn.value = true }) },
-    { id: 10, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul" , classDisabled:"btn-func btn--verdeDisabled btn-disabled", action: $(() => { modalBuscar.value = true }) },
-    { id: 11, nombre: "Volver a Mesas", icono: "fas fa-ban", class: "btn-func btn--rojo" , classDisabled:"btn-func btn--verdeDisabled btn-disabled", action: $(() => { changeView.value = !changeView.value, cancelBtn.value = true }) },
-    { id: 12, nombre: "Guardar Comanda", icono: "fas fa-save", class: "btn-func btn--verde" , classDisabled:"btn-func btn--verdeDisabled btn-disabled", action: $(() => { guardarComandaFlag.value = true }) },
+    { id: 3, nombre: "Eliminar Mesa", icono: "fas fa-trash", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { eliminarMesaFlag.value = true }) },
+    { id: 2, nombre: "Reservar Mesa", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled" },
+    { id: 1, nombre: "Cobrar Mesa", icono: "fas fa-cash-register", class: "btn-func btn--verde ", classDisabled: "btn-func btn--verdeDisabled btn-disabled" },
+    { id: 3, nombre: "Eliminar Producto", icono: "fas fa-trash", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { eliminarProductoFlag.value = true }) },
+    { id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled" },
+    { id: 5, nombre: "Mudar Producto", icono: "fas fa-columns", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled" },
+    { id: 6, nombre: "Agrupar Items", icono: "fas fa-object-group", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { agruparFlag.value = true }) },
+    { id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { marcharComandaFlag.value = true }) },
+    { id: 8, nombre: "Cambiar Camarero", icono: "fas fa-user-edit", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled" ,action: $(() => { cambiarCamareroFlag.value = true })  },
+    { id: 10, nombre: "Volver a Mesas", icono: "fas fa-ban", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { changeView.value = !changeView.value, cancelBtn.value = true }) },
+    { id: 9, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { modalBuscar.value = true }) },
+    { id: 11, nombre: "Guardar Comanda", icono: "fas fa-save", class: "btn-func btn--verde", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { guardarComandaFlag.value = true }) },
   ]
 
 
@@ -68,6 +68,7 @@ export default component$(() => {
 
   const sendProducto = $((producto: any) => {
     console.log("Producto Selected ", producto);
+    productoSelected.value = {};
     productoSelected.value = producto;
   })
 
@@ -111,7 +112,7 @@ export default component$(() => {
       {/* <ModalBuscar show={modalBuscar.value} onClose$={$(() => { modalBuscar.value = false; })} title={"Buscar Producto"} /> */}
       <Modal >
         Hola Mundo
-        </Modal>
+      </Modal>
       <div class="">
         <div class="flex flex-col">
           <div class="grid grid-cols-2">
@@ -126,6 +127,8 @@ export default component$(() => {
                     eliminarProductoFlag={eliminarProductoFlag}
                     eliminarMesaFlag={eliminarMesaFlag}
                     agruparFlag={agruparFlag}
+                    cambiarCamareroFlag={cambiarCamareroFlag}
+
                   />
                 </div>
               ) : (
@@ -145,10 +148,10 @@ export default component$(() => {
                       {funcionalidades.map((funcionalidad, idx) => (
                         <div class="grid h-full" key={idx}>
                           <div class="w-full h-full">
-                          <div class={!changeView.value && 'tooltip tooltip-bottom tooltip-secondary'} data-tip="Abrir mesa habilita funcionalidades">
-                            <button class={changeView.value ? funcionalidad.class : funcionalidad.classDisabled} onClick$={() => { funcionalidad?.action() }}>
-                              <span>{funcionalidad.nombre}</span>
-                            </button>
+                            <div class={!changeView.value && 'tooltip tooltip-bottom tooltip-secondary'} data-tip="Abrir mesa habilita funcionalidades">
+                              <button class={changeView.value ? funcionalidad.class : funcionalidad.classDisabled} onClick$={() => { funcionalidad?.action() }}>
+                                <span>{funcionalidad.nombre}</span>
+                              </button>
                             </div>
                           </div>
                         </div>
