@@ -8,12 +8,11 @@ interface parametros {
     openModalCamarero: any,
     orden: any
     refreshMesa: any
-    openModalClave: any,
 }
 
 export const ModalCamarero = component$((props: parametros) => {
 
-    const { openModalCamarero, orden , refreshMesa , openModalClave} = props;
+    const { openModalCamarero, orden , refreshMesa } = props;
 
     const authContext = useContext(AuthContext);
     const users = useStore<any>([]);

@@ -20,6 +20,7 @@ export default component$(() => {
   const eliminarProductoFlag = useSignal<boolean>(false);
   const eliminarMesaFlag = useSignal<boolean>(false);
   const agruparFlag = useSignal<boolean>(false);
+  const mudarMesaFlag = useSignal<boolean>(false);
   const cambiarCamareroFlag = useSignal<boolean>(false);
   const modalBuscar = useSignal<boolean>(false);
   const cancelBtn = useSignal<boolean>(false);
@@ -30,7 +31,7 @@ export default component$(() => {
     { id: 2, nombre: "Reservar Mesa", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled" },
     { id: 1, nombre: "Cobrar Mesa", icono: "fas fa-cash-register", class: "btn-func btn--verde ", classDisabled: "btn-func btn--verdeDisabled btn-disabled" },
     { id: 3, nombre: "Eliminar Producto", icono: "fas fa-trash", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { eliminarProductoFlag.value = true }) },
-    { id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled" },
+    { id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled" , action: $(() => { mudarMesaFlag.value = true}) },
     { id: 5, nombre: "Mudar Producto", icono: "fas fa-columns", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled" },
     { id: 6, nombre: "Agrupar Items", icono: "fas fa-object-group", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { agruparFlag.value = true }) },
     { id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { marcharComandaFlag.value = true }) },
@@ -128,7 +129,7 @@ export default component$(() => {
                     eliminarMesaFlag={eliminarMesaFlag}
                     agruparFlag={agruparFlag}
                     cambiarCamareroFlag={cambiarCamareroFlag}
-
+                    mudarMesaFlag={mudarMesaFlag}
                   />
                 </div>
               ) : (

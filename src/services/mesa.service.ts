@@ -46,3 +46,27 @@ export const deleteMesa = async (
     const data = resp.json();
     return data;
 };
+
+export const mudarMesa = async (
+    token: any,
+    id: any,
+    ordenId: any,
+
+): Promise<any> => {
+    console.log("llega a crear payload ", id);
+    console.log("llega a crear token ", token);
+
+    const encoded = encodeURI(`${configuration.api}mudarMesa/${id}`)
+    console.log(encoded);
+    const resp = await fetch(encoded, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(ordenId),
+    });
+
+    const data = resp.json();
+    return data;
+};
