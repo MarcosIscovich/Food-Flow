@@ -18,6 +18,6 @@ export const getAllProducts = async (
     });
 
     const data = resp.json();
-    console.log("llega del back", data);
+    console.log("llega del back getAllproducts", data);
     return data;
 }

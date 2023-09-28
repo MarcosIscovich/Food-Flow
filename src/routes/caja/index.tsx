@@ -1,4 +1,4 @@
-import { $, component$, useContext, useSignal, useStore } from '@builder.io/qwik';
+import { $, component$, useContext, useSignal, useStore, useTask$, useVisibleTask$ } from '@builder.io/qwik';
 import { type DocumentHead } from '@builder.io/qwik-city';
 import { TableMesas } from './components/tableMesas';
 import { ViewMesas } from './components/viewMesas';
@@ -7,6 +7,8 @@ import { ModalClave } from '~/components/modalClave';
 import { newOrden, editOrden } from '~/services/orden.service';
 import { AuthContext } from '~/context/auth/auth.context';
 import { Modal } from './components/modal';
+import { ModalBuscar } from './components/modalBuscar';
+import { getAllProducts } from '~/services/productos.service';
 
 
 export default component$(() => {
@@ -26,6 +28,7 @@ export default component$(() => {
   const cancelBtn = useSignal<boolean>(false);
   const mesaSelected = useStore<any>({});
   const productoSelected = useStore<any>({});
+  const productos = useStore<any>({});
   const funcionalidades = [
     { id: 3, nombre: "Eliminar Mesa", icono: "fas fa-trash", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { eliminarMesaFlag.value = true }) },
     { id: 2, nombre: "Reservar Mesa", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled" },
@@ -37,7 +40,7 @@ export default component$(() => {
     { id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { marcharComandaFlag.value = true }) },
     { id: 8, nombre: "Cambiar Camarero", icono: "fas fa-user-edit", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled" ,action: $(() => { cambiarCamareroFlag.value = true })  },
     { id: 10, nombre: "Volver a Mesas", icono: "fas fa-ban", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { changeView.value = !changeView.value, cancelBtn.value = true }) },
-    { id: 9, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { modalBuscar.value = true }) },
+    { id: 9, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { my_modal_2.showModal() }) },
     { id: 11, nombre: "Guardar Comanda", icono: "fas fa-save", class: "btn-func btn--verde", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { guardarComandaFlag.value = true }) },
   ]
 
@@ -68,10 +71,19 @@ export default component$(() => {
   })
 
   const sendProducto = $((producto: any) => {
-    console.log("Producto Selected ", producto);
+    console.log("Producto Selected index", producto);
     productoSelected.value = {};
     productoSelected.value = producto;
   })
+
+  // const productoSelected$ = $(async (producto: any) => {
+  //   console.log("Producto Selected ", producto);
+  //   productoSelected.value = {};
+  //   productoSelected.value = producto;
+  //   my_modal_2.close();
+
+  // }
+  // )
 
   const newComanda = $(async (productos: any, camarero: any, total: any) => {
     console.log("Nueva Comanda", productos);
@@ -107,13 +119,32 @@ export default component$(() => {
     }
   })
 
+  const getAllProductos = $(async () => {
+    const resp = await getAllProducts(authContext.token || "");
+    console.log("Respuesta", resp);
+    if (resp.res) {
+        productos.values = resp.productos;
+    }
+});
+
+
+  useVisibleTask$(async ({track}) => {
+      track(async () => authContext.token)
+      console.log("Token", authContext);
+      if(authContext.token){
+          getAllProductos();
+      }
+      
+  });
+
+
   return (
     <>
       <ModalClave />
       {/* <ModalBuscar show={modalBuscar.value} onClose$={$(() => { modalBuscar.value = false; })} title={"Buscar Producto"} /> */}
-      <Modal >
-        Hola Mundo
-      </Modal>
+    
+        {/* <ModalBuscar productoSelected$={productoSelected$} show={modalBuscar.value} onClose$={$(() => { modalBuscar.value = false; })} title={"Buscar Producto"} productos= {productos}/> */}
+    
       <div class="">
         <div class="flex flex-col">
           <div class="grid grid-cols-2">
@@ -130,6 +161,8 @@ export default component$(() => {
                     agruparFlag={agruparFlag}
                     cambiarCamareroFlag={cambiarCamareroFlag}
                     mudarMesaFlag={mudarMesaFlag}
+                    productosBusqueda={productos}
+                    sendProducto={sendProducto}
                   />
                 </div>
               ) : (

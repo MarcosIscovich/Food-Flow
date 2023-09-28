@@ -7,7 +7,8 @@ import { deleteProducto, updateProducto } from '~/services/comanda.service';
 import { deleteMesa } from '~/services/mesa.service';
 import { agruparItems } from '~/services/orden.service';
 import { ModalCamarero } from '../modalCamarero/index';
-import { create } from 'domain';
+import { ModalBuscar } from '../modalBuscar/index';
+
 
 interface parametros {
   mesaSelected: any;
@@ -20,17 +21,19 @@ interface parametros {
   cambiarCamareroFlag: any;
   mudarMesaFlag: any;
   cancelBtn: any;
+  productosBusqueda: any;
   newComanda: PropFunction<(productoSelected: any, camarero: any, total: any) => any>;
   editComanda: PropFunction<(productos: any, total: any, orden: any) => any>;
   closeTable: PropFunction<() => any>;
   cancelData: PropFunction<() => any>;
+  sendProducto: PropFunction<(prod:any)=>any>;
 }
 
 export const TableMesas = component$((props: parametros) => {
 
   const { mesaSelected, productoSelected, guardarComandaFlag,
-    marcharComandaFlag, eliminarProductoFlag, eliminarMesaFlag, agruparFlag,
-    cambiarCamareroFlag, mudarMesaFlag, cancelBtn, cancelData, newComanda, closeTable, editComanda } = props;
+    marcharComandaFlag, eliminarProductoFlag, eliminarMesaFlag, agruparFlag, productosBusqueda,
+    cambiarCamareroFlag, mudarMesaFlag, cancelBtn, cancelData, newComanda, closeTable, editComanda, sendProducto } = props;
   const authContext = useContext(AuthContext);
   const users = useStore<any>([]);
   const camareroID = useStore<any>({});
@@ -85,12 +88,14 @@ export const TableMesas = component$((props: parametros) => {
           openModalClave.value = false;
           openModalProducto.value = false;
           refreshMesa.value = !refreshMesa.value;
+          clearData();
         } else {
           productos.splice(filaSeleccinada.value, 1);
           total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
           eliminarProductoFlag.value = false;
           openModalClave.value = false;
           openModalProducto.value = false;
+          clearData();
         }
       }
     })
@@ -246,6 +251,8 @@ export const TableMesas = component$((props: parametros) => {
         eliminarProductoFlag.value = false;
         alert("Producto Eliminado");
       }
+    }else if(eliminarProductoFlag.value && !itemSelected.value){
+      alert("Primero selecione un producto")
     }
 
   });
@@ -442,12 +449,21 @@ export const TableMesas = component$((props: parametros) => {
     itemSelected.value = producto;
   })
 
+  const productoBuscado$ = $(async (producto: any) => {
+    console.log("Producto Selected ", producto);
+    // productoSelected.value = {};
+    // productoSelected.value = producto;
+    my_modal_2.close();
+    
+  }
+  )
+
 
   return (
     <>
       <ModalSupervisor openModalClave={openModalClave} tienePermiso={tienePermiso} />
-      <ModalCamarero openModalCamarero={openModalCamarero} orden={orden} refreshMesa={refreshMesa} />
-
+      <ModalCamarero openModalCamarero={openModalCamarero} orden={orden} refreshMesa={refreshMesa} cambiarCamareroFlag={cambiarCamareroFlag} tienePermiso={tienePermiso} />
+      <ModalBuscar productoBuscado$={productoBuscado$} sendProducto={sendProducto} show={false} onClose$={$(() => { false; })} title={"Buscar Producto"} productos= {productosBusqueda}/>
       <div class="card  bg-secondary-100" style="height: 100%;">
         <div class="card-body p-7">
           <h2 class="card-title flex justify-center">
@@ -492,58 +508,15 @@ export const TableMesas = component$((props: parametros) => {
                     <div>
                       <div class="card flex-shrink-0 w-full  shadow-2xl bg-base-100">
                         <div class="text-center lg:text-center m-3">
-                          <h1 class="text-4xl font-bold mb-1 w-auto">
-                            {ActionModal.value}
+                          <h1 class="text-4xl font-bold mb-1">
+                            Ingrese detalle
                           </h1>
-                          {/* <h1 class="text-4xl font-bold ">de producto</h1> */}
+                          <h1 class="text-4xl font-bold ">de producto</h1>
                         </div>
                         <div class="card-body">
                           <div class="">
-                            <div class={itemSelected ? "flex justify-center flex-row" : "flex flex-row"} >
-                              {
-                                itemSelected.value || mudarMesaFlag.value ? (
-                                  <div class="form-control mr-1">
-                                    <label class="label">
-                                      <span class="label-text">Cantidad</span>
-                                    </label>
-                                    <input
-                                      type="number"
-                                      placeholder="Cantidad"
-                                      name="cantidad"
-                                      bind:value={mudarMesaFlag ? mesaChange : cantidad}
-                                      class="input input-bordered"
-                                    />
-                                  </div>
-                                ) : (
-                                  <div class="form-control mr-1">
-                                    <label class="label">
-                                      <span class="label-text">Cantidad</span>
-                                    </label>
-                                    <input
-                                      type="number"
-                                      placeholder="Cantidad"
-                                      name="cantidad"
-                                      bind:value={cantidad}
-                                      class="input input-bordered"
-                                    />
-                                    <label class="label">
-                                      <span class="label-text">Preferencia</span>
-                                    </label>
-                                    <input
-                                      type="string"
-                                      placeholder="Preferencia"
-                                      name="preferencia"
-                                      bind:value={preferencia}
-                                      class="input input-bordered"
-                                    />
-                                  </div>
-
-
-                                )
-
-                              }
-
-                              {/* <div class="form-control mr-1">
+                            <div class="flex flex-row">
+                              <div class="form-control mr-1">
                                 <label class="label">
                                   <span class="label-text">Cantidad</span>
                                 </label>
@@ -556,7 +529,7 @@ export const TableMesas = component$((props: parametros) => {
                                 />
                               </div>
                               {
-                                !itemSelected.value  && (
+                                !itemSelected.value && (
                                   <div class="form-control ml-1">
                                     <label class="label">
                                       <span class="label-text">Preferencia</span>
@@ -570,7 +543,7 @@ export const TableMesas = component$((props: parametros) => {
                                     />
                                   </div>
                                 )
-                              } */}
+                              }
                             </div>
                             <div class="grid grid-col-3 grid-flow-col gap-2 justify-between">
                               <div class="form-control mt-6 col-span-2">

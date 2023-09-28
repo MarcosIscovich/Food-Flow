@@ -8,11 +8,13 @@ interface parametros {
     openModalCamarero: any,
     orden: any
     refreshMesa: any
+    cambiarCamareroFlag: any
+    tienePermiso: any
 }
 
 export const ModalCamarero = component$((props: parametros) => {
 
-    const { openModalCamarero, orden , refreshMesa } = props;
+    const { openModalCamarero, orden , refreshMesa, cambiarCamareroFlag, tienePermiso } = props;
 
     const authContext = useContext(AuthContext);
     const users = useStore<any>([]);
@@ -81,6 +83,8 @@ export const ModalCamarero = component$((props: parametros) => {
                                 </select>
 
                                 <button class="btn btn-primary mt-5" onClick$={() => {  
+                                    cambiarCamareroFlag.value = false;
+                                    tienePermiso.value = false;
                                     openModalCamarero.value = false;
                                    
                                 }}>Cancelar</button>
