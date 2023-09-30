@@ -1,14 +1,7 @@
-import { component$, $, type PropFunction, useTask$, useSignal, useContext, useStore, useVisibleTask$ } from "@builder.io/qwik";
-import type { SubmitHandler } from "@modular-forms/qwik";
-import { setValue, useForm, zodForm$, clearError } from "@modular-forms/qwik";
-import type { z } from "@builder.io/qwik-city";
-import { Modal } from "./modal/index";
-import { AuthContext } from "~/context/auth/auth.context";
+import { component$, $, type PropFunction,  useSignal,  useVisibleTask$ } from "@builder.io/qwik";
+
 
 import type { iTableFieldConfiguration } from "~/interfaces/iTableFieldConfiguratio";
-import { InputType } from "~/components/sharedComponents/utils/inputType.component";
-import { IconQuestion } from "~/components/sharedComponents/icons";
-import { getAllProducts } from "~/services/productos.service";
 
 // type IBaseSchema = z.infer<typeof validationSchema>;
 
@@ -23,18 +16,13 @@ interface parametros {
 
 export const ModalBuscar = component$<parametros>((props) => {
     const {
-        show,
-        title,
-        onClose$,
         productos,
         productoBuscado$,
         sendProducto,
     } = props;
 
     const inputTxt = useSignal<string>("");
-    const authContext = useContext(AuthContext);
     //const itemSelected = useStore<any>({});
-    const showProductos = useStore<any>({});
     const tableFieldConfiguration: iTableFieldConfiguration[] = [
         
         {

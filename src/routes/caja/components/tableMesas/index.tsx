@@ -8,6 +8,7 @@ import { deleteMesa } from '~/services/mesa.service';
 import { agruparItems } from '~/services/orden.service';
 import { ModalCamarero } from '../modalCamarero/index';
 import { ModalBuscar } from '../modalBuscar/index';
+import { ModalMudarMesa } from '../modalMudarMesa';
 
 
 interface parametros {
@@ -33,7 +34,7 @@ export const TableMesas = component$((props: parametros) => {
 
   const { mesaSelected, productoSelected, guardarComandaFlag,
     marcharComandaFlag, eliminarProductoFlag, eliminarMesaFlag, agruparFlag, productosBusqueda,
-    cambiarCamareroFlag, mudarMesaFlag, cancelBtn, cancelData, newComanda, closeTable, editComanda, sendProducto } = props;
+    cambiarCamareroFlag, mudarMesaFlag, cancelBtn, cancelData, newComanda, closeTable, editComanda, sendProducto  } = props;
   const authContext = useContext(AuthContext);
   const users = useStore<any>([]);
   const camareroID = useStore<any>({});
@@ -49,6 +50,7 @@ export const TableMesas = component$((props: parametros) => {
   const itemSelected = useStore<any>({});
   const openModalClave = useSignal<boolean>(false);
   const openModalCamarero = useSignal<boolean>(false);
+  const openModalMudar = useSignal<boolean>(false);
   const tienePermiso = useSignal<boolean>(false);
   const refreshMesa = useSignal<boolean>(false);
   const horaMesa = useSignal<string>("");
@@ -74,6 +76,20 @@ export const TableMesas = component$((props: parametros) => {
     itemSelected.value = null;
     filaSeleccinada.value = null;
     agruparFlag.value = false;
+    mudarMesaFlag.value = false;
+    cambiarCamareroFlag.value = false;
+    eliminarProductoFlag.value = false;
+    eliminarMesaFlag.value = false;
+    cancelBtn.value = false;
+    guardarComandaFlag.value = false;
+    marcharComandaFlag.value = false;
+    camareroID.value = "";
+    data.value = {};
+    openModalCamarero.value = false;
+    openModalMudar.value = false;
+    mesaChange.value = {};
+    productoSelected.value = null;
+    productosBusqueda.value = null;
   })
 
 
@@ -140,20 +156,54 @@ export const TableMesas = component$((props: parametros) => {
     track(() => authContext.token)
     if (authContext.token) {
       console.log("useTask$");
+      clearData();
       const response = await findUsers(authContext.token, "findusers");
       users.value = response.filter((user: any) => user.role.nombre === "Camarero")
 
     }
   });
+
+  const changeMesa = $(async (mesa: any) => {
+    console.log("Mesa CHANGE IN CAJA ", mesa);
+      const data = {
+        orden_id: orden.value.id,
+        mesaAnterior: mesaSelected.id
+      }
+
+      const resp = await mudarMesa(authContext.token, mesa, data);
+      console.log("RESP", resp);
+      if (resp.message === 'Mesa ocupada') {
+        alert("Mesa ocupada");
+        mudarMesaFlag.value = false;
+        mesaChange.value = {};
+        openModalMudar.value = false;
+        openModalClave.value = false;
+        tienePermiso.value = false;
+        
+      } else {
+        alert("Mesa cambiada correctamente");
+        mudarMesaFlag.value = false;
+        mesaChange.value = {};
+        openModalMudar.value = false;
+        openModalClave.value = false;
+        clearData();
+        closeTable();
+        
+      }  
+   
+  })
+
+  
+
   useTask$(async ({ track }) => {
     track(() => {mudarMesaFlag.value , tienePermiso.value})
     if (mudarMesaFlag.value) {
       openModalClave.value = true;
     }
     if(mudarMesaFlag.value && tienePermiso.value){
+      openModalMudar.value = true;
       openModalClave.value = false;
-      openModalProducto.value = true;
-      ActionModal.value = "Seleccione Mesa"
+      
     }
   });
 
@@ -162,10 +212,10 @@ export const TableMesas = component$((props: parametros) => {
     if (agruparFlag.value) {
       console.log("Agrupar Flag", productos);
 
-      const procesada = productos.some((producto: any) => producto.procesada === 1);
-
-      const noAgrupa = productos.some((producto: any) => producto.procesada === 1 && productoSelected.procesada === undefined);
-
+      const procesada = productos.some((producto: any) => producto?.procesada === 1);   
+      
+         
+      const noAgrupa = productos.some((producto: any) => producto?.procesada != 1);
       if (noAgrupa) {
         alert("No se puede agrupar productos comandados junto a los no comandados");
         clearData();
@@ -189,15 +239,13 @@ export const TableMesas = component$((props: parametros) => {
     }
   });
 
-
-
-
   useTask$(async ({ track }) => {
     track(() => camareroID.value)
     console.log("Camarero", camareroID.value);
     camareroSelected.value = users.value.find((user: any) => user.id == camareroID.value)
     console.log("CamareroSelected", camareroSelected.value);
   });
+
   useTask$(async ({ track }) => {
     track(() => cancelBtn.value)
     if (cancelBtn.value) {
@@ -214,6 +262,7 @@ export const TableMesas = component$((props: parametros) => {
       openModalProducto.value = true;
     }
   });
+  
   useTask$(async ({ track }) => {
     track(() => { cambiarCamareroFlag.value, tienePermiso.value })
     if (cambiarCamareroFlag.value) {
@@ -253,6 +302,7 @@ export const TableMesas = component$((props: parametros) => {
       }
     }else if(eliminarProductoFlag.value && !itemSelected.value){
       alert("Primero selecione un producto")
+      clearData();
     }
 
   });
@@ -299,7 +349,7 @@ export const TableMesas = component$((props: parametros) => {
       console.log("Productos no ENviados", _productos);
       if (_productos.length > 0 && flagProcesada) {
         editComanda(_productos, total.value, orden.value.id)
-        refreshMesa.value = !refreshMesa.value;
+        // refreshMesa.value = !refreshMesa.value;
         openModalProducto.value = false
       } else if (productos.length > 0 && !flagProcesada) {
         await newComanda(productos, camareroSelected.value?.id, total.value);
@@ -380,35 +430,7 @@ export const TableMesas = component$((props: parametros) => {
     })
   })
 
-  const addProducto = $(async () => {
-    if (mudarMesaFlag.value) {
-      
-        const data = {
-          orden_id: orden.value.id,
-          mesaAnterior: mesaSelected.id
-        }
-
-        const resp = await mudarMesa(authContext.token, mesaChange.value, data);
-        console.log("RESP", resp);
-        if (resp.message === 'Mesa ocupada') {
-          alert("Mesa ocupada");
-          mudarMesaFlag.value = false;
-          mesaChange.value = {};
-          openModalProducto.value = false;
-          openModalClave.value = false;
-          return;
-        } else {
-          alert("Mesa cambiada correctamente");
-          mudarMesaFlag.value = false;
-          mesaChange.value = {};
-          openModalProducto.value = false;
-          openModalClave.value = false;
-          clearData();
-          closeTable();
-          return
-        }
-      
-    }
+  const addProducto = $(async () => {   
     console.log("data", data);
     if (itemSelected.value) {
       console.log("EDIT", itemSelected.value, cantidad.value, preferencia.value);
@@ -464,6 +486,7 @@ export const TableMesas = component$((props: parametros) => {
       <ModalSupervisor openModalClave={openModalClave} tienePermiso={tienePermiso} />
       <ModalCamarero openModalCamarero={openModalCamarero} orden={orden} refreshMesa={refreshMesa} cambiarCamareroFlag={cambiarCamareroFlag} tienePermiso={tienePermiso} />
       <ModalBuscar productoBuscado$={productoBuscado$} sendProducto={sendProducto} show={false} onClose$={$(() => { false; })} title={"Buscar Producto"} productos= {productosBusqueda}/>
+      <ModalMudarMesa openModalMudar={openModalMudar} mesaChange={mesaChange} changeMesa={changeMesa} />
       <div class="card  bg-secondary-100" style="height: 100%;">
         <div class="card-body p-7">
           <h2 class="card-title flex justify-center">

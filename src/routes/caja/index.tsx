@@ -1,4 +1,4 @@
-import { $, component$, useContext, useSignal, useStore, useTask$, useVisibleTask$ } from '@builder.io/qwik';
+import { $, component$, useContext, useSignal, useStore, useVisibleTask$ } from '@builder.io/qwik';
 import { type DocumentHead } from '@builder.io/qwik-city';
 import { TableMesas } from './components/tableMesas';
 import { ViewMesas } from './components/viewMesas';
@@ -6,8 +6,6 @@ import { CarouselItems } from './components/carousel';
 import { ModalClave } from '~/components/modalClave';
 import { newOrden, editOrden } from '~/services/orden.service';
 import { AuthContext } from '~/context/auth/auth.context';
-import { Modal } from './components/modal';
-import { ModalBuscar } from './components/modalBuscar';
 import { getAllProducts } from '~/services/productos.service';
 
 
@@ -24,7 +22,6 @@ export default component$(() => {
   const agruparFlag = useSignal<boolean>(false);
   const mudarMesaFlag = useSignal<boolean>(false);
   const cambiarCamareroFlag = useSignal<boolean>(false);
-  const modalBuscar = useSignal<boolean>(false);
   const cancelBtn = useSignal<boolean>(false);
   const mesaSelected = useStore<any>({});
   const productoSelected = useStore<any>({});
@@ -98,7 +95,6 @@ export default component$(() => {
     //todo: hacer validacion 
     console.log("Respuesta", resp);
     if (guardarComandaFlag.value) {
-
       closeTable();
       productoSelected.value = null;
     }
@@ -126,6 +122,7 @@ export default component$(() => {
         productos.values = resp.productos;
     }
 });
+
 
 
   useVisibleTask$(async ({track}) => {
@@ -183,7 +180,8 @@ export default component$(() => {
                         <div class="grid h-full" key={idx}>
                           <div class="w-full h-full">
                             <div class={!changeView.value && 'tooltip tooltip-bottom tooltip-secondary'} data-tip="Abrir mesa habilita funcionalidades">
-                              <button class={changeView.value ? funcionalidad.class : funcionalidad.classDisabled} onClick$={() => { funcionalidad?.action() }}>
+                              <button class={changeView.value ? funcionalidad.class : funcionalidad.classDisabled} onClick$={() => { funcionalidad?.action && funcionalidad.action() }}>
+
                                 <span>{funcionalidad.nombre}</span>
                               </button>
                             </div>
