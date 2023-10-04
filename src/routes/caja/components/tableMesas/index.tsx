@@ -23,6 +23,7 @@ interface parametros {
   mudarMesaFlag: any;
   cancelBtn: any;
   productosBusqueda: any;
+  itemSelectedTable: any;
   newComanda: PropFunction<(productoSelected: any, camarero: any, total: any) => any>;
   editComanda: PropFunction<(productos: any, total: any, orden: any) => any>;
   closeTable: PropFunction<() => any>;
@@ -34,7 +35,7 @@ export const TableMesas = component$((props: parametros) => {
 
   const { mesaSelected, productoSelected, guardarComandaFlag,
     marcharComandaFlag, eliminarProductoFlag, eliminarMesaFlag, agruparFlag, productosBusqueda,
-    cambiarCamareroFlag, mudarMesaFlag, cancelBtn, cancelData, newComanda, closeTable, editComanda, sendProducto  } = props;
+    cambiarCamareroFlag, mudarMesaFlag, cancelBtn, itemSelectedTable , cancelData, newComanda, closeTable, editComanda, sendProducto  } = props;
   const authContext = useContext(AuthContext);
   const users = useStore<any>([]);
   const camareroID = useStore<any>({});
@@ -54,7 +55,6 @@ export const TableMesas = component$((props: parametros) => {
   const tienePermiso = useSignal<boolean>(false);
   const refreshMesa = useSignal<boolean>(false);
   const horaMesa = useSignal<string>("");
-  const ActionModal = useSignal<string>("Ingrese detalle de producto");
   const mesaChange = useSignal<any>({});
 
 
@@ -191,9 +191,7 @@ export const TableMesas = component$((props: parametros) => {
         
       }  
    
-  })
-
-  
+  })  
 
   useTask$(async ({ track }) => {
     track(() => {mudarMesaFlag.value , tienePermiso.value})
@@ -469,6 +467,7 @@ export const TableMesas = component$((props: parametros) => {
   const selectProducto = $((producto: any) => {
     console.log("Select Producto", producto);
     itemSelected.value = producto;
+    itemSelectedTable.value = producto;
   })
 
   const productoBuscado$ = $(async (producto: any) => {
@@ -483,7 +482,7 @@ export const TableMesas = component$((props: parametros) => {
 
   return (
     <>
-      <ModalSupervisor openModalClave={openModalClave} tienePermiso={tienePermiso} />
+      {/* <ModalSupervisor openModalClave={openModalClave} tienePermiso={tienePermiso} /> */}
       <ModalCamarero openModalCamarero={openModalCamarero} orden={orden} refreshMesa={refreshMesa} cambiarCamareroFlag={cambiarCamareroFlag} tienePermiso={tienePermiso} />
       <ModalBuscar productoBuscado$={productoBuscado$} sendProducto={sendProducto} show={false} onClose$={$(() => { false; })} title={"Buscar Producto"} productos= {productosBusqueda}/>
       <ModalMudarMesa openModalMudar={openModalMudar} mesaChange={mesaChange} changeMesa={changeMesa} />

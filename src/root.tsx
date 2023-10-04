@@ -3,6 +3,7 @@ import { QwikCityProvider, RouterOutlet, ServiceWorkerRegister } from '@builder.
 import { RouterHead } from './components/router-head/router-head';
 import './global.css';
 import { AuthProvider } from './context/auth/auth.provider';
+import { PermisoProvider } from './context/supervisor/supervisor.provider';
 
 export default component$(() => {
   /**
@@ -21,7 +22,9 @@ export default component$(() => {
       </head>
       <body lang="es">
         <AuthProvider>
-        <RouterOutlet />
+          <PermisoProvider>
+            <RouterOutlet />
+          </PermisoProvider>
         </AuthProvider>
         <ServiceWorkerRegister />
       </body>

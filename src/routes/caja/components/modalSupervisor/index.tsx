@@ -2,6 +2,7 @@ import { $, component$, useContext, useSignal, } from '@builder.io/qwik';
 import { AuthContext } from '~/context/auth/auth.context';
 import { loginSupervisor } from '~/services/generico.service';
 import accessControl from '~/utils/accessControl';
+import {PermisoContext} from '~/context/supervisor/supervisor.context';
 
 
 interface parametros {
@@ -11,11 +12,12 @@ interface parametros {
 
 export const ModalSupervisor = component$((props: parametros) => {
 
-    const { openModalClave , tienePermiso } = props;
+    const { openModalClave , tienePermiso} = props;
 
     const clave = useSignal<string>("");
 
     const authContext = useContext(AuthContext);
+    const permisoContext = useContext(PermisoContext);
 
     const loginUsuario = $(async () => {
 
@@ -38,7 +40,12 @@ export const ModalSupervisor = component$((props: parametros) => {
                 } else {
                     clave.value = "";
                     tienePermiso.value = true;
-                    openModalClave.value = false;
+                    permisoContext.tienePermiso = true;
+                    
+                    console.log("permiso MODAL", permisoContext);                    
+                    
+                    modal_Supervisor.close();
+                    // openModalClave.value = false;
                 }
             }
         });
@@ -48,7 +55,7 @@ export const ModalSupervisor = component$((props: parametros) => {
 
     return (
         <div>
-            <dialog id="my_modal_1" class={openModalClave.value ? 'modal modal-open' : 'modal'}>
+            <dialog id="modal_Supervisor" class={openModalClave.value ? 'modal modal-open' : 'modal'}>
                 <div class="hero min-h-screen bg-base-200" style="z-index : 12500">
                     <div class="hero-content flex-col ">
                         <div class="text-center lg:text-left">

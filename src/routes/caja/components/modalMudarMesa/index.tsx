@@ -1,4 +1,4 @@
-import { $, PropFunction, component$, } from '@builder.io/qwik';
+import { type PropFunction, component$, } from '@builder.io/qwik';
 
 
 interface parametros {
