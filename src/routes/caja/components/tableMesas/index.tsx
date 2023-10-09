@@ -220,11 +220,13 @@ export const TableMesas = component$((props: parametros) => {
     track(() => { cambiarCamareroFlag.value, tienePermiso.value })
     if (cambiarCamareroFlag.value) {
       openModalClave.value = true;
+      modal_Supervisor.showModal();
     }
 
     if (cambiarCamareroFlag.value && tienePermiso.value) {
       openModalCamarero.value = true;
       openModalClave.value = false;
+      
     }
   });
 

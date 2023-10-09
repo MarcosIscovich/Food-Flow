@@ -8,11 +8,16 @@ export const ModalMudar = component$(() => {
   const mesaContext = useContext(MesasContext);
 
   const mesaId = useSignal<any>("");
-  
+
   const sendMesa = $(async (mesa: any) => {
-    console.log("mesa ENVIADA", mesa);   
-    
+    console.log("mesa ENVIADA", mesa);
     mesaContext.numeroMesa = mesa;
+    mesaId.value = "";
+    modal_Mudar.close();
+  });
+
+  const closeModal = $(async () => {
+    modal_Mudar.close()
   });
 
   return (
@@ -48,9 +53,7 @@ export const ModalMudar = component$(() => {
                     <div class="form-control mt-6 col-span-2">
                       <button
                         class="btn btn-error"
-                        onClick$={() =>
-                          (openModalMudar.value = false)
-                        }
+                        onClick$={() => { closeModal() }}
                       >
                         Cancel
                       </button>
@@ -59,7 +62,7 @@ export const ModalMudar = component$(() => {
                       <button
                         type="submit"
                         // onClick$={() => changeMesa(mesaChange.value)}
-                        onClick$={() => {sendMesa(mesaId.value)}}
+                        onClick$={() => { sendMesa(mesaId.value) }}
                         class="btn btn-primary"
                       >
                         ok

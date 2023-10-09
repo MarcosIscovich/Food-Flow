@@ -36,24 +36,28 @@ export default component$(() => {
   const itemSelectedTable = useStore<any>({});
   const tienePermiso = useSignal<boolean>(false);
 
+  const clearContexts = $(() => {
+    permisoContext.tienePermiso = false;
+    permisoContext.action = "";
+    mesaContext.numeroMesa = "";
+  })
 
-  const mudarProducto = $(async (producto: any , mesaDestino:any , mesaActual:any) => {
+  const mudarProducto = $(async (producto: any, mesaDestino: any, mesaActual: any) => {
     console.log("mudarProducto", producto);
     modal_Mudar.showModal();
     if (mesaContext.numeroMesa.length > 0) {
       console.log("Numero de mesa", mesaContext.numeroMesa);
       const data = {
-        producto : producto,
-        mesaDestino : mesaDestino
+        producto: producto,
+        mesaDestino: mesaDestino
       }
-      const respMudarProd = await mudar_Producto(authContext.token ,mesaActual, data);
+      const respMudarProd = await mudar_Producto(authContext.token, mesaActual, data);
       console.log("RESP MUDAR PRODUCTO", respMudarProd);
+      clearContexts()
       modal_Mudar.close();
-
-      
-
     }
   })
+
 
   const changeMesa = $(async (mesa: any) => {
     console.log("Mesa CHANGE IN CAJA ", mesaSelected.value);
@@ -68,51 +72,33 @@ export default component$(() => {
       if (resp.message === 'Mesa ocupada') {
         alert("Mesa ocupada");
         modal_Mudar.close();
+        clearContexts()
 
       } else {
         alert("Mesa cambiada correctamente");
         changeView.value = false;
         modal_Mudar.close();
+        clearContexts()
 
       }
     }
   })
 
-
-  //   const functions: { [key: string]: (data: any) => Promise<void> } = {
-  //     mudarProducto: (data) => mudarProducto(data),
-  //     // Agrega más funciones aquí si es necesario
-  //   };
-
-  //   const allActions = $( async (action: string, data: any) => {
-  //     if (functions[action]) {
-  //       return functions[action](data);
-  //     } else {
-  //       throw new Error(`La acción "${action}" no está definida.`);
-  //     }
-  //   });
-
-
-  // useTask$(async ({ track }) => {
-  //   track(async () => permisoContext.tienePermiso);
-
-  //   await allActions(permisoContext.action, itemSelectedTable.value);
-  // });
-
   useTask$(async ({ track }) => {
     track(async () => { permisoContext.tienePermiso, mesaContext.numeroMesa })
+    if (permisoContext.tienePermiso) {
+      switch (permisoContext.action) {
+        case "mudarProducto":
+          mudarProducto(itemSelectedTable.value, mesaContext.numeroMesa, mesaSelected.value.id);
+          break;
 
-    switch (permisoContext.action) {
-      case "mudarProducto":
-        mudarProducto(itemSelectedTable.value , mesaContext.numeroMesa , mesaSelected.value.id);
-        break;
+        case "mudarMesa":
+          changeMesa(mesaContext.numeroMesa);
+          break;
 
-      case "mudarMesa":
-        changeMesa(mesaContext.numeroMesa);
-        break;
-
-      default:
-        break;
+        default:
+          break;
+      }
     }
   })
 
@@ -215,7 +201,7 @@ export default component$(() => {
 
   })
 
-  
+
 
   const clearData = $(() => {
     console.log("Clear Data");
@@ -233,7 +219,6 @@ export default component$(() => {
     //itemSelected.value = null;
     //filaSeleccinada.value = null;
     agruparFlag.value = false;
-    mudarMesaFlag.value = false;
     cambiarCamareroFlag.value = false;
     eliminarProductoFlag.value = false;
     eliminarMesaFlag.value = false;
@@ -246,31 +231,30 @@ export default component$(() => {
     // openModalMudar.value = false;
     // mesaChange.value = {};
     productoSelected.value = null;
-   // productosBusqueda.value = null;
+    // productosBusqueda.value = null;
   })
 
   const volverAmesa = $(() => {
     changeView.value = !changeView.value;
-     cancelBtn.value = true;
-     clearData();
+    cancelBtn.value = true;
+    clearData();
   })
 
 
   const funcionalidades = [
     { id: 3, nombre: "Eliminar Mesa", icono: "fas fa-trash", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { eliminarMesaFlag.value = true }), habilitado: [changeView.value] },
-    { id: 2, nombre: "Reservar Mesa", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",habilitado: [changeView.value] },
-    { id: 1, nombre: "Cobrar Mesa", icono: "fas fa-cash-register", class: "btn-func btn--verde ", classDisabled: "btn-func btn--verdeDisabled btn-disabled", habilitado: [ changeView.value] },
+    { id: 2, nombre: "Reservar Mesa", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", habilitado: [changeView.value] },
+    { id: 1, nombre: "Cobrar Mesa", icono: "fas fa-cash-register", class: "btn-func btn--verde ", classDisabled: "btn-func btn--verdeDisabled btn-disabled", habilitado: [changeView.value] },
     { id: 3, nombre: "Eliminar Producto", icono: "fas fa-trash", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { eliminarProductoFlag.value = true }), habilitado: [itemSelectedTable.value, changeView.value] },
-    { id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { mudarMesaFlag.value = true }), habilitado: [changeView.value] },
     {
-      id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
-      action: $(() => {
+      id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => {
         if (mesaSelected.value) {
           permisoContext.action = "mudarMesa";
           modal_Supervisor.showModal();
         }
-      })
+      }), habilitado: [changeView.value]
     },
+
     {
       id: 5, nombre: "Mudar Producto", icono: "fas fa-columns", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
       action: $(() => {
@@ -293,19 +277,19 @@ export default component$(() => {
     { id: 11, nombre: "Guardar Comanda", icono: "fas fa-save", class: "btn-func btn--verde", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { guardarComandaFlag.value = true }), habilitado: [changeView.value] },
   ]
 
-const habilitado = $((funcionalidad: any) => {
-  console.log("Habilitado", funcionalidad);
-  let ret = true;
-  funcionalidad.habilitado?.forEach((element: any) => {
+  const habilitado = $((funcionalidad: any) => {
+    console.log("Habilitado", funcionalidad);
+    let ret = true;
+    funcionalidad.habilitado?.forEach((element: any) => {
       console.log("Element", element);
-    if (!element) {
-      ret = false;
-    }
-  });
-  console.log("Ret", ret);
-  return ret;
-}
-)
+      if (!element) {
+        ret = false;
+      }
+    });
+    console.log("Ret", ret);
+    return ret;
+  }
+  )
   return (
     <>
       <ModalClave />
@@ -329,7 +313,7 @@ const habilitado = $((funcionalidad: any) => {
                     eliminarProductoFlag={eliminarProductoFlag}
                     eliminarMesaFlag={eliminarMesaFlag}
                     agruparFlag={agruparFlag}
-                    cambiarCamareroFlag={cambiarCamareroFlag}                    
+                    cambiarCamareroFlag={cambiarCamareroFlag}
                     productosBusqueda={productos}
                     sendProducto={sendProducto}
                     itemSelectedTable={itemSelectedTable}
