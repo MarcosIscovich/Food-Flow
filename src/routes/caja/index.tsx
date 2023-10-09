@@ -53,8 +53,17 @@ export default component$(() => {
       }
       const respMudarProd = await mudar_Producto(authContext.token, mesaActual, data);
       console.log("RESP MUDAR PRODUCTO", respMudarProd);
-      clearContexts()
-      modal_Mudar.close();
+      if(respMudarProd.success){
+        alert(respMudarProd.message);
+        changeView.value = false;
+        modal_Mudar.close();
+        clearContexts()
+      }else {
+        alert(respMudarProd.message);
+        modal_Mudar.close();
+        clearContexts()
+      } 
+    
     }
   })
 
