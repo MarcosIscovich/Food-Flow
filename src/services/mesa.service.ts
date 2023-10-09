@@ -50,7 +50,7 @@ export const deleteMesa = async (
 export const mudarMesa = async (
     token: any,
     id: any,
-    ordenId: any,
+    newMesa: any,
 
 ): Promise<any> => {
     console.log("llega a crear payload ", id);
@@ -64,7 +64,7 @@ export const mudarMesa = async (
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(ordenId),
+         body: JSON.stringify(newMesa),
     });
 
     const data = resp.json();

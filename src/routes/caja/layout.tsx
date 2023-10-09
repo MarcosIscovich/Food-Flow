@@ -1,5 +1,6 @@
 import { component$, Slot, useContextProvider, useStore } from '@builder.io/qwik';
 import { PermisoContext } from '~/context/supervisor/supervisor.context';
+import { MesasContext } from '~/context/mesa/mesa.context';
 // import { ModalClave } from '~/components/modalClave';
 
 
@@ -11,7 +12,12 @@ export default component$(() => {
     action: ""
   })
 
+  const mesaContext = useStore<MesasContext>({
+    numeroMesa: 0
+  })
+
   useContextProvider(PermisoContext, permisoSupervisor);
+  useContextProvider(MesasContext, mesaContext);
 
   return  <>
     {/* <ModalClave /> */}

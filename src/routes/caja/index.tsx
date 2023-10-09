@@ -9,12 +9,17 @@ import { AuthContext } from '~/context/auth/auth.context';
 import { getAllProducts } from '~/services/productos.service';
 import { ModalSupervisor } from './components/modalSupervisor';
 import { PermisoContext } from '~/context/supervisor/supervisor.context';
+import { MesasContext } from '~/context/mesa/mesa.context';
+import { mudarMesa } from '~/services/mesa.service';
+import { ModalMudar } from './components/modalMudar';
+import { mudar_Producto } from '~/services/productos.service';
 
 
 export default component$(() => {
 
   const authContext = useContext(AuthContext);
   const permisoContext = useContext(PermisoContext);
+  const mesaContext = useContext(MesasContext);
 
 
   const changeView = useSignal<boolean>(false);
@@ -23,7 +28,6 @@ export default component$(() => {
   const eliminarProductoFlag = useSignal<boolean>(false);
   const eliminarMesaFlag = useSignal<boolean>(false);
   const agruparFlag = useSignal<boolean>(false);
-  const mudarMesaFlag = useSignal<boolean>(false);
   const cambiarCamareroFlag = useSignal<boolean>(false);
   const cancelBtn = useSignal<boolean>(false);
   const mesaSelected = useStore<any>({});
@@ -33,18 +37,78 @@ export default component$(() => {
   const tienePermiso = useSignal<boolean>(false);
 
 
+  const mudarProducto = $(async (producto: any , mesaDestino:any , mesaActual:any) => {
+    console.log("mudarProducto", producto);
+    modal_Mudar.showModal();
+    if (mesaContext.numeroMesa.length > 0) {
+      console.log("Numero de mesa", mesaContext.numeroMesa);
+      const data = {
+        producto : producto,
+        mesaDestino : mesaDestino
+      }
+      const respMudarProd = await mudar_Producto(authContext.token ,mesaActual, data);
+      console.log("RESP MUDAR PRODUCTO", respMudarProd);
+      modal_Mudar.close();
 
-  const mudarProducto = $(async () => {
-console.log("mudarProducto");
+      
 
+    }
   })
 
+  const changeMesa = $(async (mesa: any) => {
+    console.log("Mesa CHANGE IN CAJA ", mesaSelected.value);
+    modal_Mudar.showModal();
+    if (mesaContext.numeroMesa.length > 0) {
+      console.log("Numero de mesa", mesaContext.numeroMesa);
+      const data = {
+        newMesa: mesa
+      }
+      const resp = await mudarMesa(authContext.token, mesaSelected.value.id, data);
+      console.log("RESP", resp);
+      if (resp.message === 'Mesa ocupada') {
+        alert("Mesa ocupada");
+        modal_Mudar.close();
+
+      } else {
+        alert("Mesa cambiada correctamente");
+        changeView.value = false;
+        modal_Mudar.close();
+
+      }
+    }
+  })
+
+
+  //   const functions: { [key: string]: (data: any) => Promise<void> } = {
+  //     mudarProducto: (data) => mudarProducto(data),
+  //     // Agrega más funciones aquí si es necesario
+  //   };
+
+  //   const allActions = $( async (action: string, data: any) => {
+  //     if (functions[action]) {
+  //       return functions[action](data);
+  //     } else {
+  //       throw new Error(`La acción "${action}" no está definida.`);
+  //     }
+  //   });
+
+
+  // useTask$(async ({ track }) => {
+  //   track(async () => permisoContext.tienePermiso);
+
+  //   await allActions(permisoContext.action, itemSelectedTable.value);
+  // });
+
   useTask$(async ({ track }) => {
-    track(async () => permisoContext.tienePermiso)
+    track(async () => { permisoContext.tienePermiso, mesaContext.numeroMesa })
 
     switch (permisoContext.action) {
       case "mudarProducto":
-        mudarProducto();
+        mudarProducto(itemSelectedTable.value , mesaContext.numeroMesa , mesaSelected.value.id);
+        break;
+
+      case "mudarMesa":
+        changeMesa(mesaContext.numeroMesa);
         break;
 
       default:
@@ -199,12 +263,23 @@ console.log("mudarProducto");
     { id: 3, nombre: "Eliminar Producto", icono: "fas fa-trash", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { eliminarProductoFlag.value = true }), habilitado: [itemSelectedTable.value, changeView.value] },
     { id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { mudarMesaFlag.value = true }), habilitado: [changeView.value] },
     {
+      id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
+      action: $(() => {
+        if (mesaSelected.value) {
+          permisoContext.action = "mudarMesa";
+          modal_Supervisor.showModal();
+        }
+      })
+    },
+    {
       id: 5, nombre: "Mudar Producto", icono: "fas fa-columns", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
-       action: $(() => { if (itemSelectedTable.value) {
+      action: $(() => {
         if (itemSelectedTable.value) {
-          permisoContext.action = "mudarProducto";
-          modal_Supervisor.showModal();}
-          
+          if (itemSelectedTable.value) {
+            permisoContext.action = "mudarProducto";
+            modal_Supervisor.showModal();
+          }
+
         } else {
           alert("Seleccione un producto");
         }
@@ -235,6 +310,7 @@ const habilitado = $((funcionalidad: any) => {
     <>
       <ModalClave />
       <ModalSupervisor tienePermiso={tienePermiso} openModalClave={false} />
+      <ModalMudar />
       {/* <ModalBuscar show={modalBuscar.value} onClose$={$(() => { modalBuscar.value = false; })} title={"Buscar Producto"} /> */}
 
       {/* <ModalBuscar productoSelected$={productoSelected$} show={modalBuscar.value} onClose$={$(() => { modalBuscar.value = false; })} title={"Buscar Producto"} productos= {productos}/> */}
@@ -253,8 +329,7 @@ const habilitado = $((funcionalidad: any) => {
                     eliminarProductoFlag={eliminarProductoFlag}
                     eliminarMesaFlag={eliminarMesaFlag}
                     agruparFlag={agruparFlag}
-                    cambiarCamareroFlag={cambiarCamareroFlag}
-                    mudarMesaFlag={mudarMesaFlag}
+                    cambiarCamareroFlag={cambiarCamareroFlag}                    
                     productosBusqueda={productos}
                     sendProducto={sendProducto}
                     itemSelectedTable={itemSelectedTable}

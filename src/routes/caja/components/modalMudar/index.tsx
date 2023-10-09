@@ -1,26 +1,23 @@
-import { type PropFunction, component$, } from '@builder.io/qwik';
+import { type PropFunction, component$, useContext, useSignal, $, } from '@builder.io/qwik';
+import { MesasContext } from '~/context/mesa/mesa.context';
 
 
-interface parametros {
-  openModalMudar: any,
-  mesaChange: any,
-  changeMesa: PropFunction<(mesa: any) => void>;
 
-}
+export const ModalMudar = component$(() => {
 
-export const ModalMudarMesa = component$((props: parametros) => {
+  const mesaContext = useContext(MesasContext);
 
-  const { openModalMudar, mesaChange, changeMesa } = props;
-
-  /*  const authContext = useContext(AuthContext);
-   const users = useStore<any>([]); */
-  // const mesaId = useSignal<any>(0);
-
-
+  const mesaId = useSignal<any>("");
+  
+  const sendMesa = $(async (mesa: any) => {
+    console.log("mesa ENVIADA", mesa);   
+    
+    mesaContext.numeroMesa = mesa;
+  });
 
   return (
     <div>
-      <dialog id="my_modal_1" class={openModalMudar.value ? 'modal modal-open' : 'modal'}>
+      <dialog id="modal_Mudar">
         <div>
           <div>
             <div class="card flex-shrink-0 w-full  shadow-2xl bg-base-100">
@@ -41,7 +38,7 @@ export const ModalMudarMesa = component$((props: parametros) => {
                         type="number"
                         placeholder="Cantidad"
                         name="cantidad"
-                        bind:value={mesaChange}
+                        bind:value={mesaId}
                         class="input input-bordered"
                       />
                     </div>
@@ -61,7 +58,8 @@ export const ModalMudarMesa = component$((props: parametros) => {
                     <div class="form-control mt-6 col-span-2">
                       <button
                         type="submit"
-                        onClick$={() => changeMesa(mesaChange.value)}
+                        // onClick$={() => changeMesa(mesaChange.value)}
+                        onClick$={() => {sendMesa(mesaId.value)}}
                         class="btn btn-primary"
                       >
                         ok

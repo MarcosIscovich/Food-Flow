@@ -8,7 +8,6 @@ import { deleteMesa } from '~/services/mesa.service';
 import { agruparItems } from '~/services/orden.service';
 import { ModalCamarero } from '../modalCamarero/index';
 import { ModalBuscar } from '../modalBuscar/index';
-import { ModalMudarMesa } from '../modalMudarMesa';
 
 
 interface parametros {
@@ -19,8 +18,7 @@ interface parametros {
   eliminarProductoFlag: any;
   eliminarMesaFlag: any;
   agruparFlag: any;
-  cambiarCamareroFlag: any;
-  mudarMesaFlag: any;
+  cambiarCamareroFlag: any;  
   cancelBtn: any;
   productosBusqueda: any;
   itemSelectedTable: any;
@@ -35,7 +33,7 @@ export const TableMesas = component$((props: parametros) => {
 
   const { mesaSelected, productoSelected, guardarComandaFlag,
     marcharComandaFlag, eliminarProductoFlag, eliminarMesaFlag, agruparFlag, productosBusqueda,
-    cambiarCamareroFlag, mudarMesaFlag, cancelBtn, itemSelectedTable , cancelData, newComanda, closeTable, editComanda, sendProducto  } = props;
+    cambiarCamareroFlag, cancelBtn, itemSelectedTable , cancelData, newComanda, closeTable, editComanda, sendProducto  } = props;
   const authContext = useContext(AuthContext);
   const users = useStore<any>([]);
   const camareroID = useStore<any>({});
@@ -76,7 +74,6 @@ export const TableMesas = component$((props: parametros) => {
     itemSelected.value = null;
     filaSeleccinada.value = null;
     agruparFlag.value = false;
-    mudarMesaFlag.value = false;
     cambiarCamareroFlag.value = false;
     eliminarProductoFlag.value = false;
     eliminarMesaFlag.value = false;
@@ -160,48 +157,6 @@ export const TableMesas = component$((props: parametros) => {
       const response = await findUsers(authContext.token, "findusers");
       users.value = response.filter((user: any) => user.role.nombre === "Camarero")
 
-    }
-  });
-
-  const changeMesa = $(async (mesa: any) => {
-    console.log("Mesa CHANGE IN CAJA ", mesa);
-      const data = {
-        orden_id: orden.value.id,
-        mesaAnterior: mesaSelected.id
-      }
-
-      const resp = await mudarMesa(authContext.token, mesa, data);
-      console.log("RESP", resp);
-      if (resp.message === 'Mesa ocupada') {
-        alert("Mesa ocupada");
-        mudarMesaFlag.value = false;
-        mesaChange.value = {};
-        openModalMudar.value = false;
-        openModalClave.value = false;
-        tienePermiso.value = false;
-        
-      } else {
-        alert("Mesa cambiada correctamente");
-        mudarMesaFlag.value = false;
-        mesaChange.value = {};
-        openModalMudar.value = false;
-        openModalClave.value = false;
-        clearData();
-        closeTable();
-        
-      }  
-   
-  })  
-
-  useTask$(async ({ track }) => {
-    track(() => {mudarMesaFlag.value , tienePermiso.value})
-    if (mudarMesaFlag.value) {
-      openModalClave.value = true;
-    }
-    if(mudarMesaFlag.value && tienePermiso.value){
-      openModalMudar.value = true;
-      openModalClave.value = false;
-      
     }
   });
 
@@ -485,7 +440,7 @@ export const TableMesas = component$((props: parametros) => {
       {/* <ModalSupervisor openModalClave={openModalClave} tienePermiso={tienePermiso} /> */}
       <ModalCamarero openModalCamarero={openModalCamarero} orden={orden} refreshMesa={refreshMesa} cambiarCamareroFlag={cambiarCamareroFlag} tienePermiso={tienePermiso} />
       <ModalBuscar productoBuscado$={productoBuscado$} sendProducto={sendProducto} show={false} onClose$={$(() => { false; })} title={"Buscar Producto"} productos= {productosBusqueda}/>
-      <ModalMudarMesa openModalMudar={openModalMudar} mesaChange={mesaChange} changeMesa={changeMesa} />
+      
       <div class="card  bg-secondary-100" style="height: 100%;">
         <div class="card-body p-7">
           <h2 class="card-title flex justify-center">
