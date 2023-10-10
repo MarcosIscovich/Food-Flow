@@ -40,6 +40,7 @@ export default component$(() => {
     permisoContext.tienePermiso = false;
     permisoContext.action = "";
     mesaContext.numeroMesa = "";
+    itemSelectedTable.value = null;
   })
 
   const mudarProducto = $(async (producto: any, mesaDestino: any, mesaActual: any) => {
@@ -67,7 +68,6 @@ export default component$(() => {
     }
   })
 
-
   const changeMesa = $(async (mesa: any) => {
     console.log("Mesa CHANGE IN CAJA ", mesaSelected.value);
     modal_Mudar.showModal();
@@ -80,13 +80,11 @@ export default component$(() => {
       console.log("RESP", resp);
       if (resp.message === 'Mesa ocupada') {
         alert("Mesa ocupada");
-        modal_Mudar.close();
         clearContexts()
 
       } else {
         alert("Mesa cambiada correctamente");
         changeView.value = false;
-        modal_Mudar.close();
         clearContexts()
 
       }
@@ -212,7 +210,7 @@ export default component$(() => {
 
 
 
-  const clearData = $(() => {
+  const clearDataCajaCaja = $(() => {
     console.log("Clear Data");
     //camareroSelected.value = null;
     productos.length = 0;
@@ -246,7 +244,7 @@ export default component$(() => {
   const volverAmesa = $(() => {
     changeView.value = !changeView.value;
     cancelBtn.value = true;
-    clearData();
+    clearDataCaja();
   })
 
 
@@ -254,7 +252,8 @@ export default component$(() => {
     { id: 3, nombre: "Eliminar Mesa", icono: "fas fa-trash", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { eliminarMesaFlag.value = true }), habilitado: [changeView.value] },
     { id: 2, nombre: "Reservar Mesa", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", habilitado: [changeView.value] },
     { id: 1, nombre: "Cobrar Mesa", icono: "fas fa-cash-register", class: "btn-func btn--verde ", classDisabled: "btn-func btn--verdeDisabled btn-disabled", habilitado: [changeView.value] },
-    { id: 3, nombre: "Eliminar Producto", icono: "fas fa-trash", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { eliminarProductoFlag.value = true }), habilitado: [itemSelectedTable.value, changeView.value] },
+    { id: 3, nombre: "Eliminar Producto", icono: "fas fa-trash", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", 
+    action: $(() => { eliminarProductoFlag.value = true }), habilitado: [itemSelectedTable.value, changeView.value] },
     {
       id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => {
         if (mesaSelected.value) {

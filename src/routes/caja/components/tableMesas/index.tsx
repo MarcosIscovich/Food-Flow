@@ -85,7 +85,7 @@ export const TableMesas = component$((props: parametros) => {
     openModalCamarero.value = false;
     openModalMudar.value = false;
     mesaChange.value = {};
-    productoSelected.value = null;
+    
     productosBusqueda.value = null;
   })
 
@@ -101,14 +101,15 @@ export const TableMesas = component$((props: parametros) => {
           openModalClave.value = false;
           openModalProducto.value = false;
           refreshMesa.value = !refreshMesa.value;
-          clearData();
+          filaSeleccinada.value = null;
+          
         } else {
           productos.splice(filaSeleccinada.value, 1);
           total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
           eliminarProductoFlag.value = false;
           openModalClave.value = false;
           openModalProducto.value = false;
-          clearData();
+          filaSeleccinada.value = null;          
         }
       }
     })
@@ -120,6 +121,9 @@ export const TableMesas = component$((props: parametros) => {
       if (resp.status === 200) {
         eliminarProductoFlag.value = false;
         tienePermiso.value = false;
+        filaSeleccinada.value = null;
+        // refreshMesa.value = !refreshMesa.value;
+        openModalClave.value = false;
         clearData();
         closeTable();
       }
@@ -226,19 +230,24 @@ export const TableMesas = component$((props: parametros) => {
     if (cambiarCamareroFlag.value && tienePermiso.value) {
       openModalCamarero.value = true;
       openModalClave.value = false;
-      
+
     }
   });
 
   useTask$(async ({ track }) => {
     track(() => { eliminarProductoFlag.value, tienePermiso.value })
+console.log("eliminar PRODUCTO", eliminarProductoFlag.value);
+console.log("eliminar PRODUCTO", itemSelected.value);
 
     if (eliminarProductoFlag.value && itemSelected.value) {
       console.log("ELiminar Producto", itemSelected.value);
 
       if (itemSelected.value.procesada === 1) {
         openModalClave.value = true;
+        // modal_Supervisor.showModal();
         if (eliminarProductoFlag.value && tienePermiso.value) {
+          console.log("ELiminar Producto PERMISO OK", itemSelected.value);
+          
           if (itemSelected.value.cantidad === 1) {
             quitarProducto();
             if (productos.length === 1) {
@@ -293,7 +302,6 @@ export const TableMesas = component$((props: parametros) => {
       const _productos: any = []
       let flagProcesada = false;
       productos.map((producto: any) => {
-
         if (!producto.procesada) {
           _productos.push(producto)
         }
@@ -303,8 +311,8 @@ export const TableMesas = component$((props: parametros) => {
       })
       console.log("Productos no ENviados", _productos);
       if (_productos.length > 0 && flagProcesada) {
-        editComanda(_productos, total.value, orden.value.id)
-        // refreshMesa.value = !refreshMesa.value;
+       await  editComanda(_productos, total.value, orden.value.id)
+        refreshMesa.value = !refreshMesa.value;
         openModalProducto.value = false
       } else if (productos.length > 0 && !flagProcesada) {
         await newComanda(productos, camareroSelected.value?.id, total.value);
@@ -314,6 +322,7 @@ export const TableMesas = component$((props: parametros) => {
       else {
         if (guardarComandaFlag.value && !marcharComandaFlag.value) {
           console.log("ENTRA CLOSE TABLE");
+          refreshMesa.value = !refreshMesa.value;
           closeTable();
         }
       }
@@ -339,13 +348,13 @@ export const TableMesas = component$((props: parametros) => {
       console.log("Mesa Ocupada", mesaSelected);
       await getMesa(authContext.token, mesaSelected.id).then((item) => {
         console.log("Mesa DATA", item.mesa);
-        if (item) {
+        if (item.mesa) {
           orden.value = item.mesa.orden;
           console.log("Camarero", camareroSelected.value);
           camareroSelected.value = {
-            nombre: item.mesa.orden.user.nombre
+            nombre: item?.mesa?.orden?.user?.nombre
           }
-          horaMesaFunct(item.mesa.orden.created_at)
+          horaMesaFunct(item?.mesa?.orden?.created_at)
           item.mesa.orden.comandas.map((comanda: any) => {
             comanda.productos.map((producto: any) => {
               productos.push({
@@ -381,7 +390,6 @@ export const TableMesas = component$((props: parametros) => {
         openModalClave.value = false;
         clearData();
       }
-
     })
   })
 
@@ -439,7 +447,7 @@ export const TableMesas = component$((props: parametros) => {
 
   return (
     <>
-      {/* <ModalSupervisor openModalClave={openModalClave} tienePermiso={tienePermiso} /> */}
+      <ModalSupervisor openModalClave={openModalClave} tienePermiso={tienePermiso} />
       <ModalCamarero openModalCamarero={openModalCamarero} orden={orden} refreshMesa={refreshMesa} cambiarCamareroFlag={cambiarCamareroFlag} tienePermiso={tienePermiso} />
       <ModalBuscar productoBuscado$={productoBuscado$} sendProducto={sendProducto} show={false} onClose$={$(() => { false; })} title={"Buscar Producto"} productos= {productosBusqueda}/>
       

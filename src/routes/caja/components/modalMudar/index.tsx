@@ -1,11 +1,11 @@
-import { type PropFunction, component$, useContext, useSignal, $, } from '@builder.io/qwik';
+import {  component$, useContext, useSignal, $, } from '@builder.io/qwik';
 import { MesasContext } from '~/context/mesa/mesa.context';
 
 
 
 export const ModalMudar = component$(() => {
 
-  const mesaContext = useContext(MesasContext);
+  const mesaContext = useContext(MesasContext);  
 
   const mesaId = useSignal<any>("");
 

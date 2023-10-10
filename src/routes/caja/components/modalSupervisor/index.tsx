@@ -36,16 +36,15 @@ export const ModalSupervisor = component$((props: parametros) => {
                     clave.value = "";
                     tienePermiso.value = false;
                     openModalClave.value = false;
+                    modal_Supervisor.close();
                     return;
                 } else {
                     clave.value = "";
                     tienePermiso.value = true;
-                    permisoContext.tienePermiso = true;
-                    
-                    console.log("permiso MODAL", permisoContext);                    
-                    
+                    permisoContext.tienePermiso = true;                    
+                    console.log("permiso MODAL", permisoContext);        
                     modal_Supervisor.close();
-                    // openModalClave.value = false;
+                    openModalClave.value = false;
                 }
             }
         });
