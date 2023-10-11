@@ -26,7 +26,7 @@ export const ModalSupervisor = component$((props: parametros) => {
             console.log("resp", resp);
             if (!resp.success) {
                 alert(resp.message);
-                openModalClave.value = false;
+                // openModalClave.value = false;
                 tienePermiso.value = false;
                 clave.value = "";
                 return;
@@ -35,7 +35,7 @@ export const ModalSupervisor = component$((props: parametros) => {
                     alert("No tiene permisos para acceder a esta seccion");
                     clave.value = "";
                     tienePermiso.value = false;
-                    openModalClave.value = false;
+                    // openModalClave.value = false;
                     modal_Supervisor.close();
                     return;
                 } else {
@@ -44,7 +44,7 @@ export const ModalSupervisor = component$((props: parametros) => {
                     permisoContext.tienePermiso = true;                    
                     console.log("permiso MODAL", permisoContext);        
                     modal_Supervisor.close();
-                    openModalClave.value = false;
+                    // openModalClave.value = false;
                 }
             }
         });

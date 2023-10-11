@@ -13,6 +13,8 @@ import { MesasContext } from '~/context/mesa/mesa.context';
 import { mudarMesa } from '~/services/mesa.service';
 import { ModalMudar } from './components/modalMudar';
 import { mudar_Producto } from '~/services/productos.service';
+import { Toast } from '~/components/sharedComponents/utils/toast.component';
+import { info } from 'console';
 
 
 export default component$(() => {
@@ -35,6 +37,12 @@ export default component$(() => {
   const productos = useStore<any>({});
   const itemSelectedTable = useStore<any>({});
   const tienePermiso = useSignal<boolean>(false);
+  const infoToast = useStore({
+    msg: "",
+    type: "success",
+    show: false,
+  });
+  const openModalClave = useSignal<boolean>(false); 
 
   const clearContexts = $(() => {
     permisoContext.tienePermiso = false;
@@ -57,11 +65,11 @@ export default component$(() => {
       if(respMudarProd.success){
         alert(respMudarProd.message);
         changeView.value = false;
-        modal_Mudar.close();
+        
         clearContexts()
       }else {
         alert(respMudarProd.message);
-        modal_Mudar.close();
+        
         clearContexts()
       } 
     
@@ -78,16 +86,20 @@ export default component$(() => {
       }
       const resp = await mudarMesa(authContext.token, mesaSelected.value.id, data);
       console.log("RESP", resp);
-      if (resp.message === 'Mesa ocupada') {
-        alert("Mesa ocupada");
+      if (resp.message === 'Mesa ocupada') {       
+        infoToast.show = true;
+        infoToast.msg = resp.message;
+        infoToast.type = "error";
         clearContexts()
-
-      } else {
-        alert("Mesa cambiada correctamente");
+      } else {       
+        infoToast.show = true;
+        infoToast.msg = resp.message;
+        infoToast.type = "success";
         changeView.value = false;
-        clearContexts()
-
+        clearContexts()        
       }
+      modal_Mudar.close();
+      
     }
   })
 
@@ -189,8 +201,6 @@ export default component$(() => {
     }
   });
 
-
-
   useVisibleTask$(async ({ track }) => {
     track(async () => authContext.token)
     console.log("Token", authContext);
@@ -200,8 +210,6 @@ export default component$(() => {
 
   });
 
-
-
   useTask$(async ({ track }) => {
     track(async () => itemSelectedTable.value)
     console.log("itemSelectedTable", itemSelectedTable.value);
@@ -210,7 +218,7 @@ export default component$(() => {
 
 
 
-  const clearDataCajaCaja = $(() => {
+  const clearDataCaja = $(() => {
     console.log("Clear Data");
     //camareroSelected.value = null;
     productos.length = 0;
@@ -258,6 +266,7 @@ export default component$(() => {
       id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => {
         if (mesaSelected.value) {
           permisoContext.action = "mudarMesa";
+          // openModalClave.value = true;
           modal_Supervisor.showModal();
         }
       }), habilitado: [changeView.value]
@@ -278,7 +287,7 @@ export default component$(() => {
       }), habilitado: [itemSelectedTable.value, changeView.value]
     },
     { id: 6, nombre: "Agrupar Items", icono: "fas fa-object-group", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { agruparFlag.value = true }), habilitado: [changeView.value] },
-    { id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { marcharComandaFlag.value = true }), habilitado: [itemSelectedTable.value, changeView.value] },
+    { id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { marcharComandaFlag.value = true }), habilitado: [changeView.value] },
     { id: 8, nombre: "Cambiar Camarero", icono: "fas fa-user-edit", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { cambiarCamareroFlag.value = true }), habilitado: [changeView.value, (mesaSelected?.value?.estado_id == 2)] },
     { id: 10, nombre: "Volver a Mesas", icono: "fas fa-ban", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { volverAmesa() }), habilitado: [changeView.value] },
     { id: 9, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { my_modal_2.showModal() }), habilitado: [changeView.value] },
@@ -303,6 +312,7 @@ export default component$(() => {
       <ModalClave />
       <ModalSupervisor tienePermiso={tienePermiso} openModalClave={false} />
       <ModalMudar />
+      <Toast msg={infoToast.msg} type={infoToast.type} show={infoToast.show} onFinish={$(() => (infoToast.show = false))} />
       {/* <ModalBuscar show={modalBuscar.value} onClose$={$(() => { modalBuscar.value = false; })} title={"Buscar Producto"} /> */}
 
       {/* <ModalBuscar productoSelected$={productoSelected$} show={modalBuscar.value} onClose$={$(() => { modalBuscar.value = false; })} title={"Buscar Producto"} productos= {productos}/> */}

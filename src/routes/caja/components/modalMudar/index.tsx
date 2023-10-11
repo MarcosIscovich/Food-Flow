@@ -13,7 +13,6 @@ export const ModalMudar = component$(() => {
     console.log("mesa ENVIADA", mesa);
     mesaContext.numeroMesa = mesa;
     mesaId.value = "";
-    modal_Mudar.close();
   });
 
   const closeModal = $(async () => {

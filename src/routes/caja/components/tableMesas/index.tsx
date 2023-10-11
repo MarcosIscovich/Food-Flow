@@ -8,6 +8,7 @@ import { deleteMesa } from '~/services/mesa.service';
 import { agruparItems } from '~/services/orden.service';
 import { ModalCamarero } from '../modalCamarero/index';
 import { ModalBuscar } from '../modalBuscar/index';
+import { PermisoContext } from '~/context/supervisor/supervisor.context';
 
 
 interface parametros {
@@ -34,7 +35,12 @@ export const TableMesas = component$((props: parametros) => {
   const { mesaSelected, productoSelected, guardarComandaFlag,
     marcharComandaFlag, eliminarProductoFlag, eliminarMesaFlag, agruparFlag, productosBusqueda,
     cambiarCamareroFlag, cancelBtn, itemSelectedTable , cancelData, newComanda, closeTable, editComanda, sendProducto  } = props;
+
+
+
   const authContext = useContext(AuthContext);
+  const permisoContext = useContext(PermisoContext);
+
   const users = useStore<any>([]);
   const camareroID = useStore<any>({});
   const camareroSelected = useStore<any>({});
@@ -233,6 +239,7 @@ export const TableMesas = component$((props: parametros) => {
 
     }
   });
+  
 
   useTask$(async ({ track }) => {
     track(() => { eliminarProductoFlag.value, tienePermiso.value })
@@ -243,9 +250,9 @@ console.log("eliminar PRODUCTO", itemSelected.value);
       console.log("ELiminar Producto", itemSelected.value);
 
       if (itemSelected.value.procesada === 1) {
-        openModalClave.value = true;
-        // modal_Supervisor.showModal();
-        if (eliminarProductoFlag.value && tienePermiso.value) {
+        // openModalClave.value = true;
+        modal_Supervisor.showModal();
+        if (permisoContext.tienePermiso) {
           console.log("ELiminar Producto PERMISO OK", itemSelected.value);
           
           if (itemSelected.value.cantidad === 1) {
@@ -447,7 +454,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
 
   return (
     <>
-      <ModalSupervisor openModalClave={openModalClave} tienePermiso={tienePermiso} />
+      {/* <ModalSupervisor openModalClave={openModalClave} tienePermiso={tienePermiso} /> */}
       <ModalCamarero openModalCamarero={openModalCamarero} orden={orden} refreshMesa={refreshMesa} cambiarCamareroFlag={cambiarCamareroFlag} tienePermiso={tienePermiso} />
       <ModalBuscar productoBuscado$={productoBuscado$} sendProducto={sendProducto} show={false} onClose$={$(() => { false; })} title={"Buscar Producto"} productos= {productosBusqueda}/>
       

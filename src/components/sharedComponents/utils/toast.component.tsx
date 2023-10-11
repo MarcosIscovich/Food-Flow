@@ -37,7 +37,7 @@ export const Toast = component$<parametros>((props) => {
   return (
     <div>
       {show && (
-        <div class="toast toast-top toast-end mt-14">
+        <div class="toast toast-top toast-end mt-14" style="z-index:1000">
           <div class={typeClass}>
             <div>
               <span>{msg}</span>
