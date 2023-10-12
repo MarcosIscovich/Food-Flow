@@ -53,9 +53,11 @@ export const ModalSupervisor = component$((props: parametros) => {
     });
 
     return (
+        // bg-gradient-to-b from-gray-200 to-transparent
+        // bg-opacity-50 bg-gray-200
         <div>
             <dialog id="modal_Supervisor" class={openModalClave.value ? 'modal modal-open' : 'modal'}>
-                <div class="hero min-h-screen bg-base-200" style="z-index : 12500">
+                <div class="bg-gradient-to-b from-gray-200 to-transparent p-12 rounded-lg" >
                     <div class="hero-content flex-col ">
                         <div class="text-center lg:text-left">
                             <h1 class="text-5xl font-bold mb-10">Ingresa clave</h1>
@@ -71,6 +73,7 @@ export const ModalSupervisor = component$((props: parametros) => {
                                     </div>
 
                                     <div class="form-control mt-6">
+                                        <button class="btn btn-error" onClick$={() => { modal_Supervisor.close() }} >Cancelar</button>
 
                                         <button class="btn btn-primary" type='submit' onClick$={loginUsuario} >Login</button>
                                     </div>

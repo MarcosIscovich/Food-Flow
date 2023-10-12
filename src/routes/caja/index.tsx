@@ -10,11 +10,13 @@ import { getAllProducts } from '~/services/productos.service';
 import { ModalSupervisor } from './components/modalSupervisor';
 import { PermisoContext } from '~/context/supervisor/supervisor.context';
 import { MesasContext } from '~/context/mesa/mesa.context';
-import { mudarMesa } from '~/services/mesa.service';
+import { deleteMesa, mudarMesa } from '~/services/mesa.service';
 import { ModalMudar } from './components/modalMudar';
 import { mudar_Producto } from '~/services/productos.service';
 import { Toast } from '~/components/sharedComponents/utils/toast.component';
-import { info } from 'console';
+import { deleteProducto, updateProducto } from '~/services/comanda.service';
+import { ModalProducto } from './components/modalProducto';
+import { ModalCamarero } from './components/modalCamarero';
 
 
 export default component$(() => {
@@ -22,7 +24,6 @@ export default component$(() => {
   const authContext = useContext(AuthContext);
   const permisoContext = useContext(PermisoContext);
   const mesaContext = useContext(MesasContext);
-
 
   const changeView = useSignal<boolean>(false);
   const guardarComandaFlag = useSignal<boolean>(false);
@@ -34,15 +35,21 @@ export default component$(() => {
   const cancelBtn = useSignal<boolean>(false);
   const mesaSelected = useStore<any>({});
   const productoSelected = useStore<any>({});
-  const productos = useStore<any>({});
+  const allProductos = useStore<any>({});  
+  const productos = useStore<any[]>([]);
   const itemSelectedTable = useStore<any>({});
   const tienePermiso = useSignal<boolean>(false);
   const infoToast = useStore({
     msg: "",
     type: "success",
     show: false,
-  });
-  const openModalClave = useSignal<boolean>(false); 
+  }); 
+  const filaSeleccinada = useSignal<number>(0);
+  const total = useSignal<number>(0);
+  const cantidad = useSignal<string>('');
+  const preferencia = useSignal<string>('');
+  const orden = useStore<any>({});
+  const refreshMesa = useSignal<boolean>(false);
 
   const clearContexts = $(() => {
     permisoContext.tienePermiso = false;
@@ -50,6 +57,8 @@ export default component$(() => {
     mesaContext.numeroMesa = "";
     itemSelectedTable.value = null;
   })
+
+  
 
   const mudarProducto = $(async (producto: any, mesaDestino: any, mesaActual: any) => {
     console.log("mudarProducto", producto);
@@ -103,6 +112,75 @@ export default component$(() => {
     }
   })
 
+  const quitarProducto = $(() => {
+    console.log("Quitar Producto", itemSelectedTable.value);
+    deleteProducto(authContext.token, itemSelectedTable.value).then((resp) => {
+      if (resp.success) {
+        console.log("RESPONSE ELMINIAR PRODUCTO", resp);
+        if (productos.length === 1) {
+          productos.splice(filaSeleccinada.value, 1);  
+        } else {
+          productos.splice(filaSeleccinada.value, 1);
+          total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a:any, b:any) => a + b, 0);        
+                  
+        }
+      }
+    })
+  })
+
+  const liberarMesa = $(() => {
+    deleteMesa(authContext.token, mesaSelected.value).then((resp) => {
+      console.log("RESPONSE ELIMINAR MESA", resp);
+      if (resp.status === 200) {     
+        changeView.value = false;
+      }
+      clearContexts()
+    })
+  })
+
+  const eliminarProd = $(async () => {
+
+    if ( itemSelectedTable.value) {
+      console.log("ELiminar Producto", itemSelectedTable.value);
+
+      if (itemSelectedTable.value.procesada === 1) {
+        // openModalClave.value = true;
+        modal_Supervisor.showModal();
+        if (permisoContext.tienePermiso) {
+          console.log("ELiminar Producto PERMISO OK", itemSelectedTable.value);
+          
+          if (itemSelectedTable.value.cantidad === 1) {
+            quitarProducto();
+            if (productos.length === 1) {
+              liberarMesa();
+            }
+          } else {
+            modal_Producto.showModal();
+          }
+        }
+
+      } else {
+        productos.splice(filaSeleccinada.value, 1);
+        // total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
+        eliminarProductoFlag.value = false;
+        infoToast.show = true;
+        infoToast.msg = "Producto eliminado";
+        infoToast.type = "success";
+      }
+    }else if(eliminarProductoFlag.value && !itemSelectedTable.value){
+      infoToast.show = true;
+      infoToast.msg = "Seleccione un producto";
+      infoToast.type = "error";
+      
+    }
+    clearContexts()
+  })
+
+  const cambiarCamarero = $(async () => {
+    console.log("CAMBIAR CAMARERO", mesaSelected.value);
+    modal_Camarero.showModal();
+  })
+
   useTask$(async ({ track }) => {
     track(async () => { permisoContext.tienePermiso, mesaContext.numeroMesa })
     if (permisoContext.tienePermiso) {
@@ -113,6 +191,14 @@ export default component$(() => {
 
         case "mudarMesa":
           changeMesa(mesaContext.numeroMesa);
+          break;
+
+        case "eliminarProducto":
+          eliminarProd();
+          break;
+        
+        case "cambiarCamarero":
+          cambiarCamarero();
           break;
 
         default:
@@ -145,11 +231,7 @@ export default component$(() => {
     productoSelected.value = null;
   })
 
-  const sendProducto = $((producto: any) => {
-    console.log("Producto Selected index", producto);
-    productoSelected.value = {};
-    productoSelected.value = producto;
-  })
+  
 
   // const productoSelected$ = $(async (producto: any) => {
   //   console.log("Producto Selected ", producto);
@@ -197,7 +279,7 @@ export default component$(() => {
     const resp = await getAllProducts(authContext.token || "");
     console.log("Respuesta", resp);
     if (resp.res) {
-      productos.values = resp.productos;
+      allProductos.values = resp.productos;
     }
   });
 
@@ -216,7 +298,64 @@ export default component$(() => {
 
   })
 
+  const editarProducto = $((item: any) => {
+    updateProducto(authContext.token, item).then((resp) => {
+      console.log("RESPONSE EDITAR PRODUCTO", resp);
+      if (resp.success) {
+        console.log("RESPONSE EDITAR PRODUCTO", resp);
+        modal_Producto.close();
+        // refreshMesa.value = true;
+      }
+    })
+  })
 
+  
+  const addProducto = $(async () => {   
+    // console.log("data", data);
+    if (itemSelectedTable.value) {
+      console.log("EDIT", itemSelectedTable.value, cantidad.value, preferencia.value);
+      if (cantidad.value < itemSelectedTable.value.cantidad) {
+        itemSelectedTable.value.cantidad = cantidad.value;
+        editarProducto(itemSelectedTable.value);
+      } else if (cantidad.value == itemSelectedTable.value.cantidad) {
+        quitarProducto();
+       
+        if (productos.length === 0) {
+          liberarMesa();
+          
+        }
+      } else {
+        
+        infoToast.show = true;
+        infoToast.msg = "No puede quitar mas cantidad de la que ya tiene";
+        infoToast.type = "error";
+        
+        return;
+      }
+      
+    } else {
+
+      productos.push({
+        id: productoSelected.value.id,
+        nombre: productoSelected.value.nombre,
+        precio: productoSelected.value.precio,
+        cantidad: cantidad.value,
+        preferencia: preferencia.value
+      })
+      console.log("Productos", productoSelected.value);
+      total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
+      productoSelected.values = {};
+     modal_Producto.close();
+    }    
+  })
+
+
+  const sendProducto = $((producto: any) => {
+    console.log("Producto Selected index", producto);
+    modal_Producto.showModal();
+    productoSelected.value = {};
+    productoSelected.value = producto;
+  })
 
   const clearDataCaja = $(() => {
     console.log("Clear Data");
@@ -261,7 +400,12 @@ export default component$(() => {
     { id: 2, nombre: "Reservar Mesa", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", habilitado: [changeView.value] },
     { id: 1, nombre: "Cobrar Mesa", icono: "fas fa-cash-register", class: "btn-func btn--verde ", classDisabled: "btn-func btn--verdeDisabled btn-disabled", habilitado: [changeView.value] },
     { id: 3, nombre: "Eliminar Producto", icono: "fas fa-trash", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", 
-    action: $(() => { eliminarProductoFlag.value = true }), habilitado: [itemSelectedTable.value, changeView.value] },
+    action: $(() => { 
+      if (itemSelectedTable.value) {
+        permisoContext.action = "eliminarProducto";
+        modal_Supervisor.showModal();
+      }
+    }), habilitado: [itemSelectedTable.value, changeView.value] },
     {
       id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => {
         if (mesaSelected.value) {
@@ -288,22 +432,29 @@ export default component$(() => {
     },
     { id: 6, nombre: "Agrupar Items", icono: "fas fa-object-group", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { agruparFlag.value = true }), habilitado: [changeView.value] },
     { id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { marcharComandaFlag.value = true }), habilitado: [changeView.value] },
-    { id: 8, nombre: "Cambiar Camarero", icono: "fas fa-user-edit", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { cambiarCamareroFlag.value = true }), habilitado: [changeView.value, (mesaSelected?.value?.estado_id == 2)] },
-    { id: 10, nombre: "Volver a Mesas", icono: "fas fa-ban", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { volverAmesa() }), habilitado: [changeView.value] },
+    { id: 8, nombre: "Cambiar Camarero", icono: "fas fa-user-edit", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", 
+    action: $(() => { 
+      if (mesaSelected.value) {
+        permisoContext.action = "cambiarCamarero";
+        modal_Supervisor.showModal();
+      }
+     }), habilitado: [changeView.value, (mesaSelected?.value?.estado_id == 2)] },
+    { id: 10, nombre: "Volver a Mesas", icono: "fas fa-ban", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled", 
+    action: $(() => { volverAmesa() }), habilitado: [changeView.value] },
     { id: 9, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { my_modal_2.showModal() }), habilitado: [changeView.value] },
     { id: 11, nombre: "Guardar Comanda", icono: "fas fa-save", class: "btn-func btn--verde", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { guardarComandaFlag.value = true }), habilitado: [changeView.value] },
   ]
 
   const habilitado = $((funcionalidad: any) => {
-    console.log("Habilitado", funcionalidad);
+    
     let ret = true;
     funcionalidad.habilitado?.forEach((element: any) => {
-      console.log("Element", element);
+      
       if (!element) {
         ret = false;
       }
     });
-    console.log("Ret", ret);
+    
     return ret;
   }
   )
@@ -312,11 +463,9 @@ export default component$(() => {
       <ModalClave />
       <ModalSupervisor tienePermiso={tienePermiso} openModalClave={false} />
       <ModalMudar />
+      <ModalProducto cantidad={cantidad} preferencia={preferencia} itemSelectedTable={itemSelectedTable} addProducto={addProducto} />
+      <ModalCamarero orden={orden} refreshMesa={refreshMesa} infoToast={infoToast} clearContexts={clearContexts} />
       <Toast msg={infoToast.msg} type={infoToast.type} show={infoToast.show} onFinish={$(() => (infoToast.show = false))} />
-      {/* <ModalBuscar show={modalBuscar.value} onClose$={$(() => { modalBuscar.value = false; })} title={"Buscar Producto"} /> */}
-
-      {/* <ModalBuscar productoSelected$={productoSelected$} show={modalBuscar.value} onClose$={$(() => { modalBuscar.value = false; })} title={"Buscar Producto"} productos= {productos}/> */}
-
       <div class="">
         <div class="flex flex-col">
           <div class="grid grid-cols-2">
@@ -327,14 +476,17 @@ export default component$(() => {
                     productoSelected={productoSelected.value} newComanda={newComanda} guardarComandaFlag={guardarComandaFlag}
                     marcharComandaFlag={marcharComandaFlag}
                     cancelBtn={cancelBtn}
-                    cancelData={cancelData}
-                    eliminarProductoFlag={eliminarProductoFlag}
+                    cancelData={cancelData}                    
                     eliminarMesaFlag={eliminarMesaFlag}
                     agruparFlag={agruparFlag}
                     cambiarCamareroFlag={cambiarCamareroFlag}
-                    productosBusqueda={productos}
+                    productosBusqueda={allProductos}
+                    productos={productos}
                     sendProducto={sendProducto}
                     itemSelectedTable={itemSelectedTable}
+                    filaSeleccinada={filaSeleccinada}
+                    orden={orden}
+                    refreshMesa={refreshMesa}
                   />
                 </div>
               ) : (

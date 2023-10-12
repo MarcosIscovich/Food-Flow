@@ -1,28 +1,29 @@
 import { $, type PropFunction, component$, useContext, useSignal, useStore, useTask$ } from '@builder.io/qwik';
 import { AuthContext } from '~/context/auth/auth.context';
 import { findUsers } from "~/services/generico.service";
-import { getMesa, mudarMesa } from '~/services/mesa.service';
-import { ModalSupervisor } from '../modalSupervisor/index';
+import { getMesa } from '~/services/mesa.service';
 import { deleteProducto, updateProducto } from '~/services/comanda.service';
 import { deleteMesa } from '~/services/mesa.service';
 import { agruparItems } from '~/services/orden.service';
 import { ModalCamarero } from '../modalCamarero/index';
 import { ModalBuscar } from '../modalBuscar/index';
-import { PermisoContext } from '~/context/supervisor/supervisor.context';
 
 
 interface parametros {
   mesaSelected: any;
   productoSelected: any;
   guardarComandaFlag: any;
-  marcharComandaFlag: any;
-  eliminarProductoFlag: any;
+  marcharComandaFlag: any; 
   eliminarMesaFlag: any;
   agruparFlag: any;
   cambiarCamareroFlag: any;  
   cancelBtn: any;
   productosBusqueda: any;
   itemSelectedTable: any;
+  filaSeleccinada: any;
+  productos: any;
+  orden: any;
+  refreshMesa: any;
   newComanda: PropFunction<(productoSelected: any, camarero: any, total: any) => any>;
   editComanda: PropFunction<(productos: any, total: any, orden: any) => any>;
   closeTable: PropFunction<() => any>;
@@ -32,32 +33,30 @@ interface parametros {
 
 export const TableMesas = component$((props: parametros) => {
 
-  const { mesaSelected, productoSelected, guardarComandaFlag,
-    marcharComandaFlag, eliminarProductoFlag, eliminarMesaFlag, agruparFlag, productosBusqueda,
-    cambiarCamareroFlag, cancelBtn, itemSelectedTable , cancelData, newComanda, closeTable, editComanda, sendProducto  } = props;
+  const { mesaSelected, productoSelected, orden, guardarComandaFlag,
+    marcharComandaFlag, filaSeleccinada, eliminarMesaFlag, agruparFlag, productosBusqueda,
+    cambiarCamareroFlag, refreshMesa, cancelBtn, itemSelectedTable, productos , cancelData, newComanda, closeTable, editComanda, sendProducto  } = props;
 
 
-
+    console.log("PRODUCTOS IN TABLE MESA" , productos);
+    
   const authContext = useContext(AuthContext);
-  const permisoContext = useContext(PermisoContext);
 
   const users = useStore<any>([]);
   const camareroID = useStore<any>({});
   const camareroSelected = useStore<any>({});
-  const productos = useStore<any[]>([]);
+  // const productos = useStore<any[]>([]);
   const openModalProducto = useSignal<boolean>(false);
   const data = useStore<any>({});
-  const cantidad = useSignal<string>('');
-  const preferencia = useSignal<string>('');
+  
   const total = useSignal<number>(0);
-  const orden = useStore<any>({});
-  const filaSeleccinada = useSignal<any>(null);
+  
   const itemSelected = useStore<any>({});
   const openModalClave = useSignal<boolean>(false);
   const openModalCamarero = useSignal<boolean>(false);
   const openModalMudar = useSignal<boolean>(false);
   const tienePermiso = useSignal<boolean>(false);
-  const refreshMesa = useSignal<boolean>(false);
+  // const refreshMesa = useSignal<boolean>(false);
   const horaMesa = useSignal<string>("");
   const mesaChange = useSignal<any>({});
 
@@ -72,8 +71,6 @@ export const TableMesas = component$((props: parametros) => {
     total.value = 0;
     mesaSelected.value = null;
     orden.value = null;
-    cantidad.value = "";
-    preferencia.value = "";
     openModalProducto.value = false
     openModalClave.value = false;
     tienePermiso.value = false;
@@ -81,7 +78,6 @@ export const TableMesas = component$((props: parametros) => {
     filaSeleccinada.value = null;
     agruparFlag.value = false;
     cambiarCamareroFlag.value = false;
-    eliminarProductoFlag.value = false;
     eliminarMesaFlag.value = false;
     cancelBtn.value = false;
     guardarComandaFlag.value = false;
@@ -90,51 +86,48 @@ export const TableMesas = component$((props: parametros) => {
     data.value = {};
     openModalCamarero.value = false;
     openModalMudar.value = false;
-    mesaChange.value = {};
-    
+    mesaChange.value = {};    
     productosBusqueda.value = null;
   })
 
 
-  const quitarProducto = $(() => {
-    deleteProducto(authContext.token, itemSelected.value).then((resp) => {
-      if (resp.success) {
-        console.log("RESPONSE ELMINIAR PRODUCTO", resp);
-        if (productos.length === 1) {
-          productos.splice(filaSeleccinada.value, 1);
-          eliminarProductoFlag.value = false;
-          tienePermiso.value = false;
-          openModalClave.value = false;
-          openModalProducto.value = false;
-          refreshMesa.value = !refreshMesa.value;
-          filaSeleccinada.value = null;
+  // const quitarProducto = $(() => {
+  //   deleteProducto(authContext.token, itemSelected.value).then((resp) => {
+  //     if (resp.success) {
+  //       console.log("RESPONSE ELMINIAR PRODUCTO", resp);
+  //       if (productos.length === 1) {
+  //         productos.splice(filaSeleccinada.value, 1);
+  //         tienePermiso.value = false;
+  //         openModalClave.value = false;
+  //         openModalProducto.value = false;
+  //         refreshMesa.value = !refreshMesa.value;
+  //         filaSeleccinada.value = null;
           
-        } else {
-          productos.splice(filaSeleccinada.value, 1);
-          total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
-          eliminarProductoFlag.value = false;
-          openModalClave.value = false;
-          openModalProducto.value = false;
-          filaSeleccinada.value = null;          
-        }
-      }
-    })
-  })
+  //       } else {
+  //         productos.splice(filaSeleccinada.value, 1);
+  //         total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
+          
+  //         openModalClave.value = false;
+  //         openModalProducto.value = false;
+  //         filaSeleccinada.value = null;          
+  //       }
+  //     }
+  //   })
+  // })
 
-  const liberarMesa = $(() => {
-    deleteMesa(authContext.token, mesaSelected).then((resp) => {
-      console.log("RESPONSE ELIMINAR MESA", resp);
-      if (resp.status === 200) {
-        eliminarProductoFlag.value = false;
-        tienePermiso.value = false;
-        filaSeleccinada.value = null;
-        // refreshMesa.value = !refreshMesa.value;
-        openModalClave.value = false;
-        clearData();
-        closeTable();
-      }
-    })
-  })
+  // const liberarMesa = $(() => {
+  //   deleteMesa(authContext.token, mesaSelected).then((resp) => {
+  //     console.log("RESPONSE ELIMINAR MESA", resp);
+  //     if (resp.status === 200) {
+  //       tienePermiso.value = false;
+  //       filaSeleccinada.value = null;
+  //       // refreshMesa.value = !refreshMesa.value;
+  //       openModalClave.value = false;
+  //       clearData();
+  //       closeTable();
+  //     }
+  //   })
+  // })
 
   const agruparProductos = $(() => {
     const productosAgrupados: any = {};
@@ -217,14 +210,6 @@ export const TableMesas = component$((props: parametros) => {
       cancelData();
     }
   });
-
-  useTask$(async ({ track }) => {
-    track(() => { productoSelected })
-    console.log("Producto en MESA", productoSelected,);
-    if (productoSelected) {
-      openModalProducto.value = true;
-    }
-  });
   
   useTask$(async ({ track }) => {
     track(() => { cambiarCamareroFlag.value, tienePermiso.value })
@@ -241,7 +226,7 @@ export const TableMesas = component$((props: parametros) => {
   });
   
 
-  useTask$(async ({ track }) => {
+ /*  useTask$(async ({ track }) => {
     track(() => { eliminarProductoFlag.value, tienePermiso.value })
 console.log("eliminar PRODUCTO", eliminarProductoFlag.value);
 console.log("eliminar PRODUCTO", itemSelected.value);
@@ -276,7 +261,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
       clearData();
     }
 
-  });
+  }); */
 
   useTask$(async ({ track }) => {
     track(() => { eliminarMesaFlag.value, tienePermiso.value })
@@ -334,9 +319,9 @@ console.log("eliminar PRODUCTO", itemSelected.value);
         }
       }
       //todo: limpiar variables 
-      if (guardarComandaFlag.value) {
-        clearData();
-      }
+      // if (guardarComandaFlag.value) {
+      //   clearData();
+      // }
 
     }
   });
@@ -357,13 +342,14 @@ console.log("eliminar PRODUCTO", itemSelected.value);
         console.log("Mesa DATA", item.mesa);
         if (item.mesa) {
           orden.value = item.mesa.orden;
-          console.log("Camarero", camareroSelected.value);
+          
           camareroSelected.value = {
             nombre: item?.mesa?.orden?.user?.nombre
           }
           horaMesaFunct(item?.mesa?.orden?.created_at)
           item.mesa.orden.comandas.map((comanda: any) => {
             comanda.productos.map((producto: any) => {
+              productos.length = 0
               productos.push({
                 id: producto.id,
                 nombre: producto.nombre,
@@ -372,7 +358,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
                 preferencia: producto.pivot.preferencia,
                 procesada: producto.pivot.procesada,
                 comanda_id: producto.pivot.comanda_id,
-                orden_id: producto.pivot.orden_id
+                orden_id: item.mesa.orden_id
               })
             })
           })
@@ -386,55 +372,52 @@ console.log("eliminar PRODUCTO", itemSelected.value);
   });
 
 
-  const editarProducto = $((item: any) => {
-    updateProducto(authContext.token, item).then((resp) => {
-      console.log("RESPONSE EDITAR PRODUCTO", resp);
-      if (resp.success) {
-        refreshMesa.value = true;
-        openModalProducto.value = false;
-        eliminarProductoFlag.value = false;
-        tienePermiso.value = false;
-        openModalClave.value = false;
-        clearData();
-      }
-    })
-  })
+  // const editarProducto = $((item: any) => {
+  //   updateProducto(authContext.token, item).then((resp) => {
+  //     console.log("RESPONSE EDITAR PRODUCTO", resp);
+  //     if (resp.success) {
+  //       refreshMesa.value = true;
+  //       openModalProducto.value = false;
+  //       tienePermiso.value = false;
+  //       openModalClave.value = false;
+  //       clearData();
+  //     }
+  //   })
+  // })
 
-  const addProducto = $(async () => {   
-    console.log("data", data);
-    if (itemSelected.value) {
-      console.log("EDIT", itemSelected.value, cantidad.value, preferencia.value);
-      if (cantidad.value < itemSelected.value.cantidad) {
-        itemSelected.value.cantidad = cantidad.value;
-        editarProducto(itemSelected.value);
-      } else if (cantidad.value == itemSelected.value.cantidad) {
-        quitarProducto();
-        if (productos.length === 0) {
-          liberarMesa();
-        }
-      } else {
-        alert("No puede quitar mas cantidad de la que ya tiene");
-        return;
-      }
+  // const addProducto = $(async () => {   
+  //   console.log("data", data);
+  //   if (itemSelected.value) {
+  //     console.log("EDIT", itemSelected.value, cantidad.value, preferencia.value);
+  //     if (cantidad.value < itemSelected.value.cantidad) {
+  //       itemSelected.value.cantidad = cantidad.value;
+  //       editarProducto(itemSelected.value);
+  //     } else if (cantidad.value == itemSelected.value.cantidad) {
+  //       quitarProducto();
+  //       if (productos.length === 0) {
+  //         liberarMesa();
+  //       }
+  //     } else {
+  //       alert("No puede quitar mas cantidad de la que ya tiene");
+  //       return;
+  //     }
 
-    } else {
-      productos.push({
-        id: productoSelected?.id,
-        nombre: productoSelected?.nombre,
-        precio: productoSelected?.precio,
-        cantidad: cantidad.value,
-        preferencia: preferencia.value
-      })
-      console.log("Productos", productoSelected);
-      total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
-      cantidad.value = "";
-      preferencia.value = "";
-      openModalProducto.value = false;
-      productoSelected.values = {};
+  //   } else {
+  //     productos.push({
+  //       id: productoSelected?.id,
+  //       nombre: productoSelected?.nombre,
+  //       precio: productoSelected?.precio,
+  //       cantidad: cantidad.value,
+  //       preferencia: preferencia.value
+  //     })
+  //     console.log("Productos", productoSelected);
+  //     total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);      
+  //     openModalProducto.value = false;
+  //     productoSelected.values = {};
 
-    }
+  //   }
 
-  })
+  // })
 
   const selectProducto = $((producto: any) => {
     console.log("Select Producto", producto);
@@ -455,7 +438,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
   return (
     <>
       {/* <ModalSupervisor openModalClave={openModalClave} tienePermiso={tienePermiso} /> */}
-      <ModalCamarero openModalCamarero={openModalCamarero} orden={orden} refreshMesa={refreshMesa} cambiarCamareroFlag={cambiarCamareroFlag} tienePermiso={tienePermiso} />
+      {/* <ModalCamarero openModalCamarero={openModalCamarero} orden={orden} refreshMesa={refreshMesa} cambiarCamareroFlag={cambiarCamareroFlag} tienePermiso={tienePermiso} /> */}
       <ModalBuscar productoBuscado$={productoBuscado$} sendProducto={sendProducto} show={false} onClose$={$(() => { false; })} title={"Buscar Producto"} productos= {productosBusqueda}/>
       
       <div class="card  bg-secondary-100" style="height: 100%;">
@@ -492,7 +475,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
               </div>
             ) : (
               <>
-                <dialog
+                {/* <dialog
                   id="my_modal_1"
                   class={
                     openModalProducto.value ? "modal modal-open " : "modal "
@@ -565,7 +548,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
                       </div>
                     </div>
                   </div>
-                </dialog>
+                </dialog> */}
                 <table class="table  bg-white table-pin-rows">
                   <thead>
                     <tr>
