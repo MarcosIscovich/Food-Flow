@@ -1,20 +1,19 @@
-import { $, component$, useContext, useStore, useTask$, } from '@builder.io/qwik';
+import { $,type PropFunction, component$, useContext, useStore, useTask$, } from '@builder.io/qwik';
 import { AuthContext } from '~/context/auth/auth.context';
 import { findUsers } from "~/services/generico.service";
 import { updateCamarero } from '~/services/orden.service';
 
 
 interface parametros {
-    openModalCamarero: any,
     orden: any
     refreshMesa: any
-    cambiarCamareroFlag: any
-    tienePermiso: any
+    infoToast: any
+    clearContexts: PropFunction<() => any>
 }
 
 export const ModalCamarero = component$((props: parametros) => {
 
-    const { openModalCamarero, orden , refreshMesa, cambiarCamareroFlag, tienePermiso } = props;
+    const {  orden , refreshMesa,  infoToast , clearContexts} = props;
 
     const authContext = useContext(AuthContext);
     const users = useStore<any>([]);
@@ -29,13 +28,19 @@ export const ModalCamarero = component$((props: parametros) => {
         updateCamarero(authContext.token ,  data, orden.value.id ).then((resp) => {
             console.log("RESP CAMBIAR CAMARERO" , resp);
             if (resp.success) {
-                alert("Camarero cambiado correctamente");
-                openModalCamarero.value = false;
+                infoToast.show = true;
+                infoToast.msg = "Camarero cambiado correctamente";
+                infoToast.type = "success";                               
                 camareroID.value = {};
                 refreshMesa.value = !refreshMesa.value;
-                
+                modal_Camarero.close();
+                clearContexts();
             } else {
-                alert("Error al cambiar camarero");
+                infoToast.show = true;
+                infoToast.msg = "Error al cambiar camarero";
+                infoToast.type = "error";
+                modal_Camarero.close();
+                clearContexts();
             }
         });
 
@@ -47,15 +52,15 @@ export const ModalCamarero = component$((props: parametros) => {
         if (authContext.token) {
           console.log("useTask$");
           const response = await findUsers(authContext.token, "findusers");     
-          users.value = response.filter((user: any) => user.role.nombre === "Camarero")
-          
+          users.value = response.filter((user: any) => user.role.nombre === "Camarero")          
         }
       });
 
 
     return (
         <div>
-            <dialog id="my_modal_1" class={openModalCamarero.value ? 'modal modal-open' : 'modal'}>
+            
+            <dialog id="modal_Camarero" >
                 <div class="hero min-h-screen bg-base-200" style="z-index : 12500">
                     <div class="hero-content flex-col ">
                         <div class="text-center lg:text-left">

@@ -33,7 +33,7 @@ export const ModalClave = component$(() => {
     return (
         <div>
             <dialog id="my_modal_1" class={authContext.user?.operario?.id ? 'modal' : 'modal modal-open'}>
-            <div class="hero min-h-screen bg-base-200">
+            <div class="bg-gradient-to-b from-gray-200 to-transparent p-12 rounded-xl">
         <div class="hero-content flex-col ">
           <div class="text-center lg:text-left">
             <h1 class="text-5xl font-bold mb-10">Ingresa clave</h1>
