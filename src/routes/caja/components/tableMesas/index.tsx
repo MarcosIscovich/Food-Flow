@@ -25,6 +25,7 @@ interface parametros {
   orden: any;
   refreshMesa: any;
   camareroSelected: any;
+  infoToast:any
   // newComanda: PropFunction<(productoSelected: any, camarero: any, total: any) => any>;
   // editComanda: PropFunction<(productos: any, total: any, orden: any) => any>;
   closeTable: PropFunction<() => any>;
@@ -35,7 +36,7 @@ interface parametros {
 export const TableMesas = component$((props: parametros) => {
 
   const { mesaSelected, camareroSelected,  orden, guardarComandaFlag,
-    marcharComandaFlag, filaSeleccinada, eliminarMesaFlag, agruparFlag, productosBusqueda,
+    marcharComandaFlag, filaSeleccinada, eliminarMesaFlag, agruparFlag, productosBusqueda, infoToast,
     cambiarCamareroFlag, refreshMesa, cancelBtn, itemSelectedTable, productos , cancelData, /* newComanda */ closeTable, /* editComanda */ sendProducto  } = props;
 
 
@@ -165,16 +166,17 @@ export const TableMesas = component$((props: parametros) => {
   useTask$(async ({ track }) => {
     track(() => agruparFlag.value)
     if (agruparFlag.value) {
-      console.log("Agrupar Flag", productos);
-
-      const procesada = productos.some((producto: any) => producto?.procesada === 1);   
-      
+      const procesada = productos.some((producto: any) => producto?.procesada === 1);      
          
       const noAgrupa = productos.some((producto: any) => producto?.procesada != 1);
+
       if (noAgrupa) {
-        alert("No se puede agrupar productos comandados junto a los no comandados");
-        clearData();
-        refreshMesa.value = !refreshMesa.value;
+        infoToast.show = true;
+        infoToast.msg = "No se puede agrupar productos comandados junto a los no comandados"
+        infoToast.type = "error"
+        // alert("No se puede agrupar productos comandados junto a los no comandados");
+        // clearData();
+        // refreshMesa.value = !refreshMesa.value;
         return
       }
       const data = await agruparProductos();

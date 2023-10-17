@@ -82,13 +82,19 @@ export default component$(() => {
       const respMudarProd = await mudar_Producto(authContext.token, mesaActual, data);
       console.log("RESP MUDAR PRODUCTO", respMudarProd);
       if (respMudarProd.success) {
-        alert(respMudarProd.message);
+        
+        infoToast.show = true;
+        infoToast.msg = respMudarProd.message;
+        infoToast.type = "success";
         changeView.value = false;
 
         clearContexts()
         itemSelectedTable.value = null;
       } else {
-        alert(respMudarProd.message);
+        infoToast.show = true;
+        infoToast.msg = respMudarProd.message;
+        infoToast.type = "error";
+        
 
         clearContexts()
         itemSelectedTable.value = null;
@@ -429,6 +435,8 @@ export default component$(() => {
       console.log("Productos", productoSelected.value);
       total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
       productoSelected.values = {};
+      cantidad.value = "";
+      preferencia.value = "";
       modal_Producto.close();
     }
   })
@@ -527,7 +535,10 @@ export default component$(() => {
           }
 
         } else {
-          alert("Seleccione un producto");
+          infoToast.show = true;
+          infoToast.msg = "Seleccione un producto";
+          infoToast.type = "error";
+         
         }
       }), habilitado: [itemSelectedTable.value, changeView.value]
     },
@@ -618,6 +629,7 @@ export default component$(() => {
                     orden={orden}
                     refreshMesa={refreshMesa}
                     camareroSelected={camareroSelected}
+                    infoToast={infoToast}
                   />
                 </div>
               ) : (
