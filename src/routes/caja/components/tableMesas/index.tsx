@@ -2,10 +2,10 @@ import { $, type PropFunction, component$, useContext, useSignal, useStore, useT
 import { AuthContext } from '~/context/auth/auth.context';
 import { findUsers } from "~/services/generico.service";
 import { getMesa } from '~/services/mesa.service';
-import { deleteProducto, updateProducto } from '~/services/comanda.service';
+// import { deleteProducto, updateProducto } from '~/services/comanda.service';
 import { deleteMesa } from '~/services/mesa.service';
 import { agruparItems } from '~/services/orden.service';
-import { ModalCamarero } from '../modalCamarero/index';
+// import { ModalCamarero } from '../modalCamarero/index';
 import { ModalBuscar } from '../modalBuscar/index';
 
 
@@ -24,8 +24,9 @@ interface parametros {
   productos: any;
   orden: any;
   refreshMesa: any;
-  newComanda: PropFunction<(productoSelected: any, camarero: any, total: any) => any>;
-  editComanda: PropFunction<(productos: any, total: any, orden: any) => any>;
+  camareroSelected: any;
+  // newComanda: PropFunction<(productoSelected: any, camarero: any, total: any) => any>;
+  // editComanda: PropFunction<(productos: any, total: any, orden: any) => any>;
   closeTable: PropFunction<() => any>;
   cancelData: PropFunction<() => any>;
   sendProducto: PropFunction<(prod:any)=>any>;
@@ -33,9 +34,9 @@ interface parametros {
 
 export const TableMesas = component$((props: parametros) => {
 
-  const { mesaSelected, productoSelected, orden, guardarComandaFlag,
+  const { mesaSelected, camareroSelected,  orden, guardarComandaFlag,
     marcharComandaFlag, filaSeleccinada, eliminarMesaFlag, agruparFlag, productosBusqueda,
-    cambiarCamareroFlag, refreshMesa, cancelBtn, itemSelectedTable, productos , cancelData, newComanda, closeTable, editComanda, sendProducto  } = props;
+    cambiarCamareroFlag, refreshMesa, cancelBtn, itemSelectedTable, productos , cancelData, /* newComanda */ closeTable, /* editComanda */ sendProducto  } = props;
 
 
     console.log("PRODUCTOS IN TABLE MESA" , productos);
@@ -44,13 +45,11 @@ export const TableMesas = component$((props: parametros) => {
 
   const users = useStore<any>([]);
   const camareroID = useStore<any>({});
-  const camareroSelected = useStore<any>({});
+  // const camareroSelected = useStore<any>({});
   // const productos = useStore<any[]>([]);
   const openModalProducto = useSignal<boolean>(false);
-  const data = useStore<any>({});
-  
-  const total = useSignal<number>(0);
-  
+  const data = useStore<any>({});  
+  const total = useSignal<number>(0);  
   const itemSelected = useStore<any>({});
   const openModalClave = useSignal<boolean>(false);
   const openModalCamarero = useSignal<boolean>(false);
@@ -133,7 +132,7 @@ export const TableMesas = component$((props: parametros) => {
     const productosAgrupados: any = {};
     const productosAgrupadosArray: any[] = [];
 
-    productos.forEach((producto) => {
+    productos.forEach((producto:any) => {
       if (!(producto.nombre in productosAgrupados)) {
         productosAgrupados[producto.nombre] = { ...producto };
         productosAgrupados[producto.nombre].cantidad = Number(producto.cantidad);
@@ -211,7 +210,7 @@ export const TableMesas = component$((props: parametros) => {
     }
   });
   
-  useTask$(async ({ track }) => {
+/*   useTask$(async ({ track }) => {
     track(() => { cambiarCamareroFlag.value, tienePermiso.value })
     if (cambiarCamareroFlag.value) {
       openModalClave.value = true;
@@ -223,7 +222,7 @@ export const TableMesas = component$((props: parametros) => {
       openModalClave.value = false;
 
     }
-  });
+  }); */
   
 
  /*  useTask$(async ({ track }) => {
@@ -263,6 +262,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
 
   }); */
 
+/* 
   useTask$(async ({ track }) => {
     track(() => { eliminarMesaFlag.value, tienePermiso.value })
     console.log("ELiminar Mesa", eliminarMesaFlag.value,);
@@ -283,9 +283,9 @@ console.log("eliminar PRODUCTO", itemSelected.value);
         }
       })
     }
-  });
+  }); */
 
-  useTask$(async ({ track }) => {
+/*   useTask$(async ({ track }) => {
     track(() => { guardarComandaFlag.value, marcharComandaFlag.value })
     console.log("Guardar Comanda Flag", guardarComandaFlag.value);
 
@@ -324,7 +324,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
       // }
 
     }
-  });
+  }); */
 
   const horaMesaFunct = $(async (fecha: any) => {
     const date = new Date(fecha);
@@ -349,7 +349,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
           horaMesaFunct(item?.mesa?.orden?.created_at)
           item.mesa.orden.comandas.map((comanda: any) => {
             comanda.productos.map((producto: any) => {
-              productos.length = 0
+              //  productos.length = 0
               productos.push({
                 id: producto.id,
                 nombre: producto.nombre,
@@ -556,6 +556,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
                       <th>Cantidad</th>
                       <th>Precio</th>
                       <th>Preferencia</th>
+                      <th>Procesada</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -571,6 +572,14 @@ console.log("eliminar PRODUCTO", itemSelected.value);
                             <td >{producto?.cantidad}</td>
                             <td >{producto.precio}</td>
                             <td >{producto?.preferencia}</td>
+                            <td> {
+                              producto?.procesada === 1 ? (
+                                <span class="badge badge-outline badge-success">Si</span>
+                              ) : (
+                                <span class="badge badge-outline badge-error">No</span>
+                              )
+                              }
+                              </td>
                           </tr>
                         );
                       })}

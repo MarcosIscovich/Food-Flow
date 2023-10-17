@@ -4,7 +4,7 @@ import { TableMesas } from './components/tableMesas';
 import { ViewMesas } from './components/viewMesas';
 import { CarouselItems } from './components/carousel';
 import { ModalClave } from '~/components/modalClave';
-import { newOrden, editOrden } from '~/services/orden.service';
+import { newOrden, editOrden, ticketMesa } from '~/services/orden.service';
 import { AuthContext } from '~/context/auth/auth.context';
 import { getAllProducts } from '~/services/productos.service';
 import { ModalSupervisor } from './components/modalSupervisor';
@@ -24,7 +24,6 @@ export default component$(() => {
   const authContext = useContext(AuthContext);
   const permisoContext = useContext(PermisoContext);
   const mesaContext = useContext(MesasContext);
-
   const changeView = useSignal<boolean>(false);
   const guardarComandaFlag = useSignal<boolean>(false);
   const marcharComandaFlag = useSignal<boolean>(false);
@@ -35,7 +34,7 @@ export default component$(() => {
   const cancelBtn = useSignal<boolean>(false);
   const mesaSelected = useStore<any>({});
   const productoSelected = useStore<any>({});
-  const allProductos = useStore<any>({});  
+  const allProductos = useStore<any>({});
   const productos = useStore<any[]>([]);
   const itemSelectedTable = useStore<any>({});
   const tienePermiso = useSignal<boolean>(false);
@@ -43,22 +42,33 @@ export default component$(() => {
     msg: "",
     type: "success",
     show: false,
-  }); 
+  });
   const filaSeleccinada = useSignal<number>(0);
   const total = useSignal<number>(0);
   const cantidad = useSignal<string>('');
   const preferencia = useSignal<string>('');
   const orden = useStore<any>({});
   const refreshMesa = useSignal<boolean>(false);
+  const camareroSelected = useStore<any>({});
+  const prodProcesado = useSignal<boolean>(false);
 
   const clearContexts = $(() => {
     permisoContext.tienePermiso = false;
     permisoContext.action = "";
     mesaContext.numeroMesa = "";
-    itemSelectedTable.value = null;
   })
 
-  
+  const productoProcesado = $(() => {
+    prodProcesado.value = false;
+    productos?.map((producto: any) => {
+      if (!producto.procesada) {
+        prodProcesado.value = true
+      }
+
+    })
+  })
+
+
 
   const mudarProducto = $(async (producto: any, mesaDestino: any, mesaActual: any) => {
     console.log("mudarProducto", producto);
@@ -71,17 +81,19 @@ export default component$(() => {
       }
       const respMudarProd = await mudar_Producto(authContext.token, mesaActual, data);
       console.log("RESP MUDAR PRODUCTO", respMudarProd);
-      if(respMudarProd.success){
+      if (respMudarProd.success) {
         alert(respMudarProd.message);
         changeView.value = false;
-        
+
         clearContexts()
-      }else {
+        itemSelectedTable.value = null;
+      } else {
         alert(respMudarProd.message);
-        
+
         clearContexts()
-      } 
-    
+        itemSelectedTable.value = null;
+      }
+
     }
   })
 
@@ -95,52 +107,58 @@ export default component$(() => {
       }
       const resp = await mudarMesa(authContext.token, mesaSelected.value.id, data);
       console.log("RESP", resp);
-      if (resp.message === 'Mesa ocupada') {       
+      if (resp.message === 'Mesa ocupada') {
         infoToast.show = true;
         infoToast.msg = resp.message;
         infoToast.type = "error";
         clearContexts()
-      } else {       
+        itemSelectedTable.value = null;
+      } else {
         infoToast.show = true;
         infoToast.msg = resp.message;
         infoToast.type = "success";
         changeView.value = false;
-        clearContexts()        
+        clearContexts()
+        itemSelectedTable.value = null;
       }
       modal_Mudar.close();
-      
+
     }
   })
 
-  const quitarProducto = $(() => {
-    console.log("Quitar Producto", itemSelectedTable.value);
-    deleteProducto(authContext.token, itemSelectedTable.value).then((resp) => {
+  const quitarProducto = $((itemSelectedTable: any) => {
+    console.log("Quitar Producto", itemSelectedTable);
+    deleteProducto(authContext.token, itemSelectedTable).then((resp) => {
       if (resp.success) {
         console.log("RESPONSE ELMINIAR PRODUCTO", resp);
         if (productos.length === 1) {
-          productos.splice(filaSeleccinada.value, 1);  
+          productos.splice(filaSeleccinada.value, 1);
         } else {
           productos.splice(filaSeleccinada.value, 1);
-          total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a:any, b:any) => a + b, 0);        
-                  
+          total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a: any, b: any) => a + b, 0);
+
         }
       }
+      cantidad.value = "";
+      preferencia.value = "";
+      modal_Supervisor.close();
     })
   })
 
   const liberarMesa = $(() => {
     deleteMesa(authContext.token, mesaSelected.value).then((resp) => {
       console.log("RESPONSE ELIMINAR MESA", resp);
-      if (resp.status === 200) {     
+      if (resp.status === 200) {
         changeView.value = false;
       }
       clearContexts()
+      itemSelectedTable.value = null;
     })
   })
 
   const eliminarProd = $(async () => {
 
-    if ( itemSelectedTable.value) {
+    if (itemSelectedTable.value) {
       console.log("ELiminar Producto", itemSelectedTable.value);
 
       if (itemSelectedTable.value.procesada === 1) {
@@ -148,9 +166,10 @@ export default component$(() => {
         modal_Supervisor.showModal();
         if (permisoContext.tienePermiso) {
           console.log("ELiminar Producto PERMISO OK", itemSelectedTable.value);
-          
+
           if (itemSelectedTable.value.cantidad === 1) {
-            quitarProducto();
+
+            quitarProducto(itemSelectedTable.value);
             if (productos.length === 1) {
               liberarMesa();
             }
@@ -167,11 +186,11 @@ export default component$(() => {
         infoToast.msg = "Producto eliminado";
         infoToast.type = "success";
       }
-    }else if(eliminarProductoFlag.value && !itemSelectedTable.value){
+    } else if (eliminarProductoFlag.value && !itemSelectedTable.value) {
       infoToast.show = true;
       infoToast.msg = "Seleccione un producto";
       infoToast.type = "error";
-      
+
     }
     clearContexts()
   })
@@ -181,9 +200,86 @@ export default component$(() => {
     modal_Camarero.showModal();
   })
 
+  const newComanda = $(async (productos: any, camarero: any, total: any) => {
+    console.log("Nueva Comanda", productos);
+    const data = {
+      mesa_id: mesaSelected.value.id,
+      user_id: camarero,
+      productos: productos,
+      totalACobrar: total
+    }
+
+    const resp = await newOrden(authContext.token, data);
+    //todo: hacer validacion 
+    console.log("Respuesta", resp);
+    if (resp.success) {
+      productoSelected.value = null;
+      cantidad.value = "";
+      preferencia.value = "";
+    }
+
+  })
+
+  const editComanda = $(async (_productos: any, total: any, ordenID: any) => {
+    console.log("Editar Comanda", _productos, total, ordenID);
+    const data = {
+      productos: _productos,
+      mesa_id: mesaSelected.value.id,
+      totalACobrar: total
+    }
+    const resp = await editOrden(authContext.token, data, ordenID);
+    console.log("Respuesta", resp);
+    if (resp.success) {
+      productoSelected.value = null;
+      cantidad.value = "";
+      preferencia.value = "";
+    }
+  })
+
+  const saveComanda = $(async (guardar: any) => {
+    console.log("Guardar Comanda");
+    const _productos: any = []
+    let flagProcesada = false;
+    productos.map((producto: any) => {
+      if (!producto.procesada) {
+        _productos.push(producto)
+      }
+      if (producto.procesada) {
+        flagProcesada = true;
+      }
+    })
+    console.log("Productos no ENviados", _productos);
+    if (_productos.length > 0 && flagProcesada) {
+      await editComanda(_productos, total.value, orden.value.id)
+      if (guardar === 'guardar') {
+        changeView.value = false;
+      }
+      productos.length = 0;
+      refreshMesa.value = !refreshMesa.value;
+      clearContexts()
+    } else if (productos.length > 0 && !flagProcesada) {
+      await newComanda(productos, camareroSelected.value?.id, total.value);
+      if (guardar === 'guardar') {
+        changeView.value = false;
+      }
+      productos.length = 0;
+      refreshMesa.value = !refreshMesa.value;
+      clearContexts()
+    }
+  })
+
+  const cobrarMesa = $(async (ordenID: any) => {
+    const resp = await ticketMesa(authContext.token, ordenID);
+    console.log("RESP", resp);
+  })
+
+
+
   useTask$(async ({ track }) => {
     track(async () => { permisoContext.tienePermiso, mesaContext.numeroMesa })
+
     if (permisoContext.tienePermiso) {
+
       switch (permisoContext.action) {
         case "mudarProducto":
           mudarProducto(itemSelectedTable.value, mesaContext.numeroMesa, mesaSelected.value.id);
@@ -196,9 +292,19 @@ export default component$(() => {
         case "eliminarProducto":
           eliminarProd();
           break;
-        
+
         case "cambiarCamarero":
           cambiarCamarero();
+          break;
+
+        case "guardarComanda":
+          saveComanda('guardar');
+          break;
+        case "marharComanda":
+          saveComanda('marchar');
+          break;
+        case "cobrarMesa":
+          cobrarMesa(orden.value.id);
           break;
 
         default:
@@ -231,7 +337,7 @@ export default component$(() => {
     productoSelected.value = null;
   })
 
-  
+
 
   // const productoSelected$ = $(async (producto: any) => {
   //   console.log("Producto Selected ", producto);
@@ -242,38 +348,9 @@ export default component$(() => {
   // }
   // )
 
-  const newComanda = $(async (productos: any, camarero: any, total: any) => {
-    console.log("Nueva Comanda", productos);
-    const data = {
-      mesa_id: mesaSelected.value.id,
-      user_id: camarero,
-      productos: productos,
-      totalACobrar: total
-    }
 
-    const resp = await newOrden(authContext.token, data);
-    //todo: hacer validacion 
-    console.log("Respuesta", resp);
-    if (guardarComandaFlag.value) {
-      closeTable();
-      productoSelected.value = null;
-    }
 
-  })
 
-  const editComanda = $(async (_productos: any, total: any, ordenID: any) => {
-    console.log("Editar Comanda", _productos, total, ordenID);
-    const data = {
-      productos: _productos,
-      mesa_id: mesaSelected.value.id,
-      totalACobrar: total
-    }
-    const resp = await editOrden(authContext.token, data, ordenID);
-    console.log("Respuesta", resp);
-    if (guardarComandaFlag.value) {
-      closeTable();
-    }
-  })
 
   const getAllProductos = $(async () => {
     const resp = await getAllProducts(authContext.token || "");
@@ -288,6 +365,7 @@ export default component$(() => {
     console.log("Token", authContext);
     if (authContext.token) {
       getAllProductos();
+      productoProcesado();
     }
 
   });
@@ -295,7 +373,6 @@ export default component$(() => {
   useTask$(async ({ track }) => {
     track(async () => itemSelectedTable.value)
     console.log("itemSelectedTable", itemSelectedTable.value);
-
   })
 
   const editarProducto = $((item: any) => {
@@ -304,49 +381,56 @@ export default component$(() => {
       if (resp.success) {
         console.log("RESPONSE EDITAR PRODUCTO", resp);
         modal_Producto.close();
+        modal_Supervisor.close();
+        cantidad.value = "";
+        preferencia.value = "";
         // refreshMesa.value = true;
       }
     })
   })
 
-  
-  const addProducto = $(async () => {   
+
+  const addProducto = $(async () => {
     // console.log("data", data);
+    console.log("itemSelectedTable en addPRoducto", itemSelectedTable.value);
+
     if (itemSelectedTable.value) {
       console.log("EDIT", itemSelectedTable.value, cantidad.value, preferencia.value);
       if (cantidad.value < itemSelectedTable.value.cantidad) {
-        itemSelectedTable.value.cantidad = cantidad.value;
+        console.log("entro a editar producto");
+
+        itemSelectedTable.value.cantidad = itemSelectedTable.value.cantidad - Number(cantidad.value);
+
         editarProducto(itemSelectedTable.value);
       } else if (cantidad.value == itemSelectedTable.value.cantidad) {
-        quitarProducto();
-       
+        quitarProducto(itemSelectedTable.value);
         if (productos.length === 0) {
           liberarMesa();
-          
+
         }
       } else {
-        
+
         infoToast.show = true;
         infoToast.msg = "No puede quitar mas cantidad de la que ya tiene";
         infoToast.type = "error";
-        
+
         return;
       }
-      
+
     } else {
 
       productos.push({
-        id: productoSelected.value.id,
-        nombre: productoSelected.value.nombre,
-        precio: productoSelected.value.precio,
-        cantidad: cantidad.value,
-        preferencia: preferencia.value
+        id: productoSelected?.value.id,
+        nombre: productoSelected?.value.nombre,
+        precio: productoSelected?.value.precio,
+        cantidad: cantidad?.value,
+        preferencia: preferencia?.value
       })
       console.log("Productos", productoSelected.value);
       total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
       productoSelected.values = {};
-     modal_Producto.close();
-    }    
+      modal_Producto.close();
+    }
   })
 
 
@@ -398,14 +482,31 @@ export default component$(() => {
   const funcionalidades = [
     { id: 3, nombre: "Eliminar Mesa", icono: "fas fa-trash", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { eliminarMesaFlag.value = true }), habilitado: [changeView.value] },
     { id: 2, nombre: "Reservar Mesa", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", habilitado: [changeView.value] },
-    { id: 1, nombre: "Cobrar Mesa", icono: "fas fa-cash-register", class: "btn-func btn--verde ", classDisabled: "btn-func btn--verdeDisabled btn-disabled", habilitado: [changeView.value] },
-    { id: 3, nombre: "Eliminar Producto", icono: "fas fa-trash", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", 
-    action: $(() => { 
-      if (itemSelectedTable.value) {
-        permisoContext.action = "eliminarProducto";
-        modal_Supervisor.showModal();
-      }
-    }), habilitado: [itemSelectedTable.value, changeView.value] },
+    {
+      id: 1, nombre: "Cobrar Mesa", icono: "fas fa-cash-register", class: "btn-func btn--verde ", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
+      action: $(() => {
+        if (productos.length > 0) {
+          permisoContext.action = "cobrarMesa";
+          permisoContext.tienePermiso = true;
+          cobrarMesa(orden.value.id)
+
+        } else {
+          infoToast.show = true;
+          infoToast.msg = "No hay productos para guardar";
+          infoToast.type = "error";
+        }
+      })
+      , habilitado: [changeView.value]
+    },
+    {
+      id: 3, nombre: "Eliminar Producto", icono: "fas fa-trash", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
+      action: $(() => {
+        if (itemSelectedTable.value) {
+          permisoContext.action = "eliminarProducto";
+          modal_Supervisor.showModal();
+        }
+      }), habilitado: [itemSelectedTable.value, changeView.value]
+    },
     {
       id: 4, nombre: "Mudar Mesa", icono: "fas fa-exchange-alt", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => {
         if (mesaSelected.value) {
@@ -431,30 +532,59 @@ export default component$(() => {
       }), habilitado: [itemSelectedTable.value, changeView.value]
     },
     { id: 6, nombre: "Agrupar Items", icono: "fas fa-object-group", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { agruparFlag.value = true }), habilitado: [changeView.value] },
-    { id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { marcharComandaFlag.value = true }), habilitado: [changeView.value] },
-    { id: 8, nombre: "Cambiar Camarero", icono: "fas fa-user-edit", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", 
-    action: $(() => { 
-      if (mesaSelected.value) {
-        permisoContext.action = "cambiarCamarero";
-        modal_Supervisor.showModal();
-      }
-     }), habilitado: [changeView.value, (mesaSelected?.value?.estado_id == 2)] },
-    { id: 10, nombre: "Volver a Mesas", icono: "fas fa-ban", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled", 
-    action: $(() => { volverAmesa() }), habilitado: [changeView.value] },
+    {
+      id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
+      action: $(() => {
+        if (productos.length > 0) {
+          permisoContext.action = "marharComanda";
+          permisoContext.tienePermiso = true;
+        } else {
+          infoToast.show = true;
+          infoToast.msg = "No hay productos para guardar";
+          infoToast.type = "error";
+        }
+      }), habilitado: [productoProcesado(), prodProcesado.value, changeView.value]
+    },
+    {
+      id: 8, nombre: "Cambiar Camarero", icono: "fas fa-user-edit", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
+      action: $(() => {
+        if (mesaSelected.value) {
+          permisoContext.action = "cambiarCamarero";
+          modal_Supervisor.showModal();
+        }
+      }), habilitado: [changeView.value, (mesaSelected?.value?.estado_id == 2)]
+    },
+    {
+      id: 10, nombre: "Volver a Mesas", icono: "fas fa-ban", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
+      action: $(() => { volverAmesa() }), habilitado: [changeView.value]
+    },
     { id: 9, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { my_modal_2.showModal() }), habilitado: [changeView.value] },
-    { id: 11, nombre: "Guardar Comanda", icono: "fas fa-save", class: "btn-func btn--verde", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { guardarComandaFlag.value = true }), habilitado: [changeView.value] },
+    {
+      id: 11, nombre: "Guardar Comanda", icono: "fas fa-save", class: "btn-func btn--verde", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
+      action: $(() => {
+        if (productos.length > 0) {
+          permisoContext.action = "guardarComanda";
+          permisoContext.tienePermiso = true;
+
+        } else {
+          infoToast.show = true;
+          infoToast.msg = "No hay productos para guardar";
+          infoToast.type = "error";
+        }
+      }), habilitado: [productoProcesado(), prodProcesado.value, changeView.value]
+    },
   ]
 
   const habilitado = $((funcionalidad: any) => {
-    
+
     let ret = true;
     funcionalidad.habilitado?.forEach((element: any) => {
-      
+
       if (!element) {
         ret = false;
       }
     });
-    
+
     return ret;
   }
   )
@@ -472,11 +602,11 @@ export default component$(() => {
             <div class="p-7" style="display: flex;">
               {changeView.value ? (
                 <div style="flex: 1;">
-                  <TableMesas editComanda={editComanda} closeTable={closeTable} mesaSelected={mesaSelected.value}
-                    productoSelected={productoSelected.value} newComanda={newComanda} guardarComandaFlag={guardarComandaFlag}
+                  <TableMesas closeTable={closeTable} mesaSelected={mesaSelected.value}
+                    productoSelected={productoSelected.value} guardarComandaFlag={guardarComandaFlag}
                     marcharComandaFlag={marcharComandaFlag}
                     cancelBtn={cancelBtn}
-                    cancelData={cancelData}                    
+                    cancelData={cancelData}
                     eliminarMesaFlag={eliminarMesaFlag}
                     agruparFlag={agruparFlag}
                     cambiarCamareroFlag={cambiarCamareroFlag}
@@ -487,6 +617,7 @@ export default component$(() => {
                     filaSeleccinada={filaSeleccinada}
                     orden={orden}
                     refreshMesa={refreshMesa}
+                    camareroSelected={camareroSelected}
                   />
                 </div>
               ) : (

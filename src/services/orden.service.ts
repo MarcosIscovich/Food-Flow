@@ -75,6 +75,25 @@ export const updateCamarero = async (
 
 }
 
+export const ticketMesa = async (
+    token: any,
+    ordenId: any,
+): Promise<any> => {  
+
+    const encoded = encodeURI(`${configuration.api}ticketmesa/${ordenId}`)    
+    const resp = await fetch(encoded, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    const data = resp.json();
+    // console.log("llega cupon/create", data);
+    return data;
+}
+
 
 export const agruparItems = async (
     token: any,
