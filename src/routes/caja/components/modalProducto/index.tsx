@@ -72,8 +72,8 @@ export const ModalProducto = component$((props: parametros) => {
                                         </div>
                                         <div class="form-control mt-6 col-span-2">
                                             <button
-                                                type="submit"
-                                                onClick$={addProducto}
+                                                type="button"
+                                                onClick$={() => addProducto()}
                                                 class="btn btn-primary"
                                             >
                                                 ok

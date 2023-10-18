@@ -51,6 +51,7 @@ export default component$(() => {
   const refreshMesa = useSignal<boolean>(false);
   const camareroSelected = useStore<any>({});
   const prodProcesado = useSignal<boolean>(false);
+  const fechaTicket = useSignal<string>('');
 
   const clearContexts = $(() => {
     permisoContext.tienePermiso = false;
@@ -59,7 +60,10 @@ export default component$(() => {
   })
 
   const productoProcesado = $(() => {
-    prodProcesado.value = false;
+    console.log("Productos PROCESADOS", productos);
+    if (prodProcesado.value) {
+      prodProcesado.value = false;
+    }
     productos?.map((producto: any) => {
       if (!producto.procesada) {
         prodProcesado.value = true
@@ -67,8 +71,6 @@ export default component$(() => {
 
     })
   })
-
-
 
   const mudarProducto = $(async (producto: any, mesaDestino: any, mesaActual: any) => {
     console.log("mudarProducto", producto);
@@ -82,7 +84,7 @@ export default component$(() => {
       const respMudarProd = await mudar_Producto(authContext.token, mesaActual, data);
       console.log("RESP MUDAR PRODUCTO", respMudarProd);
       if (respMudarProd.success) {
-        
+
         infoToast.show = true;
         infoToast.msg = respMudarProd.message;
         infoToast.type = "success";
@@ -90,15 +92,18 @@ export default component$(() => {
 
         clearContexts()
         itemSelectedTable.value = null;
+
       } else {
         infoToast.show = true;
         infoToast.msg = respMudarProd.message;
         infoToast.type = "error";
-        
+
 
         clearContexts()
         itemSelectedTable.value = null;
       }
+      modal_Mudar.close();
+
 
     }
   })
@@ -127,9 +132,9 @@ export default component$(() => {
         clearContexts()
         itemSelectedTable.value = null;
       }
-      modal_Mudar.close();
 
     }
+    modal_Mudar.close();
   })
 
   const quitarProducto = $((itemSelectedTable: any) => {
@@ -156,6 +161,9 @@ export default component$(() => {
       console.log("RESPONSE ELIMINAR MESA", resp);
       if (resp.status === 200) {
         changeView.value = false;
+        infoToast.show = true;
+        infoToast.msg = "Mesa liberada";
+        infoToast.type = "success";
       }
       clearContexts()
       itemSelectedTable.value = null;
@@ -272,11 +280,20 @@ export default component$(() => {
       refreshMesa.value = !refreshMesa.value;
       clearContexts()
     }
+    productoProcesado();
   })
 
   const cobrarMesa = $(async (ordenID: any) => {
-    const resp = await ticketMesa(authContext.token, ordenID);
+    const resp = await ticketMesa(authContext.token, ordenID, fechaTicket.value);
     console.log("RESP", resp);
+    if (resp) {
+      changeView.value = false;
+      liberarMesa();
+    } else {
+      infoToast.show = true;
+      infoToast.msg = "No se pudo cobrar la mesa";
+      infoToast.type = "error";
+    }
   })
 
 
@@ -398,6 +415,7 @@ export default component$(() => {
 
   const addProducto = $(async () => {
     // console.log("data", data);
+
     console.log("itemSelectedTable en addPRoducto", itemSelectedTable.value);
 
     if (itemSelectedTable.value) {
@@ -425,6 +443,15 @@ export default component$(() => {
 
     } else {
 
+      // const newProd = {
+      //   id: productoSelected.value.id,
+      //   nombre: productoSelected.value.nombre,
+      //   precio: productoSelected.value.precio,
+      //   cantidad: cantidad.value,
+      //   preferencia: preferencia.value
+      // }
+
+
       productos.push({
         id: productoSelected?.value.id,
         nombre: productoSelected?.value.nombre,
@@ -432,6 +459,7 @@ export default component$(() => {
         cantidad: cantidad?.value,
         preferencia: preferencia?.value
       })
+      productoProcesado();
       console.log("Productos", productoSelected.value);
       total.value = productos.map((producto: any) => producto.precio * producto.cantidad).reduce((a, b) => a + b, 0);
       productoSelected.values = {};
@@ -493,15 +521,19 @@ export default component$(() => {
     {
       id: 1, nombre: "Cobrar Mesa", icono: "fas fa-cash-register", class: "btn-func btn--verde ", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
       action: $(() => {
-        if (productos.length > 0) {
+        const prodProc = productos.filter((producto: any) => producto.procesada === 1);
+        console.log("prodProc", prodProc);
+
+        if (productos.length === prodProc.length) {
           permisoContext.action = "cobrarMesa";
           permisoContext.tienePermiso = true;
-          cobrarMesa(orden.value.id)
+          // cobrarMesa(orden.value.id)
 
         } else {
           infoToast.show = true;
-          infoToast.msg = "No hay productos para guardar";
+          infoToast.msg = "Todos los productos deben estar comandados";
           infoToast.type = "error";
+          clearContexts()
         }
       })
       , habilitado: [changeView.value]
@@ -538,7 +570,7 @@ export default component$(() => {
           infoToast.show = true;
           infoToast.msg = "Seleccione un producto";
           infoToast.type = "error";
-         
+
         }
       }), habilitado: [itemSelectedTable.value, changeView.value]
     },
@@ -554,7 +586,7 @@ export default component$(() => {
           infoToast.msg = "No hay productos para guardar";
           infoToast.type = "error";
         }
-      }), habilitado: [productoProcesado(), prodProcesado.value, changeView.value]
+      }), habilitado: [prodProcesado.value, changeView.value]
     },
     {
       id: 8, nombre: "Cambiar Camarero", icono: "fas fa-user-edit", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
@@ -582,9 +614,11 @@ export default component$(() => {
           infoToast.msg = "No hay productos para guardar";
           infoToast.type = "error";
         }
-      }), habilitado: [productoProcesado(), prodProcesado.value, changeView.value]
+      }), habilitado: [prodProcesado.value, changeView.value]
     },
   ]
+
+
 
   const habilitado = $((funcionalidad: any) => {
 
@@ -630,6 +664,7 @@ export default component$(() => {
                     refreshMesa={refreshMesa}
                     camareroSelected={camareroSelected}
                     infoToast={infoToast}
+                    fechaTicket={fechaTicket}
                   />
                 </div>
               ) : (

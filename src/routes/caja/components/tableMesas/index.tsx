@@ -26,6 +26,7 @@ interface parametros {
   refreshMesa: any;
   camareroSelected: any;
   infoToast:any
+  fechaTicket: any;
   // newComanda: PropFunction<(productoSelected: any, camarero: any, total: any) => any>;
   // editComanda: PropFunction<(productos: any, total: any, orden: any) => any>;
   closeTable: PropFunction<() => any>;
@@ -35,7 +36,7 @@ interface parametros {
 
 export const TableMesas = component$((props: parametros) => {
 
-  const { mesaSelected, camareroSelected,  orden, guardarComandaFlag,
+  const { mesaSelected, camareroSelected, fechaTicket,   orden, guardarComandaFlag,
     marcharComandaFlag, filaSeleccinada, eliminarMesaFlag, agruparFlag, productosBusqueda, infoToast,
     cambiarCamareroFlag, refreshMesa, cancelBtn, itemSelectedTable, productos , cancelData, /* newComanda */ closeTable, /* editComanda */ sendProducto  } = props;
 
@@ -332,7 +333,8 @@ console.log("eliminar PRODUCTO", itemSelected.value);
     const date = new Date(fecha);
     const hora = date.getHours();
     const minutos = date.getMinutes();
-    const horaFormateada = `${hora}:${minutos}`
+    const horaFormateada = `${hora}:${minutos}`;
+    fechaTicket.value = date;
     horaMesa.value = horaFormateada;
   })
 
@@ -349,7 +351,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
             nombre: item?.mesa?.orden?.user?.nombre
           }
           horaMesaFunct(item?.mesa?.orden?.created_at)
-          item.mesa.orden.comandas.map((comanda: any) => {
+          item.mesa?.orden?.comandas?.map((comanda: any) => {
             comanda.productos.map((producto: any) => {
               //  productos.length = 0
               productos.push({

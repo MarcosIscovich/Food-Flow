@@ -3,6 +3,8 @@ import type { DocumentHead } from '@builder.io/qwik-city';
 import { Form, routeAction$, useNavigate, z, zod$ } from '@builder.io/qwik-city';
 import { AuthContext } from '~/context/auth/auth.context';
 import { login } from '~/services/auth.service';
+// import style from './logincss.module.css'
+import logoFF from '~/components/logo_FF.png';
 
 
 export const useLoginAction = routeAction$(
@@ -36,22 +38,22 @@ export default component$(() => {
   const nav = useNavigate();
   const actionForm = useLoginAction();
   const authContext = useContext(AuthContext);
-  
-  useVisibleTask$(({track}) => {
+
+  useVisibleTask$(({ track }) => {
 
     track(() => {
       authContext.isAutenticated
     })
 
-    if(authContext.isAutenticated){
+    if (authContext.isAutenticated) {
       nav('/inicio');
     }
   });
 
-  useTask$( ({ track }) => {
-    track(() => { actionForm.value})
+  useTask$(({ track }) => {
+    track(() => { actionForm.value })
 
-    if(actionForm.value?.success){
+    if (actionForm.value?.success) {
       console.log("success");
       //implementar la grabacion de token
 
@@ -67,7 +69,7 @@ export default component$(() => {
       }
       nav('/inicio');
     }
-    else{
+    else {
       console.log("error", actionForm.value?.failed);
     }
 
@@ -77,23 +79,26 @@ export default component$(() => {
     <>
       <div class="hero min-h-screen bg-base-200">
         <div class="hero-content flex-col ">
-          <div class="text-center lg:text-left">
-            <h1 class="text-5xl font-bold mb-10">Ingresa al sistema</h1>
-          </div>
+          <div class="text-center lg:text-left flex justify-center flex-col">
+            <div class="flex justify-center">
 
+            <img src={logoFF}  alt="logo" width={100} height={120} />
+            </div>
+            <h1 class="text-4xl font-bold mb-10">Ingresa al sistema</h1>
+          </div>
 
           <div class="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
             <div class="card-body">
               <Form action={actionForm}>
                 <div class="form-control">
                   <label class="label" >
-                    <span class="label-text">Email</span>
+                    <span class="label-text font-bold">Email</span>
                   </label>
                   <input type="text" placeholder="email" name='email' class="input input-bordered" />
                 </div>
                 <div class="form-control">
                   <label class="label">
-                    <span class="label-text">Password</span>
+                    <span class="label-text font-bold">Password</span>
                   </label>
                   <input type="text" placeholder="password" name='password' class="input input-bordered" />
                   <label class="label">
@@ -110,6 +115,7 @@ export default component$(() => {
         </div>
       </div>
 
+    
 
     </>
   );

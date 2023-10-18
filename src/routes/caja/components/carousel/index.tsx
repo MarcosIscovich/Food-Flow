@@ -210,7 +210,7 @@ export const CarouselItems = component$((props: parametros) => {
                           {slide.map((item:any, idxi:any) => (
                             <div
                               class="grid h-full"
-                              key={idx}
+                              key={idxi}
                               style="z-index : 1000"
                             >
                               <div
@@ -265,7 +265,7 @@ export const CarouselItems = component$((props: parametros) => {
                           {slide.map((item:any, idxi:any) => (
                             <div
                               class="grid h-full"
-                              key={idx}
+                              key={idxi}
                               style="z-index : 1000"
                             >
                               <div
@@ -340,7 +340,7 @@ export const CarouselItems = component$((props: parametros) => {
                           {slide.map((item:any, idxi:any) => (
                             <div
                               class="grid h-full"
-                              key={idx}
+                              key={idxi}
                               style="z-index : 500"
                             >
                               <div
