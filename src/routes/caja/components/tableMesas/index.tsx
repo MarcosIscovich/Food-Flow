@@ -1,6 +1,6 @@
 import { $, type PropFunction, component$, useContext, useSignal, useStore, useTask$ } from '@builder.io/qwik';
 import { AuthContext } from '~/context/auth/auth.context';
-import { findUsers } from "~/services/generico.service";
+import { findClients, findUsers } from "~/services/generico.service";
 import { getMesa } from '~/services/mesa.service';
 // import { deleteProducto, updateProducto } from '~/services/comanda.service';
 import { deleteMesa } from '~/services/mesa.service';
@@ -60,7 +60,7 @@ export const TableMesas = component$((props: parametros) => {
   // const refreshMesa = useSignal<boolean>(false);
   const horaMesa = useSignal<string>("");
   const mesaChange = useSignal<any>({});
-
+  const cliente = useStore<any>({});
 
   console.log("Mesa: ", mesaSelected);
 
@@ -160,7 +160,12 @@ export const TableMesas = component$((props: parametros) => {
       clearData();
       const response = await findUsers(authContext.token, "findusers");
       users.value = response.filter((user: any) => user.role.nombre === "Camarero")
+      if(mesaSelected.estado_id == 3){
+          const response = await findClients(authContext.token, "clientes"); 
 
+          console.log("useTask$ ReservarMesa" , response);    
+          cliente.value = response.data.filter((cliente: any) => cliente.id == mesaSelected.reserva.cliente_id)[0]
+      }
     }
   });
 
@@ -366,7 +371,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
               })
             })
           })
-          total.value = item.mesa.orden.totalACobrar;
+          total.value = item?.mesa?.orden?.totalACobrar;
           console.log("Total", total);
           console.log("productos", productos);
         }
@@ -443,153 +448,110 @@ console.log("eliminar PRODUCTO", itemSelected.value);
     <>
       {/* <ModalSupervisor openModalClave={openModalClave} tienePermiso={tienePermiso} /> */}
       {/* <ModalCamarero openModalCamarero={openModalCamarero} orden={orden} refreshMesa={refreshMesa} cambiarCamareroFlag={cambiarCamareroFlag} tienePermiso={tienePermiso} /> */}
-      <ModalBuscar productoBuscado$={productoBuscado$} sendProducto={sendProducto} show={false} onClose$={$(() => { false; })} title={"Buscar Producto"} productos= {productosBusqueda}/>
-      
+      <ModalBuscar
+        productoBuscado$={productoBuscado$}
+        sendProducto={sendProducto}
+        show={false}
+        onClose$={$(() => {
+          false;
+        })}
+        title={"Buscar Producto"}
+        productos={productosBusqueda}
+      />
+
       <div class="card  bg-secondary-100" style="height: 100%;">
         <div class="card-body p-7">
           <h2 class="card-title flex justify-center">
             MESA {mesaSelected?.id}{" "}
           </h2>
           <div class="overflow-x-auto " style="height:400px">
-            {!camareroSelected.value ? (
-              <div class="flex justify-center">
-                {
-                  mesaSelected?.estado_id != "2" && (
-                    <select
-                      class="select select-primary w-full max-w-xs"
-                      onChange$={(e) => {
-                        camareroID.value = e.target.value;
-                      }}
-                    >
-                      <option disabled selected>
-                        Seleccione un Camarero
-                      </option>
-                      {users.value &&
-                        users.value.map((user: any, idx: number) => {
-                          return (
-                            <option value={user.id} key={idx}>
-                              {user.nombre}
-                            </option>
-                          );
-                        })}
-                    </select>
-                  )
-                }
+            {mesaSelected.estado_id === 3 ? (
+              <div class="flex flex-col justify-center">
+                <span class="badge badge-outline badge-success text-xl mb-2">
+                  Mesa Reservada a: {mesaSelected.reserva.cliente + " " + mesaSelected.reserva.telefono}
+                </span>
 
+                <span class="badge badge-outline badge-success text-xl">
+                  Día de Reserva: {mesaSelected.reserva.dia + " " + mesaSelected.reserva.hora}
+                </span>
               </div>
             ) : (
-              <>
-                {/* <dialog
-                  id="my_modal_1"
-                  class={
-                    openModalProducto.value ? "modal modal-open " : "modal "
-                  }
-                >
-                  <div>
-                    <div>
-                      <div class="card flex-shrink-0 w-full  shadow-2xl bg-base-100">
-                        <div class="text-center lg:text-center m-3">
-                          <h1 class="text-4xl font-bold mb-1">
-                            Ingrese detalle
-                          </h1>
-                          <h1 class="text-4xl font-bold ">de producto</h1>
-                        </div>
-                        <div class="card-body">
-                          <div class="">
-                            <div class="flex flex-row">
-                              <div class="form-control mr-1">
-                                <label class="label">
-                                  <span class="label-text">Cantidad</span>
-                                </label>
-                                <input
-                                  type="number"
-                                  placeholder="Cantidad"
-                                  name="cantidad"
-                                  bind:value={cantidad}
-                                  class="input input-bordered"
-                                />
-                              </div>
-                              {
-                                !itemSelected.value && (
-                                  <div class="form-control ml-1">
-                                    <label class="label">
-                                      <span class="label-text">Preferencia</span>
-                                    </label>
-                                    <input
-                                      type="string"
-                                      placeholder="Preferencia"
-                                      name="preferencia"
-                                      bind:value={preferencia}
-                                      class="input input-bordered"
-                                    />
-                                  </div>
-                                )
-                              }
-                            </div>
-                            <div class="grid grid-col-3 grid-flow-col gap-2 justify-between">
-                              <div class="form-control mt-6 col-span-2">
-                                <button
-                                  class="btn btn-error"
-                                  onClick$={() =>
-                                    (openModalProducto.value = false)
-                                  }
-                                >
-                                  Cancel
-                                </button>
-                              </div>
-                              <div class="form-control mt-6 col-span-2">
-                                <button
-                                  type="submit"
-                                  onClick$={addProducto}
-                                  class="btn btn-primary"
-                                >
-                                  ok
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+              <div>
+                {!camareroSelected.value && mesaSelected.estado_id !== 3 ? (
+                  <div class="flex justify-center">
+                    {mesaSelected?.estado_id != "2" && (
+                      <select
+                        class="select select-primary w-full max-w-xs"
+                        onChange$={(e) => {
+                          camareroID.value = e.target.value;
+                        }}
+                      >
+                        <option disabled selected>
+                          Seleccione un Camarero
+                        </option>
+                        {users.value &&
+                          users.value.map((user: any, idx: number) => {
+                            return (
+                              <option value={user.id} key={idx}>
+                                {user.nombre}
+                              </option>
+                            );
+                          })}
+                      </select>
+                    )}
                   </div>
-                </dialog> */}
-                <table class="table  bg-white table-pin-rows">
-                  <thead>
-                    <tr>
-                      <th>Producto</th>
-                      <th>Cantidad</th>
-                      <th>Precio</th>
-                      <th>Preferencia</th>
-                      <th>Procesada</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {productos.length > 0 &&
-                      productos.map((producto: any, idx: number) => {
-                        return (
-                          <tr class={`${filaSeleccinada.value === idx ? 'bg-primary-300' : ''
-                            } hover:bg-primary-300 hover:cursor-pointer`} key={idx} onClick$={() => {
-                              selectProducto(producto);
-                              filaSeleccinada.value = idx;
-                            }}>
-                            <td >{producto.nombre}</td>
-                            <td >{producto?.cantidad}</td>
-                            <td >{producto.precio}</td>
-                            <td >{producto?.preferencia}</td>
-                            <td> {
-                              producto?.procesada === 1 ? (
-                                <span class="badge badge-outline badge-success">Si</span>
-                              ) : (
-                                <span class="badge badge-outline badge-error">No</span>
-                              )
-                              }
-                              </td>
-                          </tr>
-                        );
-                      })}
-                  </tbody>
-                </table>
-              </>
+                ) : (
+                  <>
+                    <table class="table  bg-white table-pin-rows">
+                      <thead>
+                        <tr>
+                          <th>Producto</th>
+                          <th>Cantidad</th>
+                          <th>Precio</th>
+                          <th>Preferencia</th>
+                          <th>Procesada</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {productos.length > 0 &&
+                          productos.map((producto: any, idx: number) => {
+                            return (
+                              <tr
+                                class={`${
+                                  filaSeleccinada.value === idx
+                                    ? "bg-primary-300"
+                                    : ""
+                                } hover:bg-primary-300 hover:cursor-pointer`}
+                                key={idx}
+                                onClick$={() => {
+                                  selectProducto(producto);
+                                  filaSeleccinada.value = idx;
+                                }}
+                              >
+                                <td>{producto.nombre}</td>
+                                <td>{producto?.cantidad}</td>
+                                <td>{producto.precio}</td>
+                                <td>{producto?.preferencia}</td>
+                                <td>
+                                  {" "}
+                                  {producto?.procesada === 1 ? (
+                                    <span class="badge badge-outline badge-success">
+                                      Si
+                                    </span>
+                                  ) : (
+                                    <span class="badge badge-outline badge-error">
+                                      No
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </tbody>
+                    </table>
+                  </>
+                )}
+              </div>
             )}
           </div>
           <div class="stats shadow p-6">

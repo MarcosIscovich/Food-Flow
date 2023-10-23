@@ -10,13 +10,15 @@ import { getAllProducts } from '~/services/productos.service';
 import { ModalSupervisor } from './components/modalSupervisor';
 import { PermisoContext } from '~/context/supervisor/supervisor.context';
 import { MesasContext } from '~/context/mesa/mesa.context';
-import { deleteMesa, mudarMesa } from '~/services/mesa.service';
+import { deleteMesa, mudarMesa, reservarMesaServicio } from '~/services/mesa.service';
 import { ModalMudar } from './components/modalMudar';
 import { mudar_Producto } from '~/services/productos.service';
 import { Toast } from '~/components/sharedComponents/utils/toast.component';
 import { deleteProducto, updateProducto } from '~/services/comanda.service';
 import { ModalProducto } from './components/modalProducto';
 import { ModalCamarero } from './components/modalCamarero';
+import { ModalReservas } from './components/modalReservas';
+import { ModalLiberarReserva } from './components/modalLiberarReserva';
 
 
 export default component$(() => {
@@ -52,6 +54,7 @@ export default component$(() => {
   const camareroSelected = useStore<any>({});
   const prodProcesado = useSignal<boolean>(false);
   const fechaTicket = useSignal<string>('');
+  
 
   const clearContexts = $(() => {
     permisoContext.tienePermiso = false;
@@ -296,7 +299,22 @@ export default component$(() => {
     }
   })
 
+  const liberarReserva = $(async () => {
+    modal_Liberar_Reserva.showModal();
+    clearContexts();
+  });
 
+  const reservarMesa = $(async () => { 
+    if(mesaSelected.value.estado_id !== 3){
+      modal_Reservas.showModal();
+      clearContexts();
+     
+    }
+    else{
+      liberarReserva();
+     
+    }
+  })
 
   useTask$(async ({ track }) => {
     track(async () => { permisoContext.tienePermiso, mesaContext.numeroMesa })
@@ -328,6 +346,9 @@ export default component$(() => {
           break;
         case "cobrarMesa":
           cobrarMesa(orden.value.id);
+          break;
+        case "reservarMesa":
+          reservarMesa();
           break;
 
         default:
@@ -517,7 +538,14 @@ export default component$(() => {
 
   const funcionalidades = [
     { id: 3, nombre: "Eliminar Mesa", icono: "fas fa-trash", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { eliminarMesaFlag.value = true }), habilitado: [changeView.value] },
-    { id: 2, nombre: "Reservar Mesa", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", habilitado: [changeView.value] },
+    { id: 2, nombre: mesaSelected?.value?.estado_id !== 3 ? "Reservar Mesa" : "Liberar Mesa", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
+    action: $(() => {
+      if (mesaSelected.value) {
+        permisoContext.action = "reservarMesa";
+        permisoContext.tienePermiso = true;
+      }
+    }),
+    habilitado: [(mesaSelected?.value?.estado_id == 1) || (mesaSelected?.value?.estado_id == 3) , changeView.value] },
     {
       id: 1, nombre: "Cobrar Mesa", icono: "fas fa-cash-register", class: "btn-func btn--verde ", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
       action: $(() => {
@@ -640,6 +668,8 @@ export default component$(() => {
       <ModalMudar />
       <ModalProducto cantidad={cantidad} preferencia={preferencia} itemSelectedTable={itemSelectedTable} addProducto={addProducto} />
       <ModalCamarero orden={orden} refreshMesa={refreshMesa} infoToast={infoToast} clearContexts={clearContexts} />
+      <ModalReservas volverAmesa={volverAmesa} mesa={mesaSelected} refreshMesa={refreshMesa} infoToast={infoToast} clearContexts={clearContexts} />
+      <ModalLiberarReserva volverAmesa={volverAmesa} mesa={mesaSelected} refreshMesa={refreshMesa} infoToast={infoToast} clearContexts={clearContexts} />
       <Toast msg={infoToast.msg} type={infoToast.type} show={infoToast.show} onFinish={$(() => (infoToast.show = false))} />
       <div class="">
         <div class="flex flex-col">
