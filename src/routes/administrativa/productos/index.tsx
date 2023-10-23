@@ -21,6 +21,7 @@ import type { IProductos } from "~/interfaces/iProductos";
 import type { InitialValues } from "@modular-forms/qwik";
 import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial, filter } from "./esquema";
 import type { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
+import { FileUpload } from "../../fileUpload";
 
 interface IBaseCrud extends IProductos { }
 
@@ -220,8 +221,7 @@ export default component$(() => {
     modalOpen.value = true;
   });
 
-  return (
-    <div class="m-2">
+  return ( <div class="m-2">
       <div class="flex flex-col w-full border-opacity-50">
         <div class="grid card bg-base-200 rounded-box  place-items-center">
           <div class="w-full place-content-start ">
@@ -288,6 +288,7 @@ export default component$(() => {
             }
 
           </div>
+      {/* <FileUpload /> */}
         </div>
       </div>
 

@@ -158,6 +158,8 @@ export const Table = component$<parametros>((props) => {
                           {fieldItem.options && fieldItem.options.length > 0 ? (
                             fieldItem.options.map((option: any) => {
                               if (option.value == item[fieldItem.fieldName]) {
+                               
+                                
                                 return (
                                   <th key={index} class={`${fieldItem.hiddenInMobile ? "hidden md:table-cell" : ""}  `} >
                                     {option.label}
@@ -173,7 +175,8 @@ export const Table = component$<parametros>((props) => {
                             </th>
                           ) : fieldItem.fieldName === "imagen" ? (
                             <th key={index} class={`${fieldItem.hiddenInMobile ? "hidden md:table-cell " : ""}  `}>
-                              <img src={item[fieldItem.fieldName]} class="p-3" width="100" height="100" alt="Imagen" />
+                              
+                              <img src={'http://127.0.0.1:5500/'+item.imagen} class="p-3" width="100" height="100" alt="Imagen" />
                             </th>
                           ) : (
                             <th key={index} class={`${fieldItem.hiddenInMobile ? "hidden md:table-cell" : ""}  `}>
