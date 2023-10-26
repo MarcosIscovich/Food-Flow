@@ -150,7 +150,7 @@ export const ModalBuscar = component$<parametros>((props) => {
                                       <td>{producto.nombre}</td>
                                       <td>{producto?.descripcion}</td>
                                       <td>{producto.precio}</td>
-                                      <td>{producto?.imagen}</td>
+                                      <td><img src={'http://127.0.0.1:5501/FoodFlow-Api/'+producto?.imagen} class="p-3" width="100" height="100" alt="Imagen" /></td>
                                     </tr>
                                   );
                                 }

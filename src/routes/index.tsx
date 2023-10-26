@@ -38,13 +38,13 @@ export default component$(() => {
   const nav = useNavigate();
   const actionForm = useLoginAction();
   const authContext = useContext(AuthContext);
+  
+  
 
   useVisibleTask$(({ track }) => {
-
     track(() => {
       authContext.isAutenticated
     })
-
     if (authContext.isAutenticated) {
       nav('/inicio');
     }
@@ -52,11 +52,8 @@ export default component$(() => {
 
   useTask$(({ track }) => {
     track(() => { actionForm.value })
-
     if (actionForm.value?.success) {
-      console.log("success");
       //implementar la grabacion de token
-
       console.log("authContext", authContext);
       console.log("actionForm", actionForm.value.data.user);
       authContext.token = actionForm.value.data.access_token;
@@ -65,14 +62,19 @@ export default component$(() => {
         email: actionForm.value.data.user.email,
         name: actionForm.value.data.user.name,
         rol: actionForm.value.data.user.role.nombre,
-        imagen: actionForm.value.data.user.imagen
+        imagen: actionForm.value.data.user.imagen,
+        operario: {
+          id: actionForm.value.data.user.id,
+          clave: actionForm.value.data.user.clave,
+          nombre: actionForm.value.data.user.nombre,
+          rol: actionForm.value.data.user.role.nombre,
+        }
       }
       nav('/inicio');
     }
     else {
       console.log("error", actionForm.value?.failed);
     }
-
   });
 
   return (

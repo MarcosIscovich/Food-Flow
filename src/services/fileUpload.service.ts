@@ -3,11 +3,13 @@ import { configuration } from "~/config/env.config";
 export const sendImage = async (
     token: any,
     file: any,
+    itemId: any,
+    tipo: any
 ): Promise<any> => {
-    console.log("DELETE PRODUCTO ", file);
+    console.log("UPLOAD PRODUCTO ", file);
     console.log("TOKEN ", token);
 
-    const encoded = encodeURI(`${configuration.api}sendImage/5`)
+    const encoded = encodeURI(`${configuration.api}sendImage/${itemId}?tipo=${tipo}`)
     console.log(encoded);
 
     const formData = new FormData();

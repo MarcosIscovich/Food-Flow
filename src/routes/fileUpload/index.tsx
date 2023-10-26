@@ -1,43 +1,88 @@
-import { component$ } from "@builder.io/qwik";
-import {  Form, routeAction$ } from '@builder.io/qwik-city';
+import { PropFunction, component$, useContext, useTask$, useVisibleTask$, $ } from '@builder.io/qwik';
+import {  Form, globalAction$, routeAction$ } from '@builder.io/qwik-city';
 import { sendImage } from "~/services/fileUpload.service";
+import { AuthContext } from "~/context/auth/auth.context";
+import { options } from '../../../../admin-qwik/src/routes/admin/index';
+import { SubmitHandler, useForm } from '@modular-forms/qwik';
 
+export const useSubmit = globalAction$(async(form , event ) => {  
+  console.log("USESUBMIT",form);
 
-export const useSubmit = routeAction$(async(form , event ) => {  
-  
   const FormData = await event.request.formData();
-  const token = '9227|4PKHyfPDB8amB3urKKhHiW0TxIhCxXnBQHrHWS56'
   const file = FormData.get('upload') as File;
   console.log("USESUBMIT",file);
 
     if (file) {
-      const res = await sendImage(token , file);
-      console.log("res", res);
-      
-    } else {
-      return {
-        success: false,
-        message: 'No file uploaded'
-      }
+      const res = await sendImage(form.token , file, form.itemId, form.tipo);
+      console.log("res", res.success);
+    //   if (res.success) {
+    //     console.log("success FileUpload");
+    //     return {
+    //       success: true,
+    //       message: res.message
+    //     }
+    //   } else {
+    //     return {
+    //       success: false,
+    //       message: res.message
+    //     }
+    //   }
+    // } else {
+    //   return {
+    //     success: false,
+    //     message: 'No file uploaded'
+    //   }
+    // }
     }
     return {
-      success: true
+      success: true,
+      message: 'No file uploaded'
     }
+
   });
 
-
+interface ComponentProps {
+  modalOpen: boolean;
+  onClose$: PropFunction<() => void>;
+  itemId?: string;
+  tipo: string;
+}
   
-  export default  component$(() => {
+type UpForm = {
+  file: any;
+};
+  export const FileUpload = component$<ComponentProps>((props) => {
+    const { modalOpen, onClose$, itemId, tipo } = props;
+    const authContext = useContext(AuthContext);
+    const action = useSubmit();
 
-  const action = useSubmit();
+    useTask$(({ track }) => {
+      track(() => { action.value })
+      console.log("action", action.value);
+      if (action.value?.success) {
+        console.log("success");
+        //implementar la grabacion de token
+        onClose$();
+      }
+    });
+
   return (
     <>
-      <h1>
-        Upload Image
-      </h1>
       <Form action={action}>
-        <input type="file" name="upload" />
-        <button type="submit">Upload</button>
+        <div class="flex flex-col">
+          <input type="file" name="upload" class="input input-info mt-3" />
+          <input type="text" hidden name="itemId" value={itemId} class="input input-info mt-3" />
+          <input type="text" hidden name="token" value={authContext.token} class="input input-info mt-3" />
+          <input type="text" hidden name="tipo" value={tipo} class="input input-info mt-3" />
+          <div class="flex flex-row justify-end">
+            <button class="btn btn-secondary mt-3 mr-2" onClick$={onClose$}>
+              Cancel
+            </button>
+            <button type="submit"  class="btn btn-primary mt-3">
+              Upload
+            </button>
+          </div>
+        </div>
       </Form>
     </>
   );

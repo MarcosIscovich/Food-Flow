@@ -23,6 +23,7 @@ import { ModalLiberarReserva } from './components/modalLiberarReserva';
 
 export default component$(() => {
 
+
   const authContext = useContext(AuthContext);
   const permisoContext = useContext(PermisoContext);
   const mesaContext = useContext(MesasContext);
@@ -407,6 +408,7 @@ export default component$(() => {
   useVisibleTask$(async ({ track }) => {
     track(async () => authContext.token)
     console.log("Token", authContext);
+    
     if (authContext.token) {
       getAllProductos();
       productoProcesado();
@@ -645,8 +647,6 @@ export default component$(() => {
       }), habilitado: [prodProcesado.value, changeView.value]
     },
   ]
-
-
 
   const habilitado = $((funcionalidad: any) => {
 

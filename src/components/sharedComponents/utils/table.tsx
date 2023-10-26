@@ -8,7 +8,7 @@ import {
   useSignal,
 } from "@builder.io/qwik";
 import { AuthContext } from "~/context/auth/auth.context";
-import { IconDelete, IconDown, IconEdit, IconUp, IconCheck, IconClose } from "~/components/sharedComponents/icons";
+import { IconDelete, IconDown, IconEdit, IconUp, IconCheck, IconClose, IconPhoto } from "~/components/sharedComponents/icons";
 
 import { lista } from "~/services/generico.service";
 import { Pagination } from "./pagination.component";
@@ -23,6 +23,7 @@ interface parametros {
   inputTxt: string;
   setItemData: (item: any) => void;
   confirmDeleteItem: (item: any) => void;
+  uploadPhoto: (item: any) => void;
   _order: string;
   _orderSign: string;
   filter: string[]
@@ -36,6 +37,7 @@ export const Table = component$<parametros>((props) => {
     refreshData,
     setItemData,
     confirmDeleteItem,
+    uploadPhoto,
     _order,
     _orderSign,
     filter,
@@ -132,12 +134,12 @@ export const Table = component$<parametros>((props) => {
               );
             })}
 
-            <th>
+            <th style="width: 200px">
               Acciones
             </th>
           </tr>
         </thead>
-        <tbody class="text-sm font-normal text-gray-700">
+        <tbody class="text-sm font-normal text-gray-700 items-center">
           <Resource
             value={listaResource}
             onPending={() => (
@@ -176,7 +178,7 @@ export const Table = component$<parametros>((props) => {
                           ) : fieldItem.fieldName === "imagen" ? (
                             <th key={index} class={`${fieldItem.hiddenInMobile ? "hidden md:table-cell " : ""}  `}>
                               
-                              <img src={'http://127.0.0.1:5500/'+item.imagen} class="p-3" width="100" height="100" alt="Imagen" />
+                              <img src={'http://127.0.0.1:5501/FoodFlow-Api/'+item.imagen} class="p-3" width="100" height="100" alt="Imagen" />
                             </th>
                           ) : (
                             <th key={index} class={`${fieldItem.hiddenInMobile ? "hidden md:table-cell" : ""}  `}>
@@ -187,7 +189,8 @@ export const Table = component$<parametros>((props) => {
                       );
                     })}
 
-                    <td>
+                    <td >
+                      <div class="flex flex-row justify-around items-center">
                       <button
                         class="btn btn-square mr-1 btn-secondary btn-sm"
                         onClick$={async () => {
@@ -197,13 +200,24 @@ export const Table = component$<parametros>((props) => {
                         <IconEdit />
                       </button>
                       <button
-                        class="btn btn-square btn-error btn-sm"
+                        class="btn btn-square mr-1 btn-error btn-sm"
                         onClick$={() => {
                           confirmDeleteItem(item);
                         }}
                       >
                         <IconDelete />
                       </button>
+                     {(modeloURL == "productos" || modeloURL == "rubros" || modeloURL == "subrubros") && ( 
+                      <button
+                        class="btn btn-square btn-success btn-sm"
+                        onClick$={() => {
+                          uploadPhoto(item);
+                        }}
+                      >
+                        <IconPhoto />
+                      </button>
+                     )}
+                      </div>
                     </td>
                   </tr>
                 );

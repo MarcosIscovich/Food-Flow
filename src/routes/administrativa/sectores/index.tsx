@@ -195,7 +195,7 @@ export default component$(() => {
               <div class="  first-line: text-center">
                 <input
                   type="text"
-                  bind: value={inputTxt}
+                  bind:value={inputTxt}
                   placeholder="Búsqueda por texto"
                   class="input input-bordered w-full max-w-xs "
                 />

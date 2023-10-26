@@ -22,6 +22,7 @@ import type { InitialValues } from "@modular-forms/qwik";
 import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial, filter } from "./esquema";
 import type { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
 import { FileUpload } from "../../fileUpload";
+import { Modal } from "~/components/sharedComponents/modal";
 
 interface IBaseCrud extends IProductos { }
 
@@ -128,9 +129,11 @@ export default component$(() => {
   });
 
   const modalOpen = useSignal(false);
+  const modalOpenFU = useSignal<boolean>(false);
 
   const inputTxt = useSignal<string>("");
   const refreshData = useSignal<boolean>(false);
+  const setItemId = useSignal<string>("");
 
   const fillItemData = $((item: IBaseCrud | null) => {
     console.log("fillItemData", item);
@@ -167,6 +170,12 @@ export default component$(() => {
   const confirmDeleteItem = $(async (_itemData: IBaseCrud) => {
     await fillItemData(_itemData);
     infoConfirm.show = true;
+  });
+
+  const uploadPhoto = $(async (_itemData: IBaseCrud) => {
+    console.log("uploadPhoto", _itemData);
+    setItemId.value = _itemData.id || "";
+    modalOpenFU.value = true;
   });
 
   const itemDelete = $(async (itemData: IBaseCrud) => {
@@ -221,7 +230,8 @@ export default component$(() => {
     modalOpen.value = true;
   });
 
-  return ( <div class="m-2">
+  return ( 
+    <div class="m-2">
       <div class="flex flex-col w-full border-opacity-50">
         <div class="grid card bg-base-200 rounded-box  place-items-center">
           <div class="w-full place-content-start ">
@@ -281,6 +291,7 @@ export default component$(() => {
                 inputTxt={inputTxt.value}
                 setItemData={setItemData}
                 confirmDeleteItem={confirmDeleteItem}
+                uploadPhoto={uploadPhoto}
                 _order={"id"}
                 _orderSign={""}
                 filter={filter}
@@ -309,7 +320,22 @@ export default component$(() => {
           }
         />
       }
-
+       <Modal
+        show={modalOpenFU.value}
+        onClose$={$(() => {
+          modalOpenFU.value = false;;
+        })}
+        title={"Subir Imagen"}
+      >
+        <FileUpload 
+              modalOpen={modalOpenFU.value} 
+              itemId={setItemId.value} 
+              tipo={"productos"}
+              onClose$={$(() => {
+                  modalOpenFU.value = false;
+                  refreshData.value = !refreshData.value;
+              })}/>
+      </Modal>
 
       <Confirm
         msg={infoConfirm.msg}

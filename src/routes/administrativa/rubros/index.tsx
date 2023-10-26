@@ -20,6 +20,9 @@ import {
   import type { InitialValues } from "@modular-forms/qwik";
   import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial, filter } from './esquema';
  
+  import { FileUpload } from "../../fileUpload";
+  import { Modal } from "~/components/sharedComponents/modal";
+
  // import { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
   
   interface IBaseCrud extends IRubros {}
@@ -85,10 +88,18 @@ import {
     });
   
     const modalOpen = useSignal(false);
-  
+    const modalOpenFU = useSignal(false);
+    const setItemId = useSignal<string>("");
+
     const inputTxt = useSignal<string>("");
     const refreshData = useSignal<boolean>(false);
   
+    const uploadPhoto = $(async (_itemData: IBaseCrud) => {
+      console.log("uploadPhoto", _itemData);
+      setItemId.value = _itemData.id || "";
+      modalOpenFU.value = true;
+    });
+
     const fillItemData = $((item: IBaseCrud | null) => {
       console.log("fillItemData", item);
       if (item === null) {
@@ -238,6 +249,7 @@ import {
                 inputTxt={inputTxt.value}
                 setItemData={setItemData}
                 confirmDeleteItem={confirmDeleteItem}
+                uploadPhoto={uploadPhoto}
                 _order={"id"}
                 _orderSign={""}
                 filter={filter}
@@ -262,6 +274,21 @@ import {
           }
         />
   
+      <Modal
+        show={modalOpenFU.value}
+        onClose$={$(() => {
+          modalOpenFU.value = false;;
+        })}
+        title={"Subir Imagen"}
+      >
+        <FileUpload 
+              modalOpen={modalOpenFU.value} 
+              itemId={setItemId.value} 
+              tipo={"rubros"}
+              onClose$={$(() => {
+                  modalOpenFU.value = false;
+              })}/>
+      </Modal>
         <Confirm
           msg={infoConfirm.msg}
           show={infoConfirm.show}
