@@ -224,6 +224,7 @@ export const CarouselItems = component$((props: parametros) => {
                                     showItems(item.id, "showSubrubros")
                                   }
                                 >
+                                  <img src={'http://127.0.0.1:5501/FoodFlow-Api/'+item.imagen} alt="" />
                                   <span class="text-white font-bold">
                                     {item.nombre}
                                   </span>
@@ -279,6 +280,7 @@ export const CarouselItems = component$((props: parametros) => {
                                     showItems(item.id, "showProductos")
                                   }
                                 >
+                                   <img src={'http://127.0.0.1:5501/FoodFlow-Api/'+item.imagen} alt="" />
                                   <span class="text-white font-bold">
                                     {item.nombre}
                                   </span>
@@ -354,6 +356,7 @@ export const CarouselItems = component$((props: parametros) => {
                                     sendProducto(item)
                                   }
                                 >
+                                   <img src={'http://127.0.0.1:5501/FoodFlow-Api/'+item.imagen} alt="" />
                                   <span class="text-white font-bold">
                                     {item.nombre}
                                   </span>

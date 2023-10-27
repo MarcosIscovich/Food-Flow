@@ -21,6 +21,8 @@ import {
   import type { InitialValues } from "@modular-forms/qwik";
   import { infoTitle, modeloUrl, tableFieldConfiguration, dataInicial, filter } from './esquema';
   import type { selectOption } from '../../../interfaces/iTableFieldConfiguratio';
+import { Modal } from "~/components/sharedComponents/modal";
+import { FileUpload } from "~/routes/fileUpload";
   
   interface IBaseCrud extends ISubRubros {}
   
@@ -99,10 +101,12 @@ import {
     });
   
     const modalOpen = useSignal(false);
-  
+    const modalOpenFU = useSignal<boolean>(false);
+
     const inputTxt = useSignal<string>("");
     const refreshData = useSignal<boolean>(false);
-  
+    const setItemId = useSignal<string>("");
+
     const fillItemData = $((item: IBaseCrud | null) => {
       console.log("fillItemData", item);
       if (item === null) {
@@ -138,6 +142,12 @@ import {
     const confirmDeleteItem = $(async (_itemData: IBaseCrud) => {
       await fillItemData(_itemData);
       infoConfirm.show = true;
+    });
+
+    const uploadPhoto = $(async (_itemData: IBaseCrud) => {
+      console.log("uploadPhoto", _itemData);
+      setItemId.value = _itemData.id || "";
+      modalOpenFU.value = true;
     });
   
     const itemDelete = $(async (itemData: IBaseCrud) => {
@@ -251,6 +261,7 @@ import {
                 inputTxt={inputTxt.value}
                 setItemData={setItemData}
                 confirmDeleteItem={confirmDeleteItem}
+                uploadPhoto={uploadPhoto}
                 _order={"id"}
                 _orderSign={""}
                 filter={filter}
@@ -275,6 +286,22 @@ import {
           }
         />
   
+    <Modal
+        show={modalOpenFU.value}
+        onClose$={$(() => {
+          modalOpenFU.value = false;;
+        })}
+        title={"Subir Imagen"}
+      >
+        <FileUpload 
+              modalOpen={modalOpenFU.value} 
+              itemId={setItemId.value} 
+              tipo={"productos"}
+              onClose$={$(() => {
+                  modalOpenFU.value = false;
+                  refreshData.value = !refreshData.value;
+              })}/>
+      </Modal>
         <Confirm
           msg={infoConfirm.msg}
           show={infoConfirm.show}
