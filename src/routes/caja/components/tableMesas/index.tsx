@@ -133,12 +133,17 @@ export const TableMesas = component$((props: parametros) => {
   const agruparProductos = $(() => {
     const productosAgrupados: any = {};
     const productosAgrupadosArray: any[] = [];
+    let agrupo = false;
 
     productos.forEach((producto:any) => {
       if (!(producto.nombre in productosAgrupados)) {
+        console.log("NO AGRUPA");        
         productosAgrupados[producto.nombre] = { ...producto };
         productosAgrupados[producto.nombre].cantidad = Number(producto.cantidad);
+
       } else {
+        console.log("AGRUPA");
+        agrupo = true;
         productosAgrupados[producto.nombre].cantidad += Number(producto.cantidad);
       }
     });
@@ -150,7 +155,10 @@ export const TableMesas = component$((props: parametros) => {
     }
     console.log("Productos Agrupados", productosAgrupadosArray);
 
-    return productosAgrupadosArray;
+    return {
+      prod : productosAgrupadosArray,
+      agrupo: agrupo
+    }
   });
 
   useTask$(async ({ track }) => {
@@ -171,34 +179,51 @@ export const TableMesas = component$((props: parametros) => {
 
   useTask$(async ({ track }) => {
     track(() => agruparFlag.value)
+    console.log("Agrupar Flag", agruparFlag.value);
+    
     if (agruparFlag.value) {
-      const procesada = productos.some((producto: any) => producto?.procesada === 1);      
-         
+      const procesada = productos.some((producto: any) => producto?.procesada === 1);               
       const noAgrupa = productos.some((producto: any) => producto?.procesada != 1);
 
-      if (noAgrupa) {
+      if (noAgrupa && procesada) {
         infoToast.show = true;
         infoToast.msg = "No se puede agrupar productos comandados junto a los no comandados"
         infoToast.type = "error"
         // alert("No se puede agrupar productos comandados junto a los no comandados");
         // clearData();
         // refreshMesa.value = !refreshMesa.value;
+        agruparFlag.value = false
         return
       }
       const data = await agruparProductos();
-
+      
+      console.log("DATA", data);
+      const prodsAgrupados = data.prod;
+      
       productos.length = 0;
-      productos.push(...data);
+      productos.values = [... prodsAgrupados]
+      // productos.push(... prodsAgrupados);
+      console.log("Productos Agrupados PUSH", productos.values);
+      
+      if(!data.agrupo){
+        infoToast.show = true;
+        infoToast.msg = "No hay productos para agrupar"
+        infoToast.type = "error"
+        
+        agruparFlag.value = false
+        return
+
+      }
 
       if (procesada) {
-        agruparItems(authContext.token, orden.value.id, data).then((resp) => {
-          if (resp.success) {
-            data
+        agruparItems(authContext.token, orden.value.id, data.prod).then((resp) => {
+          if (resp.success) {           
             refreshMesa.value = !refreshMesa.value;
-            clearData();
+            // clearData();
           }
         })
       }
+      agruparFlag.value = false
     }
   });
 
