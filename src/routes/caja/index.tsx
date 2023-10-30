@@ -137,8 +137,8 @@ export default component$(() => {
         itemSelectedTable.value = null;
       }
 
+      modal_Mudar.close();
     }
-    modal_Mudar.close();
   })
 
   const quitarProducto = $((itemSelectedTable: any) => {
