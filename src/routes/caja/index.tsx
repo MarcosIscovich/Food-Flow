@@ -351,6 +351,10 @@ export default component$(() => {
         case "reservarMesa":
           reservarMesa();
           break;
+        
+        case "eliminarMesa":
+          liberarMesa();
+          break;
 
         default:
           break;
@@ -539,7 +543,13 @@ export default component$(() => {
 
 
   const funcionalidades = [
-    { id: 3, nombre: "Eliminar Mesa", icono: "fas fa-trash", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { eliminarMesaFlag.value = true }), habilitado: [changeView.value] },
+    { id: 3, nombre: "Eliminar Mesa", icono: "fas fa-trash", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled", 
+    action: $(() => { 
+      if (mesaSelected.value) {
+        permisoContext.action = "eliminarMesa";
+        modal_Supervisor.showModal();
+      }
+     }), habilitado: [changeView.value] },
     { id: 2, nombre: mesaSelected?.value?.estado_id !== 3 ? "Reservar Mesa" : "Liberar Mesa", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
     action: $(() => {
       if (mesaSelected.value) {
