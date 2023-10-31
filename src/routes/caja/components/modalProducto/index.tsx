@@ -1,4 +1,4 @@
-import { type PropFunction, component$ } from '@builder.io/qwik';
+import { type PropFunction, component$, $ } from '@builder.io/qwik';
 
 
 
@@ -6,13 +6,26 @@ interface parametros {
     cantidad: any,
     preferencia: any,
     itemSelectedTable: any,
+    infoToast: any,
     addProducto: PropFunction<() => any>
 }
 
 export const ModalProducto = component$((props: parametros) => {
 
-    const { cantidad, preferencia, itemSelectedTable, addProducto } = props;
+    const { cantidad, preferencia, itemSelectedTable, addProducto, infoToast } = props;
 
+    const _addProducto = $(() => {    
+        if(cantidad.value)
+        {
+            addProducto()
+            modal_Producto.close()
+        }
+        else{
+            infoToast.show = true;
+            infoToast.msg = "No se puede agregar producto sin cantidad"
+            infoToast.type = "error"
+        }
+    })
     return (
         <div>
             <dialog
@@ -59,27 +72,26 @@ export const ModalProducto = component$((props: parametros) => {
                                             )
                                         }
                                     </div>
-                                    <div class="grid grid-col-3 grid-flow-col gap-2 justify-between">
-                                        <div class="form-control mt-6 col-span-2">
+                                    {/* <div class="grid grid-col-3 grid-flow-col gap-2 justify-between"> */}
+                                        <div class="form-control mt-6 flex flex-row justify-end">
                                             <button
-                                                class="btn btn-error"
+                                                class="btn btn-error w-1/2"
                                                 onClick$={() =>
                                                     (modal_Producto.close())
                                                 }
                                             >
                                                 Cancel
                                             </button>
-                                        </div>
-                                        <div class="form-control mt-6 col-span-2">
+                                       
                                             <button
                                                 type="button"
-                                                onClick$={() => addProducto()}
-                                                class="btn btn-primary"
+                                                onClick$={() => _addProducto()}
+                                                class="btn btn-primary w-1/2 ml-3"
                                             >
-                                                ok
+                                                Aceptar
                                             </button>
                                         </div>
-                                    </div>
+                                    {/* </div> */}
                                 </div>
                             </div>
                         </div>

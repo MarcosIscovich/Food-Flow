@@ -40,12 +40,21 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     options: [],
     type: "select",
   },
+  {
+    title: "Imagen",
+    fieldName: "imagen",
+    hiddenInMobile: true,
+    visibleInTable: true,
+    defaultValue: "",
+    type: "text",
+  },
 ];
 
 export const validationSchema = z.object({
   id: z.string().optional(),
   nombre: z.string().min(1, "Ingrese el nombre del rubro."),
   rubro_id: z.union([z.string().min(1, "Ingrese un Rubro."), z.number().min(1, "Ingrese un Rubro.")]),
+  imagen: z.string().min(1, "Ingrese una imagen."),
 });
 
 export type FormField = "id" | "nombre" | "rubro_id";
@@ -59,5 +68,6 @@ export type FormField = "id" | "nombre" | "rubro_id";
 export const dataInicial = {
   id: "",
   nombre: "",
+  imagen: "",
   rubro_id: "",
 };

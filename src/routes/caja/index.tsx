@@ -4,7 +4,7 @@ import { TableMesas } from './components/tableMesas';
 import { ViewMesas } from './components/viewMesas';
 import { CarouselItems } from './components/carousel';
 import { ModalClave } from '~/components/modalClave';
-import { newOrden, editOrden, ticketMesa } from '~/services/orden.service';
+import { newOrden, editOrden, ticketMesa, informeVentas } from '~/services/orden.service';
 import { AuthContext } from '~/context/auth/auth.context';
 import { getAllProducts } from '~/services/productos.service';
 import { ModalSupervisor } from './components/modalSupervisor';
@@ -19,6 +19,8 @@ import { ModalProducto } from './components/modalProducto';
 import { ModalCamarero } from './components/modalCamarero';
 import { ModalReservas } from './components/modalReservas';
 import { ModalLiberarReserva } from './components/modalLiberarReserva';
+import { mesaId } from '../../context/mesa/mesa.context';
+import { ModalInformeVentas } from './components/modalInformeVentas';
 
 
 export default component$(() => {
@@ -55,12 +57,14 @@ export default component$(() => {
   const camareroSelected = useStore<any>({});
   const prodProcesado = useSignal<boolean>(false);
   const fechaTicket = useSignal<string>('');
-  
+  const infoOrdenes = useStore<any>([]);
 
   const clearContexts = $(() => {
     permisoContext.tienePermiso = false;
     permisoContext.action = "";
     mesaContext.numeroMesa = "";
+    mesaSelected.value = null;
+    camareroSelected.value = null;
   })
 
   const productoProcesado = $(() => {
@@ -293,11 +297,23 @@ export default component$(() => {
     if (resp) {
       changeView.value = false;
       liberarMesa();
+      // recargar pagina
+      // window.addEventListener('unload', function () {
+      //   liberarMesa();
+      //   //window.location.reload();
+      // });
     } else {
       infoToast.show = true;
       infoToast.msg = "No se pudo cobrar la mesa";
       infoToast.type = "error";
     }
+  })
+
+  const informeVenta = $(async () => {
+    const resp = await informeVentas(authContext.token, Date.now());
+    modal_informeVentas.showModal();
+    console.log("RESP", resp);
+    infoOrdenes.values = resp.ordenes;
   })
 
   const liberarReserva = $(async () => {
@@ -549,7 +565,7 @@ export default component$(() => {
         permisoContext.action = "eliminarMesa";
         modal_Supervisor.showModal();
       }
-     }), habilitado: [changeView.value] },
+     }), habilitado: [changeView.value, mesaSelected?.value?.estado_id == 2] },
     { id: 2, nombre: mesaSelected?.value?.estado_id !== 3 ? "Reservar Mesa" : "Liberar Mesa", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
     action: $(() => {
       if (mesaSelected.value) {
@@ -576,7 +592,7 @@ export default component$(() => {
           clearContexts()
         }
       })
-      , habilitado: [changeView.value]
+      , habilitado: [changeView.value, mesaSelected?.value?.estado_id == 2]
     },
     {
       id: 3, nombre: "Eliminar Producto", icono: "fas fa-trash", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
@@ -594,7 +610,7 @@ export default component$(() => {
           // openModalClave.value = true;
           modal_Supervisor.showModal();
         }
-      }), habilitado: [changeView.value]
+      }), habilitado: [changeView.value, (mesaSelected?.value?.estado_id == 2)]
     },
 
     {
@@ -614,7 +630,9 @@ export default component$(() => {
         }
       }), habilitado: [itemSelectedTable.value, changeView.value]
     },
-    { id: 6, nombre: "Agrupar Items", icono: "fas fa-object-group", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { agruparFlag.value = true }), habilitado: [changeView.value] },
+    { id: 6, nombre: "Agrupar Items", icono: "fas fa-object-group", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", 
+        action: $(() => { agruparFlag.value = true }), 
+        habilitado: [changeView.value, productos.length>0] },
     {
       id: 7, nombre: "Marchar Comanda", icono: "fas fa-utensils", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
       action: $(() => {
@@ -641,7 +659,9 @@ export default component$(() => {
       id: 10, nombre: "Volver a Mesas", icono: "fas fa-ban", class: "btn-func btn--rojo", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
       action: $(() => { volverAmesa() }), habilitado: [changeView.value]
     },
-    { id: 9, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled", action: $(() => { my_modal_2.showModal() }), habilitado: [changeView.value] },
+    { id: 9, nombre: "Buscar Producto", icono: "fas fa-search", class: "btn-func btn--azul", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
+     action: $(() => { my_modal_2.showModal() }),
+      habilitado: [changeView.value, (mesaSelected.value && camareroSelected.value)] },
     {
       id: 11, nombre: "Guardar Comanda", icono: "fas fa-save", class: "btn-func btn--verde", classDisabled: "btn-func btn--verdeDisabled btn-disabled",
       action: $(() => {
@@ -673,22 +693,61 @@ export default component$(() => {
   )
   return (
     <>
+      <ModalInformeVentas 
+       show={false}
+       onClose$={$(() => {
+         false;
+       })}
+       title={"Informe de ventas"}
+       productos={infoOrdenes}
+      />
       <ModalClave />
       <ModalSupervisor tienePermiso={tienePermiso} openModalClave={false} />
-      <ModalMudar />
-      <ModalProducto cantidad={cantidad} preferencia={preferencia} itemSelectedTable={itemSelectedTable} addProducto={addProducto} />
-      <ModalCamarero orden={orden} refreshMesa={refreshMesa} infoToast={infoToast} clearContexts={clearContexts} />
-      <ModalReservas volverAmesa={volverAmesa} mesa={mesaSelected} refreshMesa={refreshMesa} infoToast={infoToast} clearContexts={clearContexts} />
-      <ModalLiberarReserva volverAmesa={volverAmesa} mesa={mesaSelected} refreshMesa={refreshMesa} infoToast={infoToast} clearContexts={clearContexts} />
-      <Toast msg={infoToast.msg} type={infoToast.type} show={infoToast.show} onFinish={$(() => (infoToast.show = false))} />
+      <ModalMudar  infoToast={infoToast}/>
+      <ModalProducto
+        cantidad={cantidad}
+        preferencia={preferencia}
+        itemSelectedTable={itemSelectedTable}
+        addProducto={addProducto}
+        infoToast={infoToast}
+      />
+      <ModalCamarero
+        orden={orden}
+        refreshMesa={refreshMesa}
+        infoToast={infoToast}
+        clearContexts={clearContexts}
+      />
+      <ModalReservas
+        volverAmesa={volverAmesa}
+        mesa={mesaSelected}
+        refreshMesa={refreshMesa}
+        infoToast={infoToast}
+        clearContexts={clearContexts}
+      />
+      <ModalLiberarReserva
+        volverAmesa={volverAmesa}
+        mesa={mesaSelected}
+        refreshMesa={refreshMesa}
+        infoToast={infoToast}
+        clearContexts={clearContexts}
+      />
+      <Toast
+        msg={infoToast.msg}
+        type={infoToast.type}
+        show={infoToast.show}
+        onFinish={$(() => (infoToast.show = false))}
+      />
       <div class="">
         <div class="flex flex-col">
           <div class="grid grid-cols-2">
             <div class="p-7" style="display: flex;">
               {changeView.value ? (
                 <div style="flex: 1;">
-                  <TableMesas closeTable={closeTable} mesaSelected={mesaSelected.value}
-                    productoSelected={productoSelected.value} guardarComandaFlag={guardarComandaFlag}
+                  <TableMesas
+                    closeTable={closeTable}
+                    mesaSelected={mesaSelected.value}
+                    productoSelected={productoSelected.value}
+                    guardarComandaFlag={guardarComandaFlag}
                     marcharComandaFlag={marcharComandaFlag}
                     cancelBtn={cancelBtn}
                     cancelData={cancelData}
@@ -724,9 +783,24 @@ export default component$(() => {
                       {funcionalidades.map(async (funcionalidad, idx) => (
                         <div class="grid h-full" key={idx}>
                           <div class="w-full h-full">
-                            <div class={!changeView.value && 'tooltip tooltip-bottom tooltip-secondary'} data-tip="Abrir mesa habilita funcionalidades">
-                              <button class={await habilitado(funcionalidad) ? funcionalidad.class : funcionalidad.classDisabled} onClick$={() => { funcionalidad?.action && funcionalidad.action() }}>
-
+                            <div
+                              class={
+                                !changeView.value &&
+                                "tooltip tooltip-bottom tooltip-secondary"
+                              }
+                              data-tip="Abrir mesa habilita funcionalidades"
+                            >
+                              <button
+                                class={
+                                  (await habilitado(funcionalidad))
+                                    ? funcionalidad.class
+                                    : funcionalidad.classDisabled
+                                }
+                                onClick$={() => {
+                                  funcionalidad?.action &&
+                                    funcionalidad.action();
+                                }}
+                              >
                                 <span>{funcionalidad.nombre}</span>
                               </button>
                             </div>
@@ -739,9 +813,42 @@ export default component$(() => {
               </div>
             </div>
           </div>
-          <div class="px-7 pb-7">
-            <CarouselItems sendProducto={sendProducto} />
-          </div>
+          
+          {mesaSelected.value && camareroSelected.value ? (
+            <div class="px-7 pb-7">
+              <CarouselItems sendProducto={sendProducto} />
+            </div>
+          ) : (
+            <>
+            {!changeView.value && (
+            <div class="bg-secondary-100 rounded-2xl h-52  px-7 pb-7 ml-7 mr-7 flex items-center justify-center">
+               
+                          <div class="w-full h-full flex justify-center items-center">
+                            <div
+                              class={
+                                
+                                "tooltip tooltip-bottom tooltip-secondary"
+                              }
+                              data-tip="Informes de ventas"
+                            >
+                              <button
+                                class="btn-func btn--azul"
+                                onClick$={() => {
+                                  console.log("Informe de ventas");
+                                  informeVenta();
+                                }}
+                              >
+                                <span>Informe Ventas</span>
+                              </button>
+                            </div>
+                          </div>
+               
+              </div>
+            )}
+            </>
+          )
+        }
+
         </div>
       </div>
     </>

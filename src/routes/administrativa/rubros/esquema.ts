@@ -30,11 +30,20 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     defaultValue: "",
     type: "text",
   },
+  {
+    title: "Imagen",
+    fieldName: "imagen",
+    hiddenInMobile: true,
+    visibleInTable: true,
+    defaultValue: "",
+    type: "text",
+  },
 ];
  
  export const validationSchema = z.object({
    id: z.string().optional(),
    nombre: z.string().min(1, "Ingrese el nombre del usuario."), 
+   imagen: z.string().min(1, "Ingrese una imagen."),
  });
  
  export type FormField = "id" | "nombre" ;
@@ -42,5 +51,6 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
 export const dataInicial= {
    id: "",
    nombre: "",
+    imagen: "",
  };
  

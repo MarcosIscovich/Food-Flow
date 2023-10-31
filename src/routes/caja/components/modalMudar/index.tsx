@@ -1,9 +1,13 @@
 import {  component$, useContext, useSignal, $, } from '@builder.io/qwik';
 import { MesasContext } from '~/context/mesa/mesa.context';
 
+interface parametros {
+  infoToast: any,
+}
 
+export const ModalMudar = component$((props: parametros) => {
 
-export const ModalMudar = component$(() => {
+  const { infoToast } = props;
 
   const mesaContext = useContext(MesasContext);  
 
@@ -18,6 +22,19 @@ export const ModalMudar = component$(() => {
   const closeModal = $(async () => {
     modal_Mudar.close()
   });
+
+  const mudar = $(() => {
+   if(mesaId.value)
+   {
+    sendMesa(mesaId.value)
+    closeModal()
+   }
+   else {
+    infoToast.show = true;
+    infoToast.msg = "No se puede cambiar de mesa si no ingresa una"
+    infoToast.type = "error"
+   }
+  })
 
   return (
     <div>
@@ -36,11 +53,11 @@ export const ModalMudar = component$(() => {
                   <div class="flex flex-row">
                     <div class="form-control mr-1">
                       <label class="label">
-                        <span class="label-text">Cantidad</span>
+                        <span class="label-text">Mesa</span>
                       </label>
                       <input
                         type="number"
-                        placeholder="Cantidad"
+                        placeholder="Mesa"
                         name="cantidad"
                         bind:value={mesaId}
                         class="input input-bordered"
@@ -48,26 +65,25 @@ export const ModalMudar = component$(() => {
                     </div>
 
                   </div>
-                  <div class="grid grid-col-3 grid-flow-col gap-2 justify-between">
-                    <div class="form-control mt-6 col-span-2">
+                  
+                    <div class="form-control mt-6 flex flex-row">
                       <button
-                        class="btn btn-error"
+                        class="btn btn-error w-1/2"
                         onClick$={() => { closeModal() }}
                       >
                         Cancel
                       </button>
-                    </div>
-                    <div class="form-control mt-6 col-span-2">
+                    
                       <button
                         type="submit"
                         // onClick$={() => changeMesa(mesaChange.value)}
-                        onClick$={() => { sendMesa(mesaId.value) }}
-                        class="btn btn-primary"
+                        onClick$={() => {mudar() }}
+                        class="btn btn-primary w-1/2 ml-3"
                       >
-                        ok
+                        Aceptar
                       </button>
                     </div>
-                  </div>
+                  
                 </div>
               </div>
             </div>

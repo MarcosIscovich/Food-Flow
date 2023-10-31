@@ -72,10 +72,10 @@ export const ModalSupervisor = component$((props: parametros) => {
                                         <input type="number" placeholder="clave" name='clave' bind:value={clave} class="input input-bordered" />
                                     </div>
 
-                                    <div class="form-control mt-6">
-                                        <button class="btn btn-error" onClick$={() => { modal_Supervisor.close() }} >Cancelar</button>
+                                    <div class="form-control mt-6 flex flex-row">
+                                        <button class="btn btn-error w-1/2" onClick$={() => { modal_Supervisor.close() }} >Cancelar</button>
 
-                                        <button class="btn btn-primary" type='submit' onClick$={loginUsuario} >Login</button>
+                                        <button class="btn btn-primary ml-3 w-1/2" type='submit' onClick$={loginUsuario} >Aceptar</button>
                                     </div>
                                 </div>
 

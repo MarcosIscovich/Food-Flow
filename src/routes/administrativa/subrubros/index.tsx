@@ -96,7 +96,7 @@ import { FileUpload } from "~/routes/fileUpload";
       show: false,
     });
     const infoConfirm = useStore({
-      msg: "Confirma eliminar el usuario?",
+      msg: "Confirma eliminar el subRubro?",
       show: false,
     });
   
@@ -112,30 +112,18 @@ import { FileUpload } from "~/routes/fileUpload";
       if (item === null) {
   
         Object.entries(itemData).forEach(([key]) => {
-          //typeof value === "number" ? (itemData[key] = 0) : (itemData[key] = "");
           const _key = key as keyof IBaseCrud;
           itemData[_key] =  "";
         });
   
         console.log("fillItemData Null", itemData);
-        // itemData.id = "";
-        // itemData.cliente = "";
-        // itemData.telefono = "";
-        // itemData.hora = "";
-        // itemData.dia = "";
-        // itemData.cantpersonas = 0;
+       
       } else {
         Object.entries(itemData).forEach(([key]) => {
           const _key = key as keyof IBaseCrud;
           itemData[_key] =  item[_key] || "";
         });
         console.log("fillItemData Not Null", itemData);
-        // itemData.id = item.id;
-        // itemData.cliente = item.cliente;
-        // itemData.telefono = item.telefono;
-        // itemData.hora = item.hora;
-        // itemData.dia = item.dia;
-        // itemData.cantpersonas = item.cantpersonas;
       }
     });
   
@@ -153,7 +141,7 @@ import { FileUpload } from "~/routes/fileUpload";
     const itemDelete = $(async (itemData: IBaseCrud) => {
       const resp = await deleteItem(authContext.token || "", itemData, modeloUrl);
   
-      console.log(modeloUrl, resp);
+      console.log("ItemDelete", modeloUrl, resp);
   
       infoConfirm.show = false;
   
@@ -296,7 +284,7 @@ import { FileUpload } from "~/routes/fileUpload";
         <FileUpload 
               modalOpen={modalOpenFU.value} 
               itemId={setItemId.value} 
-              tipo={"productos"}
+              tipo={"subrubros"}
               onClose$={$(() => {
                   modalOpenFU.value = false;
                   refreshData.value = !refreshData.value;

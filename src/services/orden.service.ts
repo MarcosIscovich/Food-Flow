@@ -142,3 +142,52 @@ export const agruparItems = async (
     // console.log("llega cupon/create", data);
     return data;
 }
+
+export const informeVentas = async (token:any, fecha:any) => {
+    console.log("llega a crear token ", fecha);
+     
+    const encoded = encodeURI(`${configuration.api}informeVentas/${fecha}`);
+    
+    const resp = await fetch(encoded, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    console.log("Servicio Informe de ventas " , resp);
+    if (resp.status === 200) {
+        return resp.json();
+    } else {
+        // Manejar errores en caso de que la solicitud no sea exitosa
+        console.error(`Error en la solicitud: ${resp.status}`);
+        return false;
+    }
+    // if (resp.status === 200) {
+    //     // Extraer el contenido del archivo PDF de la respuesta
+    //     const blob = await resp.blob();
+
+    //     // Crear una URL para el archivo
+    //     const url = window.URL.createObjectURL(blob);
+
+    //     // Crear un enlace (link) para descargar el archivo
+    //     const a = document.createElement('a');
+    //     a.href = url;
+    //     a.download = 'ticket.pdf'; // Nombre del archivo que se descargará
+    //     a.style.display = 'none';
+
+    //     // Agregar el enlace al documento
+    //     document.body.appendChild(a);
+
+    //     // Simular un clic en el enlace para iniciar la descarga
+    //     a.click();
+
+    //     // Liberar recursos
+    //     window.URL.revokeObjectURL(url);
+    //     return true;
+    // } else {
+    //     // Manejar errores en caso de que la solicitud no sea exitosa
+    //     console.error(`Error en la solicitud: ${resp.status}`);
+    //     return false;
+    // }
+}

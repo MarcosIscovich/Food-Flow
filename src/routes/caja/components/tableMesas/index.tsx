@@ -201,8 +201,8 @@ export const TableMesas = component$((props: parametros) => {
       const prodsAgrupados = data.prod;
       
       productos.length = 0;
-      productos.values = [... prodsAgrupados]
-      // productos.push(... prodsAgrupados);
+      //productos.values = [...prodsAgrupados]
+       productos.push(...prodsAgrupados);
       console.log("Productos Agrupados PUSH", productos.values);
       
       if(!data.agrupo){
@@ -217,7 +217,8 @@ export const TableMesas = component$((props: parametros) => {
 
       if (procesada) {
         agruparItems(authContext.token, orden.value.id, data.prod).then((resp) => {
-          if (resp.success) {           
+          if (resp.success) { 
+            productos.length = 0;          
             refreshMesa.value = !refreshMesa.value;
             // clearData();
           }

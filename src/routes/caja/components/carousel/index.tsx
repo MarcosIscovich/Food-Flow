@@ -35,9 +35,9 @@ export const CarouselItems = component$((props: parametros) => {
       if(_productosData.length > 0){
         console.log("Subrubros", _productosData);
         const _slidesProductos = [];
-        for (let i = 0; i < _productosData.length; i += 10) {
+        for (let i = 0; i < _productosData.length; i += 8) {
           const items = [];
-          for (let j = i; j < i + 10; j++) {
+          for (let j = i; j < i + 8; j++) {
             if (_productosData[j]) {
               items.push(_productosData[j]);
               console.log("items", items);
@@ -63,9 +63,9 @@ export const CarouselItems = component$((props: parametros) => {
       if(_subRubrosData.length > 0){
         console.log("Subrubros", _subRubrosData);
         const _slidesSubProductos = [];
-        for (let i = 0; i < _subRubrosData.length; i += 10) {
+        for (let i = 0; i < _subRubrosData.length; i += 8) {
           const items = [];
-          for (let j = i; j < i + 10; j++) {
+          for (let j = i; j < i + 8; j++) {
             if (_subRubrosData[j]) {
               items.push(_subRubrosData[j]);
               console.log("items", items);
@@ -88,9 +88,9 @@ export const CarouselItems = component$((props: parametros) => {
       console.log("Rubros", rubrosData.value);
       //todo: build a carousel with this data
       const _slides = [];
-      for (let i = 0; i < rubrosData.value.length; i += 10) {
+      for (let i = 0; i < rubrosData.value.length; i += 8) {
         const items = [];
-        for (let j = i; j < i + 10; j++) {
+        for (let j = i; j < i + 8; j++) {
           if (rubrosData.value[j]) {
             items.push(rubrosData.value[j]);
             //console.log("items", items);
@@ -106,9 +106,9 @@ export const CarouselItems = component$((props: parametros) => {
     if(productosData.value.length > 0){
       console.log("Productos", productosData.value);
       const _slidesProductos = [];
-      for (let i = 0; i < productosData.value.length; i += 10) {
+      for (let i = 0; i < productosData.value.length; i += 8) {
         const items = [];
-        for (let j = i; j < i + 10; j++) {
+        for (let j = i; j < i + 8; j++) {
           if (productosData.value[j]) {
             items.push(productosData.value[j]);
            // console.log("items", items);
@@ -211,10 +211,10 @@ export const CarouselItems = component$((props: parametros) => {
                             <div
                               class="grid h-full"
                               key={idxi}
-                              style="z-index : 1000"
+                              style="z-index : 100"
                             >
                               <div
-                                class="flex justify-center items-center h-32 w-32 p-4"
+                                class="flex justify-center items-center h-44 w-44 p-4"
                                 //key={idxi}
                               >
                                 <button
@@ -224,7 +224,11 @@ export const CarouselItems = component$((props: parametros) => {
                                     showItems(item.id, "showSubrubros")
                                   }
                                 >
-                                  <img src={'http://127.0.0.1:5501/FoodFlow-Api/'+item.imagen} alt="" />
+                                  <img src={'http://127.0.0.1:5501/FoodFlow-Api/'+item.imagen} alt=""  
+                                  style=" object-fit: cover;
+                                          width:100%;
+                                          height:100%;"
+                                          />
                                   <span class="text-white font-bold">
                                     {item.nombre}
                                   </span>
@@ -270,7 +274,7 @@ export const CarouselItems = component$((props: parametros) => {
                               style="z-index : 1000"
                             >
                               <div
-                                class="flex justify-center items-center h-32 w-32 p-4"
+                                class="flex justify-center items-center h-44 w-44 p-4"
                                 //key={idxi}
                               >
                                 <button
@@ -280,7 +284,11 @@ export const CarouselItems = component$((props: parametros) => {
                                     showItems(item.id, "showProductos")
                                   }
                                 >
-                                   <img src={'http://127.0.0.1:5501/FoodFlow-Api/'+item.imagen} alt="" />
+                                   <img src={'http://127.0.0.1:5501/FoodFlow-Api/'+item.imagen} alt="" 
+                                    style=" object-fit: cover;
+                                    width:100%;
+                                    height:100%;"
+                                    />
                                   <span class="text-white font-bold">
                                     {item.nombre}
                                   </span>
@@ -341,27 +349,35 @@ export const CarouselItems = component$((props: parametros) => {
                         <div class="flex justify-between mx-auto">
                           {slide.map((item:any, idxi:any) => (
                             <div
-                              class="grid h-full"
+                              class="grid h-full "
                               key={idxi}
                               style="z-index : 500"
                             >
+                              
                               <div
-                                class="flex justify-center items-center h-32 w-32 p-4"
+                                class="tooltip tooltip-error tooltip-top h-44 w-44 p-4"
                                 //key={idxi}
+                                data-tip={item.nombre}
                               >
+                  
                                 <button
-                                  class="btn-rubro btn--azul"
+                                  class="btn btn-rubro btn--azul"
                                   onClick$={() =>
                                     item.id !== undefined &&
                                     sendProducto(item)
                                   }
                                 >
-                                   <img src={'http://127.0.0.1:5501/FoodFlow-Api/'+item.imagen} alt="" />
-                                  <span class="text-white font-bold">
+                                   <img src={'http://127.0.0.1:5501/FoodFlow-Api/'+item.imagen} alt=""  
+                                   style=" object-fit: cover;
+                                          width:100%;
+                                          height:100%;"
+                                    />
+                                  <p class="text-white font-bold truncate">
                                     {item.nombre}
-                                  </span>
+                                  </p>
                                 </button>
                               </div>
+                             
                             </div>
                           ))}
                         </div>
