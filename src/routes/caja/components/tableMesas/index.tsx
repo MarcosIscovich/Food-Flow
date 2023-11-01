@@ -371,6 +371,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
 
   useTask$(async ({ track }) => {
     track(() => { mesaSelected.estado_id, refreshMesa.value })
+    
     if (mesaSelected.estado_id == "2" || refreshMesa.value) {
       console.log("Mesa Ocupada", mesaSelected);
       await getMesa(authContext.token, mesaSelected.id).then((item) => {
@@ -491,7 +492,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
             MESA {mesaSelected?.id}{" "}
           </h2>
           <div class="overflow-x-auto " style="height:400px">
-            {mesaSelected.estado_id === 3 ? (
+            {mesaSelected?.estado_id === 3 ? (
               <div class="flex flex-col justify-center">
                 <span class="badge badge-outline badge-success text-xl mb-2">
                   Mesa Reservada a: {mesaSelected.reserva.cliente + " " + mesaSelected.reserva.telefono}
@@ -503,7 +504,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
               </div>
             ) : (
               <div>
-                {!camareroSelected.value && mesaSelected.estado_id !== 3 ? (
+                {!camareroSelected.value && mesaSelected?.estado_id !== 3 ? (
                   <div class="flex justify-center">
                     {mesaSelected?.estado_id != "2" && (
                       <select
