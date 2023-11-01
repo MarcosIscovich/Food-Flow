@@ -41,7 +41,7 @@ export const TableMesas = component$((props: parametros) => {
     cambiarCamareroFlag, refreshMesa, cancelBtn, itemSelectedTable, productos , cancelData, /* newComanda */ closeTable, /* editComanda */ sendProducto  } = props;
 
 
-    console.log("PRODUCTOS IN TABLE MESA" , productos);
+   
     
   const authContext = useContext(AuthContext);
 
@@ -61,9 +61,16 @@ export const TableMesas = component$((props: parametros) => {
   const horaMesa = useSignal<string>("");
   const mesaChange = useSignal<any>({});
   const cliente = useStore<any>({});
-
+  
+  console.log("PRODUCTOS IN TABLE MESA" , productos);
   console.log("Mesa: ", mesaSelected);
-
+  console.log("Camarero: ", camareroSelected);
+    console.log("Camarero estado" , camareroSelected.value == undefined);
+    console.log("Camarero estado2" , camareroSelected.value == null);
+    console.log("Camarero estado3" , camareroSelected.value == "");
+    console.log("Camarero estado4" , camareroSelected.value == 0);
+    console.log("Camarero estado5" , camareroSelected.value == false);
+    console.log("Camarero estado5" , camareroSelected?.value?.nombre == undefined);
 
   const clearData = $(() => {
     console.log("Clear Data");
@@ -231,8 +238,11 @@ export const TableMesas = component$((props: parametros) => {
   useTask$(async ({ track }) => {
     track(() => camareroID.value)
     console.log("Camarero", camareroID.value);
-    camareroSelected.value = users.value.find((user: any) => user.id == camareroID.value)
-    console.log("CamareroSelected", camareroSelected.value);
+    if (camareroID.value) {
+      camareroSelected.value = users.value.find((user: any) => user.id == camareroID.value)
+      console.log("CamareroSelected", camareroSelected.value);
+    }
+    
   });
 
   useTask$(async ({ track }) => {
@@ -370,9 +380,10 @@ console.log("eliminar PRODUCTO", itemSelected.value);
   })
 
   useTask$(async ({ track }) => {
-    track(() => { mesaSelected.estado_id, refreshMesa.value })
+    track(() => { refreshMesa.value })
     
-    if (mesaSelected.estado_id == "2" || refreshMesa.value) {
+    if (refreshMesa.value) {
+      if(mesaSelected.estado_id == "2"){
       console.log("Mesa Ocupada", mesaSelected);
       await getMesa(authContext.token, mesaSelected.id).then((item) => {
         console.log("Mesa DATA", item.mesa);
@@ -404,7 +415,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
         }
       })
 
-    }
+    }}
   });
 
 
@@ -504,7 +515,7 @@ console.log("eliminar PRODUCTO", itemSelected.value);
               </div>
             ) : (
               <div>
-                {!camareroSelected.value && mesaSelected?.estado_id !== 3 ? (
+                {(camareroSelected?.value?.nombre == undefined && mesaSelected?.estado_id !== 3) ? (
                   <div class="flex justify-center">
                     {mesaSelected?.estado_id != "2" && (
                       <select

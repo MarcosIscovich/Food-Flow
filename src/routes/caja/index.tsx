@@ -63,6 +63,7 @@ export default component$(() => {
     permisoContext.tienePermiso = false;
     permisoContext.action = "";
     mesaContext.numeroMesa = "";
+    //tuve que comentar ya que se rompia el reservar mesa
     mesaSelected.value = null;
     camareroSelected.value = null;
   })
@@ -322,9 +323,10 @@ export default component$(() => {
   });
 
   const reservarMesa = $(async () => { 
-    if(mesaSelected.value.estado_id !== 3){
+    console.log("Reservar Mesa", mesaSelected.value);
+    if(mesaSelected?.value?.estado_id !== 3){
       modal_Reservas.showModal();
-      clearContexts();
+      //clearContexts();
      
     }
     else{
@@ -526,7 +528,7 @@ export default component$(() => {
     productos.length = 0;
     itemSelectedTable.value = null;
     //total.value = 0;
-    //mesaSelected.value = null;
+    mesaSelected.value = null;
     // orden.value = null;
     // cantidad.value = "";
     // preferencia.value = "";
@@ -814,7 +816,7 @@ export default component$(() => {
             </div>
           </div>
           
-          {mesaSelected.value && camareroSelected.value ? (
+          {(mesaSelected.value && camareroSelected.value) ? (
             <div class="px-7 pb-7">
               <CarouselItems sendProducto={sendProducto} />
             </div>
