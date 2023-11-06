@@ -5,6 +5,7 @@ import { AuthContext } from '~/context/auth/auth.context';
 import { login } from '~/services/auth.service';
 // import style from './logincss.module.css'
 import logoFF from '~/components/logo_FF.png';
+import { ModalTerminos } from './caja/components/modalTerminos';
 
 
 export const useLoginAction = routeAction$(
@@ -108,10 +109,15 @@ export default component$(() => {
                   </label>
                 </div>
                 <div class="form-control mt-6">
-                  <button class=" bg-primary-500 text-white" type='submit'>Login</button>
+                  <button class=" bg-primary-500 text-white rounded-md hover:text-lg h-12" type='submit'>Login</button>
                 </div>
               </Form>
 
+            </div>
+            <div class="flex justify-center pb-7  ">
+
+        <a class=" text-black hover:text-primary-800 cursor-pointer hover:text-lg " onClick$={() => modal_Terminos.showModal()} >Terminos y Condiciones</a>
+        <ModalTerminos />
             </div>
           </div>
         </div>
