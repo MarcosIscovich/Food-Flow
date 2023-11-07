@@ -105,7 +105,6 @@ export default component$(() => {
                   </label>
                   <input type="text" placeholder="password" name='password' class="input input-bordered" />
                   <label class="label">
-                    <a href="#" class="label-text-alt link link-hover">Forgot password?</a>
                   </label>
                 </div>
                 <div class="form-control mt-6">

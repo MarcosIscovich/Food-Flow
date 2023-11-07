@@ -1,6 +1,6 @@
 import { component$, useContext } from '@builder.io/qwik';
 import { Link, type DocumentHead } from '@builder.io/qwik-city';
-import { IcoAdicionador, IcoAdmin , IcoCajero  } from '../../components/router-head/iconos/iconos';
+import { IcoAdicionador, IcoAdmin , IcoCajero , IcoUnder } from '../../components/router-head/iconos/iconos';
 import { AuthContext } from '~/context/auth/auth.context';
 
 import styles from "./styles.module.css"
@@ -47,7 +47,13 @@ export default component$(() => {
                         <div class="flex justify-center">
                           <button class={styles.cardbutton}>Adicionador</button>
                         </div>
-
+                        <div class="flex justify-center mt-4" >
+                          <IcoUnder size={"40"} />
+                        </div>
+                        <div class="flex justify-center mt-4" >
+                        <span class="font-semibold">En Contrucción</span>
+                        </div>
+                         
                       </div>
                     </div>
                   </Link>  
