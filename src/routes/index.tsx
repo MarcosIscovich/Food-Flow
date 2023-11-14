@@ -1,4 +1,4 @@
-import { component$, useContext, useTask$, useVisibleTask$ } from '@builder.io/qwik';
+import { component$, useContext, useSignal, useTask$, useVisibleTask$ } from '@builder.io/qwik';
 import type { DocumentHead } from '@builder.io/qwik-city';
 import { Form, routeAction$, useNavigate, z, zod$ } from '@builder.io/qwik-city';
 import { AuthContext } from '~/context/auth/auth.context';
@@ -12,11 +12,11 @@ export const useLoginAction = routeAction$(
   async (data, /* { cookie, redirect } */) => {
     const { email, password } = data;
 
-    console.log("llega al action", data);
+   // console.log("llega al action", data);
 
     const resp = await login(email, password);
 
-    console.log("respuesta de login", resp);
+   // console.log("respuesta de login", resp);
 
     if (resp && resp.access_token) {
       return {
@@ -39,7 +39,7 @@ export default component$(() => {
   const nav = useNavigate();
   const actionForm = useLoginAction();
   const authContext = useContext(AuthContext);
-  
+  const logError = useSignal(false);
   
 
   useVisibleTask$(({ track }) => {
@@ -55,8 +55,8 @@ export default component$(() => {
     track(() => { actionForm.value })
     if (actionForm.value?.success) {
       //implementar la grabacion de token
-      console.log("authContext", authContext);
-      console.log("actionForm", actionForm.value.data.user);
+     // console.log("authContext", authContext);
+     // console.log("actionForm", actionForm.value.data.user);
       authContext.token = actionForm.value.data.access_token;
       authContext.user = {
         id: actionForm.value.data.user.id,
@@ -74,9 +74,35 @@ export default component$(() => {
       nav('/inicio');
     }
     else {
+      console.log("error", actionForm.value);
+      if(actionForm.value?.success == false || actionForm.value?.failed == true){
+      logError.value = true;
+
       console.log("error", actionForm.value?.failed);
+      }
     }
   });
+
+  useVisibleTask$(({ track }) => {
+  
+    track(() => {
+      logError.value
+    })
+    if (logError.value) {
+     // alert("Usuario o contraseña incorrectos");
+     // console.log("error", actionForm.value?.failed);
+      
+      const interval = setInterval(() => {
+        // call onFinish function
+        logError.value = false;
+        props.onFinish();
+        // clear interval
+        clearInterval(interval);
+  
+      }, 3000);
+
+    }
+  })
 
   return (
     <>
@@ -103,13 +129,18 @@ export default component$(() => {
                   <label class="label">
                     <span class="label-text font-bold">Password</span>
                   </label>
-                  <input type="text" placeholder="password" name='password' class="input input-bordered" />
+                  <input type="password" placeholder="password" name='password' class="input input-bordered" />
                   <label class="label">
                   </label>
                 </div>
                 <div class="form-control mt-6">
                   <button class=" bg-primary-500 text-white rounded-md hover:text-lg h-12" type='submit'>Login</button>
                 </div>
+              {logError.value && (
+                <div class="form-control mt-6">
+                  <span class="text-red-500 text-sm">Usuario o contraseña incorrectos</span>
+                  </div>
+                  )}
               </Form>
 
             </div>

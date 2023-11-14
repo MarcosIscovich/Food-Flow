@@ -6,15 +6,15 @@ import { options } from '../../../../admin-qwik/src/routes/admin/index';
 import { SubmitHandler, useForm } from '@modular-forms/qwik';
 
 export const useSubmit = globalAction$(async(form , event ) => {  
-  console.log("USESUBMIT",form);
+  //console.log("USESUBMIT",form);
 
   const FormData = await event.request.formData();
   const file = FormData.get('upload') as File;
-  console.log("USESUBMIT",file);
+  //console.log("USESUBMIT",file);
 
     if (file) {
       const res = await sendImage(form.token , file, form.itemId, form.tipo);
-      console.log("res", res.success);
+     // console.log("res", res.success);
     //   if (res.success) {
     //     console.log("success FileUpload");
     //     return {
@@ -58,9 +58,9 @@ type UpForm = {
 
     useTask$(({ track }) => {
       track(() => { action.value })
-      console.log("action", action.value);
+      //console.log("action", action.value);
       if (action.value?.success) {
-        console.log("success");
+       // console.log("success");
         //implementar la grabacion de token
         onClose$();
       }

@@ -5,11 +5,11 @@ export const newOrden = async (
     item: any,
 
 ): Promise<any> => {
-    console.log("llega a crear payload ", item);
-    console.log("llega a crear token ", token);
+    //console.log("llega a crear payload ", item);
+    //console.log("llega a crear token ", token);
 
     const encoded = encodeURI(`${configuration.api}orden`)
-    console.log(encoded);
+    //console.log(encoded);
     const resp = await fetch(encoded, {
         method: "POST",
         headers: {
@@ -29,11 +29,11 @@ export const editOrden = async (
     item: any,
     ordenId: any,
 ): Promise<any> => {
-    console.log("llega a crear payload ", item);
-    console.log("llega a crear token ", token);    
+    //console.log("llega a crear payload ", item);
+    //console.log("llega a crear token ", token);    
 
     const encoded = encodeURI(`${configuration.api}orden/${ordenId}`)
-    console.log(encoded);
+    //console.log(encoded);
     
     const resp = await fetch(encoded, {
         method: "PUT",
@@ -54,11 +54,11 @@ export const updateCamarero = async (
     item: any,
     ordenId: any,
 ): Promise<any> => {
-    console.log("llega updateCamarero ", ordenId);
-    console.log("llega a crear token ", token);    
+    //console.log("llega updateCamarero ", ordenId);
+    //console.log("llega a crear token ", token);    
 
     const encoded = encodeURI(`${configuration.api}updateCamarero/${ordenId}`)
-    console.log(encoded);
+    //console.log(encoded);
     
     const resp = await fetch(encoded, {
         method: "PUT",
@@ -76,7 +76,7 @@ export const updateCamarero = async (
 }
 
 export const ticketMesa = async (token:any, ordenId:any , horaMesa:any) => { 
-    console.log("llega a crear token ", horaMesa);
+    //console.log("llega a crear token ", horaMesa);
      
     const encoded = encodeURI(`${configuration.api}ticketmesa/${ordenId}`);
     
@@ -124,10 +124,10 @@ export const agruparItems = async (
     ordenId: any,
     productos: any,
 ): Promise<any> => {
-    console.log("llega a crear token ", token);    
+    //console.log("llega a crear token ", token);    
 
     const encoded = encodeURI(`${configuration.api}agruparitem/${ordenId}`)
-    console.log(encoded);
+    //console.log(encoded);
     
     const resp = await fetch(encoded, {
         method: "PUT",
@@ -144,8 +144,8 @@ export const agruparItems = async (
 }
 
 export const informeVentas = async (token:any, fecha:any) => {
-    console.log("llega a crear token ", fecha);
-     
+    //console.log("llega a informe ventas fecha ", fecha);
+    //console.log("llega a informe ventas token ", token); 
     const encoded = encodeURI(`${configuration.api}informeVentas/${fecha}`);
     
     const resp = await fetch(encoded, {
@@ -155,7 +155,7 @@ export const informeVentas = async (token:any, fecha:any) => {
             Authorization: `Bearer ${token}`,
         },
     });
-    console.log("Servicio Informe de ventas " , resp);
+    //console.log("Servicio Informe de ventas " , resp);
     if (resp.status === 200) {
         return resp.json();
     } else {

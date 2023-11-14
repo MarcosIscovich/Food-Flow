@@ -2,7 +2,7 @@ import { configuration } from "~/config/env.config";
 
 export const getElements = async (tabla: string) => {
     const ruta = configuration.api + tabla;
-    console.log("RUTA", ruta);
+    //console.log("RUTA", ruta);
     return await fetch(ruta, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json',
@@ -10,9 +10,9 @@ export const getElements = async (tabla: string) => {
                  'Access-Control-Allow-Origin': '*' },
     })
         .then(async (data) => {
-            console.log("DATA", data)
+            //console.log("DATA", data)
             const response = await data.json()
-            console.log("RESPONSE", response)
+            //console.log("RESPONSE", response)
             return response;
         }
         )

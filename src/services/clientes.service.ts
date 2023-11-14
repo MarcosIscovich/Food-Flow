@@ -10,8 +10,8 @@ export const lista = async (
   ): Promise<any> => {
     
     const encoded = encodeURI(`${configuration.api}clientes?page=${pageNumber}&per_page=${pageSize}&sort=${orderSign == "-" ? "-": "" }${order}`)//?page=${pageNumber}&per_page=${pageSize}&sort=${order}`) //&searchText=${searchText});${orderSign == "-" ? "-": "" }
-    console.log(encoded);
-    console.log("order", order)
+    //console.log(encoded);
+    //console.log("order", order)
     const resp = await fetch(
     encoded,
       {
@@ -24,7 +24,7 @@ export const lista = async (
     );
   
     const data = await resp.json();
-      console.log("llega a lista: ", data);
+      //console.log("llega a lista: ", data);
     return data;
   };
 
@@ -32,9 +32,9 @@ export const lista = async (
     token: string,
     templateCupon: any
   ): Promise<any> => {
-    console.log("llega a crear: ", templateCupon);
+    //console.log("llega a crear: ", templateCupon);
     const encoded = encodeURI(`${configuration.api}clientes/`) 
-    console.log(encoded);
+    //console.log(encoded);
     const resp = await fetch(encoded, {
       method: "POST",
       headers: {
@@ -45,7 +45,7 @@ export const lista = async (
     });
   
     const data = await resp.json();
-    console.log("llega cupon/create", data);  
+    //console.log("llega cupon/create", data);  
     return data;
   };
 
@@ -76,7 +76,7 @@ export const update = async (
     token: string,
     templateCupon: any
   ): Promise<any> => {
-    console.log("llega a eliminar: ", templateCupon);
+    //console.log("llega a eliminar: ", templateCupon);
   
     const resp = await fetch(
       `${configuration.api}clientes/${templateCupon.id}`,
@@ -91,7 +91,7 @@ export const update = async (
     );
   
     const data =  resp;
-    console.log("llega cupon/delete", data);
+    //console.log("llega cupon/delete", data);
   
     return data;
   };

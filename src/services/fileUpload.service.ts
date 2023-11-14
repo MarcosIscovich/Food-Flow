@@ -6,15 +6,15 @@ export const sendImage = async (
     itemId: any,
     tipo: any
 ): Promise<any> => {
-    console.log("UPLOAD PRODUCTO ", file);
-    console.log("TOKEN ", token);
+    //console.log("UPLOAD PRODUCTO ", file);
+    //console.log("TOKEN ", token);
 
     const encoded = encodeURI(`${configuration.api}sendImage/${itemId}?tipo=${tipo}`)
-    console.log(encoded);
+    //console.log(encoded);
 
     const formData = new FormData();
     formData.append('file', file);
-    console.log("FORMDATA" , formData); 
+    //console.log("FORMDATA" , formData); 
     const resp = await fetch(encoded,  {
         method: "post",
         headers: {

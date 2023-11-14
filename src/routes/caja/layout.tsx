@@ -1,4 +1,4 @@
-import { component$, Slot, useContextProvider, useStore, useVisibleTask$ } from '@builder.io/qwik';
+import { component$, Slot, useContext, useContextProvider, useStore, useVisibleTask$ } from '@builder.io/qwik';
 import { PermisoContext } from '~/context/supervisor/supervisor.context';
 import { MesasContext } from '~/context/mesa/mesa.context';
 // import { ModalClave } from '~/components/modalClave';
@@ -7,10 +7,13 @@ import { MesasContext } from '~/context/mesa/mesa.context';
 
 export default component$(() => {
 
+  
 
   useVisibleTask$(() => {
     localStorage.setItem("ruta", window.location.href);
   });
+
+ 
   
   const permisoSupervisor = useStore<PermisoContext>({
     tienePermiso: false,
@@ -23,6 +26,8 @@ export default component$(() => {
 
   useContextProvider(PermisoContext, permisoSupervisor);
   useContextProvider(MesasContext, mesaContext);
+  
+  
 
   return  <>
     {/* <ModalClave /> */}

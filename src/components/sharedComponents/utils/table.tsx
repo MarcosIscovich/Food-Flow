@@ -23,7 +23,7 @@ interface parametros {
   inputTxt: string;
   setItemData: (item: any) => void;
   confirmDeleteItem: (item: any) => void;
-  uploadPhoto: (item: any) => void;
+  uploadPhoto?: (item: any) => void;
   _order: string;
   _orderSign: string;
   filter: string[]
@@ -100,12 +100,12 @@ export const Table = component$<parametros>((props) => {
       if (response?.meta && response?.meta.last_page) {
         pagination.totalPages = response.meta.last_page;
 
-        console.log("total paginas: ", pagination.totalPages);
+        //console.log("total paginas: ", pagination.totalPages);
       } else {
         pagination.totalPages = 1;
       }
 
-      console.log("Llegan los "+ modeloURL, response.data);
+     // console.log("Llegan los "+ modeloURL, response.data);
 
       return response.data; //.data.rows;
     }
@@ -210,8 +210,8 @@ export const Table = component$<parametros>((props) => {
                      {(modeloURL == "productos" || modeloURL == "rubros" || modeloURL == "subrubros") && ( 
                       <button
                         class="btn btn-square btn-success btn-sm"
-                        onClick$={() => {
-                          uploadPhoto(item);
+                        onClick$={() => { 
+                          if(uploadPhoto) {uploadPhoto(item);}
                         }}
                       >
                         <IconPhoto />

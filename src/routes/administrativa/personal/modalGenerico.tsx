@@ -60,7 +60,7 @@ export const ModalGenerico = component$<parametros>((props) => {
 
   useTask$(({ track }) => {
     track(() => [_itemData.changePassword, changePass.value]);
-    console.log("changePass", changePass.value);
+   // console.log("changePass", changePass.value);
     if (_itemData.changePassword) {
       changePass.value = !changePass.value;
     }
@@ -68,7 +68,7 @@ export const ModalGenerico = component$<parametros>((props) => {
 
 
   const handleSubmit: SubmitHandler<IBaseSchema> = $((values) => {
-    console.log("handle", values);
+   // console.log("handle", values);
     if (_itemData.id) {
       values.id = _itemData.id;
     }
@@ -91,7 +91,7 @@ export const ModalGenerico = component$<parametros>((props) => {
             <div class="  ">
               <Form
                 onSubmit$={$((values, event) => {
-                  console.log("values", values);
+                 // console.log("values", values);
                   handleSubmit(values, event);
                 })}
               >

@@ -15,28 +15,33 @@ export const UserLogged = component$(() => {
 
     return (
       <>
-   <div class="stats shadow flex justify-end bg-white">   
-  <div class="stat">
-    <div class="stat-figure">
-        {/* <IconUser size={"60"} /> */}
-        <div class="avatar">
-  <div class="w-24 mask mask-squircle">
-    <img src={logoFF} width={50} height={100} />
-  </div>
-</div>
-      {/* <div class="avatar online">
+        <div class="stats shadow flex justify-end bg-white">
+          <div class="stat">
+            <div class="stat-figure">
+              {/* <IconUser size={"60"} /> */}
+              <div class="avatar">
+                <div class="w-24 mask mask-squircle">
+                  <img src={logoFF} width={50} height={50} />
+                </div>
+              </div>
+              {/* <div class="avatar online">
         <div class="w-16 rounded-full bg-white">
           <IconUser/>
         </div>
       </div> */}
-    </div>
-    <div class="stat-title text-secondary-500 font-bold">Logeado como</div>
-    <div class="stat-title text-secondary-500 flex justify-center font-bold">{authContext.user?.operario.nombre}</div>
-    <div class="stat-desc text-secondary-500 flex justify-center">{authContext.user?.operario.rol}</div>
-  </div> 
-  
-</div>
-    </>  
-    ) 
+            </div>
+            <div class="stat-title text-secondary-500 font-bold">
+              Logeado como
+            </div>
+            <div class="stat-title text-secondary-500 flex justify-center font-bold">
+              {authContext.user?.operario.nombre}
+            </div>
+            <div class="stat-desc text-secondary-500 flex justify-center">
+              {authContext.user?.operario.rol}
+            </div>
+          </div>
+        </div>
+      </>
+    ); 
     
 });

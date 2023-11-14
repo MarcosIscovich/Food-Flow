@@ -39,7 +39,7 @@ export default component$(() => {
     )
 
     if(authContext?.token){
-    console.log("useTask$");
+   // console.log("useTask$");
     const proveedor = await selectItems(
       authContext.token || "",
       "provedor/select");
@@ -55,7 +55,7 @@ export default component$(() => {
       "unidadmedida",
       );
 
-    console.log("lista", medida);
+    //console.log("lista", medida);
 
     const selectOptionsM: selectOption[] = medida.data.map((item: any) => {
       return { value: item.id, label: item.nombre };
@@ -82,7 +82,7 @@ export default component$(() => {
   const refreshData = useSignal<boolean>(false);
 
   const fillItemData = $((item: IBaseCrud | null) => {
-    console.log("fillItemData", item);
+   // console.log("fillItemData", item);
     if (item === null) {
       Object.entries(itemData).forEach(([key]) => {
         const _key = key as keyof IBaseCrud;
@@ -104,7 +104,7 @@ export default component$(() => {
   const itemDelete = $(async (itemData: IBaseCrud) => {
     const resp = await deleteItem(authContext.token || "", itemData, modeloUrl);
 
-    console.log(modeloUrl, resp);
+    //console.log(modeloUrl, resp);
 
     infoConfirm.show = false;
 
@@ -118,21 +118,21 @@ export default component$(() => {
   const itemSave = $(async () => {
     let resp: any;
     let tipoAccion = "creado";
-    console.log("llega a itemSave", itemData);
+    //console.log("llega a itemSave", itemData);
 
     if (itemData?.id && itemData.id) {
-      console.log("llega a editar itemSave", itemData);
+      //console.log("llega a editar itemSave", itemData);
       // Editar
       tipoAccion = "editado y guardado";
       resp = await update(authContext.token || "", itemData, modeloUrl);
     } else {
-      console.log("llega a crear itemSave", itemData);
+      //console.log("llega a crear itemSave", itemData);
       resp = await create(authContext.token || "", itemData, modeloUrl);
     }
 
     refreshData.value = !refreshData.value;
 
-    console.log(resp);
+    //console.log(resp);
     if (resp.data.id && (resp?.data.id || tipoAccion == "editado y guardado")) {
       // show toast
       infoToast.msg = `Se ha ${tipoAccion} el elemento correctamente`;
@@ -191,10 +191,10 @@ export default component$(() => {
               <div class=" text-right ">
                 <button
                   class="btn  mt-2 mr-5  btn-warning  "
-                  onClick$={async () => {
+                  onClick$={$(async () => {
                     await setItemData(null);
                     modalOpen.value = true;
-                  }}
+                  })}
                 >
                   Nuevo
                 </button>
@@ -265,7 +265,7 @@ export const head: DocumentHead = {
   title: infoTitle.titulo,
   meta: [
     {
-      name: "description",
+      name: "Insumos",
       content: infoTitle.subTitulo,
     },
   ],

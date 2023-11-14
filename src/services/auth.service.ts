@@ -8,15 +8,15 @@ export const login = async (email: string, password: string) => {
         body: JSON.stringify({ email, password })
     })
         .then(async (data) => {
-            console.log("DATA", data);
+           // console.log("DATA", data);
             
             const response = await data.json()
-            console.log("RESPONSE", response)
+           // console.log("RESPONSE", response)
             if (response.access_token) {
                 //  localStorage.setItem('user', JSON.stringify(data));
             }
 
-            console.log("LOGIN", response.access_token);
+            //console.log("LOGIN", response.access_token);
             return response;
         }
         )
@@ -41,15 +41,15 @@ export const verifyToken = async (token: string) => {
       },
     }).then(async (data) => {
       const response = await data.json();
-      console.log("REfreshToken", response);
+     // console.log("REfreshToken", response);
       if (response.access_token) {
         //  localStorage.setItem('user', JSON.stringify(data));
       }
 
-      console.log("Token", response.access_token);
+      //console.log("Token", response.access_token);
       return response;
     }).catch((error) => {
-        console.log("Error", error)
+        //console.log("Error", error)
         return null
     });
     /* .then(data => {

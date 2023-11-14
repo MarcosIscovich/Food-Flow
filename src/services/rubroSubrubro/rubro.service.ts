@@ -1,7 +1,7 @@
 import { configuration } from "~/config/env.config"
 
 export const createRubro = async (  rubro: string) => {   
-    console.log("RUBRO Service", rubro);
+    //console.log("RUBRO Service", rubro);
      
     return await fetch(configuration.api + 'rubros', {
         method: 'POST',

@@ -2,6 +2,7 @@ import { component$, $, type PropFunction, useVisibleTask$, useStore, useSignal 
 
 
 import type { iTableFieldConfiguration } from "~/interfaces/iTableFieldConfiguratio";
+import moment from 'moment';
 
 // type IBaseSchema = z.infer<typeof validationSchema>;
 
@@ -44,6 +45,7 @@ export const ModalInformeVentas = component$<parametros>((props) => {
   const totalDia = useSignal(0);
 
   const calcularTotal = $(() => {    
+    totalDia.value = 0;
     const usuariosTotales = new Map<string, number>();
     productos.values.forEach((fila: any) => {
       const usuario = fila.user.nombre;
@@ -69,7 +71,7 @@ export const ModalInformeVentas = component$<parametros>((props) => {
     allOrdenes.values.map((total: any) => {
       totalDia.value = totalDia.value + total.total;
     })
-    console.log("allOrdenes", allOrdenes.values);
+    //console.log("allOrdenes", allOrdenes.values);
 
 
   })
@@ -77,7 +79,7 @@ export const ModalInformeVentas = component$<parametros>((props) => {
 
   useVisibleTask$(async ({ track }) => {
     track(async () => productos.values)
-    console.log("INFOORDENES*********************", productos.values);
+    //console.log("INFOORDENES*********************", productos.values);
     //_productos.value = productos.values;
     // Recorremos el array original.
     if (productos.values.length > 0) {
@@ -92,7 +94,7 @@ export const ModalInformeVentas = component$<parametros>((props) => {
   return (
     <dialog id="modal_informeVentas" class="modal ">
       <div class="modal-box max-w-5xl" >
-        <h3 class="font-bold text-3xl text-center">Informe de ventas</h3>
+        <h3 class="font-bold text-3xl text-center">Informe de ventas - {moment(Date.now()).format("DD-MM-YYYY")}</h3>
 
         <div class=" text-right ">
           <table class="table  bg-white table-pin-rows">

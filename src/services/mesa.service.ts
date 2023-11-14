@@ -6,11 +6,11 @@ export const getMesa = async (
     item: any,
 
 ): Promise<any> => {
-    console.log("llega a crear payload ", item);
-    console.log("llega a crear token ", token);
+   // console.log("llega a crear payload ", item);
+   // console.log("llega a crear token ", token);
 
     const encoded = encodeURI(`${configuration.api}mesaOcupada/${item}`)
-    console.log(encoded);
+    //console.log(encoded);
     const resp = await fetch(encoded, {
         method: "GET",
         headers: {
@@ -30,11 +30,11 @@ export const deleteMesa = async (
     id: any,
 
 ): Promise<any> => {
-    console.log("llega a crear payload ", id);
-    console.log("llega a crear token ", token);
+    //console.log("llega a crear payload ", id);
+    //console.log("llega a crear token ", token);
 
     const encoded = encodeURI(`${configuration.api}deleteMesa/`)
-    console.log(encoded);
+    //console.log(encoded);
     const resp = await fetch(encoded, {
         method: "POST",
         headers: {
@@ -54,11 +54,11 @@ export const mudarMesa = async (
     newMesa: any,
 
 ): Promise<any> => {
-    console.log("llega a crear payload ", id);
-    console.log("llega a crear token ", token);
+    //console.log("llega a crear payload ", id);
+    //console.log("llega a crear token ", token);
 
     const encoded = encodeURI(`${configuration.api}mudarMesa/${id}`)
-    console.log(encoded);
+    //console.log(encoded);
     const resp = await fetch(encoded, {
         method: "PUT",
         headers: {
@@ -78,11 +78,11 @@ export const reservarMesaServicio = async (
     clienteId: any,
 
 ): Promise<any> => {
-    console.log("llega a crear payload ", id);
-    console.log("llega a crear token ", token);
+    //console.log("llega a crear payload ", id);
+    //console.log("llega a crear token ", token);
 
     const encoded = encodeURI(`${configuration.api}reservarMesa/${id}`)
-    console.log(encoded);
+    //console.log(encoded);
     const resp = await fetch(encoded, {
         method: "POST",
         headers: {
@@ -102,11 +102,11 @@ export const updateMesa = async (
     mesa: any,
 
 ): Promise<any> => {
-    console.log("llega a crear payload ", id);
-    console.log("llega a crear token ", token);
+    //console.log("llega a crear payload ", id);
+    //console.log("llega a crear token ", token);
 
     const encoded = encodeURI(`${configuration.api}mesas/${id}`)
-    console.log(encoded);
+    //console.log(encoded);
     const resp = await fetch(encoded, {
         method: "PUT",
         headers: {

@@ -18,7 +18,7 @@ export const ModalLiberarReserva = component$((props: parametros) => {
     
     const liberarReserva = $(async () => {
         const resp = await updateMesa(authContext.token, mesa.value.id, {mesa_id: mesa.value.id, estado_id: 1, reserva_id: null });
-        console.log("Resp Liberar Reserva", resp);
+        //console.log("Resp Liberar Reserva", resp);
         if(resp.success){
             infoToast.show = true;
             infoToast.msg = "Mesa liberada correctamente";

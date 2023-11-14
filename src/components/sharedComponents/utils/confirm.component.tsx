@@ -10,7 +10,7 @@ interface parametros {
 export const Confirm = component$((props: parametros) => {
   const { show, msg, resultOk$, resultCancel$ } = props;
 
-  console.log("Show confirm: ", show);
+ // console.log("Show confirm: ", show);
   return (
     <div>
       <div class={show ? "modal  modal-open" : "modal "}>

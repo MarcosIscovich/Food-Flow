@@ -12,7 +12,7 @@ import { Breadcrumbs } from "~/components/sharedComponents/utils/breadcrumbs";
 import { Confirm } from "~/components/sharedComponents/utils/confirm.component";
 import { Toast } from "~/components/sharedComponents/utils/toast.component";
 import { AuthContext } from "~/context/auth/auth.context";
-import { create, update, deleteItem, lista, selectItems, selectwis } from "~/services/generico.service";
+import { create, update, deleteItem, lista, selectItems } from "~/services/generico.service";
 import { ModalGenerico } from "./modalGenerico";
 import { IconQuestion } from "~/components/sharedComponents/icons";
 import { Table } from "~/components/sharedComponents/utils/table";
@@ -34,17 +34,13 @@ export default component$(() => {
   );
   const load = useSignal<boolean>(false);
 
-  useVisibleTask$(async() => {
-    console.log("useVisibleTask$");
-    const wis = await selectwis(authContext.token || "");
-      console.log("lista WIS", wis);
-  });
+ 
   useTask$(async({track}) => {
     track(() => authContext.token);
     if(authContext?.token){
-      console.log("useTask$");
+     // console.log("useTask$");
       const iva = await selectItems(authContext.token || "", "roles");
-      console.log("lista", iva);
+     // console.log("lista", iva);
 
       const selectOptions: selectOption[] = iva.data.map((item: any) => {
         return { value: item.id, label: item.nombre };
@@ -72,7 +68,7 @@ export default component$(() => {
   const refreshData = useSignal<boolean>(false);
 
   const fillItemData = $((item: IBaseCrud | null) => {
-    console.log("fillItemData", item);
+   // console.log("fillItemData", item);
     if (item === null) {
       Object.entries(itemData).forEach(([key]) => {
         const _key = key as keyof IBaseCrud;
@@ -95,7 +91,7 @@ export default component$(() => {
   const itemDelete = $(async (itemData: IBaseCrud) => {
     const resp = await deleteItem(authContext.token || "", itemData, modeloUrl);
 
-    console.log(modeloUrl, resp);
+    //console.log(modeloUrl, resp);
 
     infoConfirm.show = false;
 
@@ -109,21 +105,21 @@ export default component$(() => {
   const itemSave = $(async () => {
     let resp: any;
     let tipoAccion = "creado";
-    console.log("llega a itemSave", itemData);
+   // console.log("llega a itemSave", itemData);
 
     if (itemData?.id && itemData.id) {
-      console.log("llega a editar itemSave", itemData);
+    //  console.log("llega a editar itemSave", itemData);
       // Editar
       tipoAccion = "editado y guardado";
       resp = await update(authContext.token || "", itemData, modeloUrl);
     } else {
-      console.log("llega a crear itemSave", itemData);
+     // console.log("llega a crear itemSave", itemData);
       resp = await create(authContext.token || "", itemData, modeloUrl);
     }
 
     refreshData.value = !refreshData.value;
 
-    console.log(resp);
+   // console.log(resp);
     if (resp.data.id && (resp?.data.id || tipoAccion == "editado y guardado")) {
       // show toast
       infoToast.msg = `Se ha ${tipoAccion} el elemento correctamente`;
@@ -207,6 +203,7 @@ export default component$(() => {
               _order={order}
               _orderSign={""}
               filter={filter}
+              //uploadPhoto={(item: any) => console.log("uploadPhoto", item)}
             />
           )}
           </div>

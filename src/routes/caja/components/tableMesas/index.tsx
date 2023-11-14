@@ -1,4 +1,4 @@
-import { $, type PropFunction, component$, useContext, useSignal, useStore, useTask$ } from '@builder.io/qwik';
+import { $, type PropFunction, component$, useContext, useSignal, useStore, useTask$, useVisibleTask$ } from '@builder.io/qwik';
 import { AuthContext } from '~/context/auth/auth.context';
 import { findClients, findUsers } from "~/services/generico.service";
 import { getMesa } from '~/services/mesa.service';
@@ -7,7 +7,7 @@ import { deleteMesa } from '~/services/mesa.service';
 import { agruparItems } from '~/services/orden.service';
 // import { ModalCamarero } from '../modalCamarero/index';
 import { ModalBuscar } from '../modalBuscar/index';
-
+import moment from 'moment';
 
 interface parametros {
   mesaSelected: any;
@@ -62,18 +62,18 @@ export const TableMesas = component$((props: parametros) => {
   const mesaChange = useSignal<any>({});
   const cliente = useStore<any>({});
   
-  console.log("PRODUCTOS IN TABLE MESA" , productos);
-  console.log("Mesa: ", mesaSelected);
-  console.log("Camarero: ", camareroSelected);
-    console.log("Camarero estado" , camareroSelected.value == undefined);
-    console.log("Camarero estado2" , camareroSelected.value == null);
-    console.log("Camarero estado3" , camareroSelected.value == "");
-    console.log("Camarero estado4" , camareroSelected.value == 0);
-    console.log("Camarero estado5" , camareroSelected.value == false);
-    console.log("Camarero estado5" , camareroSelected?.value?.nombre == undefined);
+  // console.log("PRODUCTOS IN TABLE MESA" , productos);
+  // console.log("Mesa: ", mesaSelected);
+  // console.log("Camarero: ", camareroSelected);
+  //   console.log("Camarero estado" , camareroSelected.value == undefined);
+  //   console.log("Camarero estado2" , camareroSelected.value == null);
+  //   console.log("Camarero estado3" , camareroSelected.value == "");
+  //   console.log("Camarero estado4" , camareroSelected.value == 0);
+  //   console.log("Camarero estado5" , camareroSelected.value == false);
+  //   console.log("Camarero estado5" , camareroSelected?.value?.nombre == undefined);
 
   const clearData = $(() => {
-    console.log("Clear Data");
+    //console.log("Clear Data");
     camareroSelected.value = null;
     productos.length = 0;
     total.value = 0;
@@ -144,12 +144,12 @@ export const TableMesas = component$((props: parametros) => {
 
     productos.forEach((producto:any) => {
       if (!(producto.nombre in productosAgrupados)) {
-        console.log("NO AGRUPA");        
+       // console.log("NO AGRUPA");        
         productosAgrupados[producto.nombre] = { ...producto };
         productosAgrupados[producto.nombre].cantidad = Number(producto.cantidad);
 
       } else {
-        console.log("AGRUPA");
+       // console.log("AGRUPA");
         agrupo = true;
         productosAgrupados[producto.nombre].cantidad += Number(producto.cantidad);
       }
@@ -160,7 +160,7 @@ export const TableMesas = component$((props: parametros) => {
         productosAgrupadosArray.push(productosAgrupados[key]);
       }
     }
-    console.log("Productos Agrupados", productosAgrupadosArray);
+    //console.log("Productos Agrupados", productosAgrupadosArray);
 
     return {
       prod : productosAgrupadosArray,
@@ -171,7 +171,7 @@ export const TableMesas = component$((props: parametros) => {
   useTask$(async ({ track }) => {
     track(() => authContext.token)
     if (authContext.token) {
-      console.log("useTask$");
+     // console.log("useTask$");
       clearData();
       const response = await findUsers(authContext.token, "findusers");
       users.value = response.filter((user: any) => user.role.nombre === "Camarero")
@@ -186,7 +186,7 @@ export const TableMesas = component$((props: parametros) => {
 
   useTask$(async ({ track }) => {
     track(() => agruparFlag.value)
-    console.log("Agrupar Flag", agruparFlag.value);
+    //console.log("Agrupar Flag", agruparFlag.value);
     
     if (agruparFlag.value) {
       const procesada = productos.some((producto: any) => producto?.procesada === 1);               
@@ -204,13 +204,13 @@ export const TableMesas = component$((props: parametros) => {
       }
       const data = await agruparProductos();
       
-      console.log("DATA", data);
+     // console.log("DATA", data);
       const prodsAgrupados = data.prod;
       
       productos.length = 0;
       //productos.values = [...prodsAgrupados]
        productos.push(...prodsAgrupados);
-      console.log("Productos Agrupados PUSH", productos.values);
+     // console.log("Productos Agrupados PUSH", productos.values);
       
       if(!data.agrupo){
         infoToast.show = true;
@@ -248,7 +248,7 @@ export const TableMesas = component$((props: parametros) => {
   useTask$(async ({ track }) => {
     track(() => cancelBtn.value)
     if (cancelBtn.value) {
-      console.log("Cancel Btn");
+     // console.log("Cancel Btn");
       clearData();
       cancelData();
     }
@@ -379,14 +379,14 @@ console.log("eliminar PRODUCTO", itemSelected.value);
     horaMesa.value = horaFormateada;
   })
 
-  useTask$(async ({ track }) => {
-    track(() => { refreshMesa.value })
-    
-    if (refreshMesa.value) {
-      if(mesaSelected.estado_id == "2"){
-      console.log("Mesa Ocupada", mesaSelected);
+  useVisibleTask$(async ({ track }) => {
+    track(() => { mesaSelected?.value , refreshMesa.value })
+    console.log("REfresh Mesa", refreshMesa.value);
+    //if (refreshMesa.value) {
+      if(mesaSelected?.estado_id == "2"){
+      //console.log("Mesa Ocupada", mesaSelected);
       await getMesa(authContext.token, mesaSelected.id).then((item) => {
-        console.log("Mesa DATA", item.mesa);
+        //console.log("Mesa DATA", item.mesa);
         if (item.mesa) {
           orden.value = item.mesa.orden;
           
@@ -394,9 +394,11 @@ console.log("eliminar PRODUCTO", itemSelected.value);
             nombre: item?.mesa?.orden?.user?.nombre
           }
           horaMesaFunct(item?.mesa?.orden?.created_at)
+          productos.length = 0
           item.mesa?.orden?.comandas?.map((comanda: any) => {
+           
             comanda.productos.map((producto: any) => {
-              //  productos.length = 0
+                
               productos.push({
                 id: producto.id,
                 nombre: producto.nombre,
@@ -410,12 +412,13 @@ console.log("eliminar PRODUCTO", itemSelected.value);
             })
           })
           total.value = item?.mesa?.orden?.totalACobrar;
-          console.log("Total", total);
-          console.log("productos", productos);
+          //console.log("Total", total);
+          //console.log("productos", productos);
         }
       })
 
-    }}
+  //  }
+  }
   });
 
 
@@ -467,20 +470,20 @@ console.log("eliminar PRODUCTO", itemSelected.value);
   // })
 
   const selectProducto = $((producto: any) => {
-    console.log("Select Producto", producto);
+   // console.log("Select Producto", producto);
     itemSelected.value = producto;
     itemSelectedTable.value = producto;
   })
 
   const productoBuscado$ = $(async (producto: any) => {
-    console.log("Producto Selected ", producto);
+   // console.log("Producto Selected ", producto);
     // productoSelected.value = {};
     // productoSelected.value = producto;
     my_modal_2.close();
     
   }
   )
-
+  console.log("horaMesa", horaMesa.value)
 
   return (
     <>
@@ -601,7 +604,14 @@ console.log("eliminar PRODUCTO", itemSelected.value);
             </div>
             <div class="stat place-items-center rounded">
               <div class="stat-title">Apertura</div>
-              <div class="stat-value text-secondary">{horaMesa.value}Hs</div>
+              { horaMesa.value == "" ? (
+                  <></>
+              ) :
+              (
+                
+                <div class="stat-value text-secondary">{moment(horaMesa.value, "HH:mm").format("HH:mm")}Hs</div>
+                
+              )}
             </div>
             <div class="stat place-items-center bg-primary-400 rounded">
               <div class="stat-title text-white">Total</div>

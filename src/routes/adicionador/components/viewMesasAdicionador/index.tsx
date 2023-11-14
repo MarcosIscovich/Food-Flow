@@ -4,7 +4,7 @@ import mesas from './mesas';
 export const ViewMesasAdicionador = component$(() => {
 
 const mesaSelected = $((id: number) => {
-    console.log("mesaSelected" , id);
+    //console.log("mesaSelected" , id);
 })
 
     return (

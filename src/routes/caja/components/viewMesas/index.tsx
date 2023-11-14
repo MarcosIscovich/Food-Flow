@@ -19,7 +19,7 @@ export const ViewMesas = component$((props: parametros) => {
     track(() => authContext.token)
     if(authContext.token){
       const _mesas = await selectItems(authContext.token, "mesas");
-      console.log("mesas", _mesas);
+     // console.log("mesas", _mesas);
       mesas.value = _mesas.data;
       loading.value = true;
     }

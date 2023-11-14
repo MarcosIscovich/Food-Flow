@@ -80,11 +80,11 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
  export type FormField = "id" | "nombre" | "cantidad" | "unidad_medida_id" | "provedor_id";
  
 export let dataInicial= {
-   id: "0",
+   id: "",
    nombre: "",
-   cantidad: "0",
-   unidad_medida_id: "0",
-   provedor_id: "0",
+   cantidad: "",
+   unidad_medida_id: "",
+   provedor_id: "",
  };
  
 

@@ -1,4 +1,4 @@
-import { Slot, component$, useContext } from '@builder.io/qwik';
+import { Slot, component$, useContext, $ } from '@builder.io/qwik';
 import { Link } from '@builder.io/qwik-city';
 import { AuthContext } from '~/context/auth/auth.context';
 //import styles from './administrativa.module.css';
@@ -171,11 +171,24 @@ export const Navbar = component$(() => {
     
       <script>
         {`
+          $("a").click(function() {
+          var drawerSide = $("#drawer-side");
+          if (drawerSide.hasClass("open")) {
+            drawerSide.removeClass("open");
+          } else {
+           drawerSide.addClass("open");
+          }
+          });
+        `}
+ 
+</script>
+      {/* <script>
+        {`
         $("a").click(function(){
           $("drawer-side").toggleClass('open', 'close');
         });
         `}
-      </script>
+      </script> */}
 
     </>
   );

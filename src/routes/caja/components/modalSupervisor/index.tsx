@@ -23,7 +23,7 @@ export const ModalSupervisor = component$((props: parametros) => {
 
 
         loginSupervisor(authContext.token || "", clave.value, "loginSupervisor").then((resp) => {
-            console.log("resp", resp);
+            //console.log("resp", resp);
             if (!resp.success) {
                 alert(resp.message);
                 // openModalClave.value = false;
@@ -42,7 +42,7 @@ export const ModalSupervisor = component$((props: parametros) => {
                     clave.value = "";
                     tienePermiso.value = true;
                     permisoContext.tienePermiso = true;                    
-                    console.log("permiso MODAL", permisoContext);        
+                    //console.log("permiso MODAL", permisoContext);        
                     modal_Supervisor.close();
                     // openModalClave.value = false;
                 }
@@ -69,7 +69,7 @@ export const ModalSupervisor = component$((props: parametros) => {
                                         <label class="label" >
                                             <span class="label-text">Clave</span>
                                         </label>
-                                        <input type="number" placeholder="clave" name='clave' bind:value={clave} class="input input-bordered" />
+                                        <input type="password" placeholder="clave" name='clave' bind:value={clave} class="input input-bordered" />
                                     </div>
 
                                     <div class="form-control mt-6 flex flex-row">

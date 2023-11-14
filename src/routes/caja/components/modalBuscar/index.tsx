@@ -70,10 +70,10 @@ export const ModalBuscar = component$<parametros>((props) => {
     ];
     const filaSeleccinada = useSignal<any>(null);
 
-   console.log("Productos ******************************", productos);
+   //console.log("Productos ******************************", productos);
    useVisibleTask$(({track}) => {
     track(async () => productos.values)
-    console.log("PRODUCTOS*********************", productos.values);
+   // console.log("PRODUCTOS*********************", productos.values);
    
 
    });

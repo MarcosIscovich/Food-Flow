@@ -1,5 +1,5 @@
-import { type PropFunction, component$, $ } from '@builder.io/qwik';
-
+import { type PropFunction, component$, $, useContext } from '@builder.io/qwik';
+import { PermisoContext } from '~/context/supervisor/supervisor.context';
 
 
 interface parametros {
@@ -13,10 +13,12 @@ interface parametros {
 export const ModalProducto = component$((props: parametros) => {
 
     const { cantidad, preferencia, itemSelectedTable, addProducto, infoToast } = props;
+    const permisoContext = useContext(PermisoContext);
 
     const _addProducto = $(() => {    
         if(cantidad.value)
         {
+            console.log("paso por modal_Producto", cantidad.value)
             addProducto()
             modal_Producto.close()
         }
@@ -35,10 +37,18 @@ export const ModalProducto = component$((props: parametros) => {
                     <div>
                         <div class="card flex-shrink-0 w-full  shadow-2xl bg-base-100">
                             <div class="text-center lg:text-center m-3">
-                                <h1 class="text-4xl font-bold mb-1">
+                                {permisoContext.action == "eliminarProducto" ? (
+                                    <h1 class="text-4xl font-bold mb-1">
+                                        Cantidad a eliminar
+                                    </h1>
+                                ) : (
+                                    <>
+                                    <h1 class="text-4xl font-bold mb-1">
                                     Ingrese detalle
                                 </h1>
                                 <h1 class="text-4xl font-bold ">de producto</h1>
+                                </>
+                                ) }
                             </div>
                             <div class="card-body">
                                 <div class="">

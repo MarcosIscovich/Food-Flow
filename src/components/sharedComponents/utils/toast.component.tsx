@@ -21,7 +21,7 @@ export const Toast = component$<parametros>((props) => {
   useVisibleTask$(({ track }) => {
     track(() => show);
     if (show) {
-      console.log("iniciar temporizadon de 3 segundos");
+     // console.log("iniciar temporizadon de 3 segundos");
 
       // create interval of 3000 miliseconds
       const interval = setInterval(() => {
@@ -37,7 +37,7 @@ export const Toast = component$<parametros>((props) => {
   return (
     <div>
       {show && (
-        <div class="toast toast-top toast-end mt-14" style="z-index:1000">
+        <div class="toast toast-top toast-center mt-14" style="z-index:1000">
           <div class={typeClass}>
             <div>
               <span>{msg}</span>

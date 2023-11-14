@@ -37,7 +37,7 @@ export const ModalReservas = component$((props: parametros) => {
             hora: hora.value,
             cantpersonas: cantidad.value
             }).then((resp) => {
-            console.log("RESP RESERVA MESA" , resp);
+            //console.log("RESP RESERVA MESA" , resp);
             if (resp.success) {
                 infoToast.show = true;
                 infoToast.msg = "Mesa reservada correctamente";
@@ -63,9 +63,9 @@ export const ModalReservas = component$((props: parametros) => {
     useTask$(async ({ track }) => {
         track(() => authContext.token)
         if (authContext.token) {
-          console.log("useTask$ ReservarMesa");
+         // console.log("useTask$ ReservarMesa");
           const response = await findClients(authContext.token, "clientes"); 
-          console.log("useTask$ ReservarMesa" , response);    
+         // console.log("useTask$ ReservarMesa" , response);    
           users.value = response.data      
         }
       });

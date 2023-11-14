@@ -196,13 +196,13 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     | "changePassword";
     
  export let dataInicial = {
-   id: "0",
+   id: "",
    nombre: "",
    apellido: "",
-   telefono: 0,
-    dni: "0",
+   telefono: "",
+    dni: "",
     clave: "",
-    role_id: "0",
+    role_id: "",
     fecha_nacimiento: "",
     email: "",
     password: "",

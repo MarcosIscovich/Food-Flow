@@ -56,7 +56,7 @@ import { FileUpload } from "~/routes/fileUpload";
  
 
     useVisibleTask$(async() => {
-      console.log("useTask$");
+     // console.log("useTask$");
       const rubros = await lista(
         authContext.token || "",
         1,
@@ -67,13 +67,13 @@ import { FileUpload } from "~/routes/fileUpload";
         "rubros",
         []);
   
-      console.log("LISTA DE RUBROS", rubros);
+      //console.log("LISTA DE RUBROS", rubros);
   
       const selectOptions: selectOption[] = rubros.data.map((item: any) => {
         return { value: item.id, label: item.nombre };
       });
       tableFieldConfiguration[2].options = selectOptions;
-      console.log("tableFieldConfiguration", tableFieldConfiguration[2]);
+     // console.log("tableFieldConfiguration", tableFieldConfiguration[2]);
   
     });
   
@@ -108,7 +108,7 @@ import { FileUpload } from "~/routes/fileUpload";
     const setItemId = useSignal<string>("");
 
     const fillItemData = $((item: IBaseCrud | null) => {
-      console.log("fillItemData", item);
+      //console.log("fillItemData", item);
       if (item === null) {
   
         Object.entries(itemData).forEach(([key]) => {
@@ -116,14 +116,14 @@ import { FileUpload } from "~/routes/fileUpload";
           itemData[_key] =  "";
         });
   
-        console.log("fillItemData Null", itemData);
+        //console.log("fillItemData Null", itemData);
        
       } else {
         Object.entries(itemData).forEach(([key]) => {
           const _key = key as keyof IBaseCrud;
           itemData[_key] =  item[_key] || "";
         });
-        console.log("fillItemData Not Null", itemData);
+        //console.log("fillItemData Not Null", itemData);
       }
     });
   
@@ -133,7 +133,7 @@ import { FileUpload } from "~/routes/fileUpload";
     });
 
     const uploadPhoto = $(async (_itemData: IBaseCrud) => {
-      console.log("uploadPhoto", _itemData);
+      //console.log("uploadPhoto", _itemData);
       setItemId.value = _itemData.id || "";
       modalOpenFU.value = true;
     });
@@ -141,7 +141,7 @@ import { FileUpload } from "~/routes/fileUpload";
     const itemDelete = $(async (itemData: IBaseCrud) => {
       const resp = await deleteItem(authContext.token || "", itemData, modeloUrl);
   
-      console.log("ItemDelete", modeloUrl, resp);
+      //console.log("ItemDelete", modeloUrl, resp);
   
       infoConfirm.show = false;
   
@@ -155,21 +155,21 @@ import { FileUpload } from "~/routes/fileUpload";
     const itemSave = $(async () => {
       let resp: any;
       let tipoAccion = "creado";
-      console.log("llega a itemSave", itemData);
+      //console.log("llega a itemSave", itemData);
   
       if (itemData?.id && itemData.id) {
-        console.log("llega a editar itemSave", itemData);
+        //console.log("llega a editar itemSave", itemData);
         // Editar
         tipoAccion = "editado y guardado";
         resp = await update(authContext.token || "", itemData, modeloUrl);
       } else {
-        console.log("llega a crear itemSave", itemData);
+        //console.log("llega a crear itemSave", itemData);
         resp = await create(authContext.token || "", itemData, modeloUrl);
       }
   
       refreshData.value = !refreshData.value;
   
-      console.log(resp);
+     // console.log(resp);
       if (resp && (resp?.data.id || tipoAccion == "editado y guardado")) {
         // show toast
         infoToast.msg = `Se ha ${tipoAccion} el elemento correctamente`;

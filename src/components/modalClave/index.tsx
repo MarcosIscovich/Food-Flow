@@ -9,10 +9,10 @@ export const ModalClave = component$(() => {
         const authContext = useContext(AuthContext);
 
         const loginUsuario = $(async () => {
-            console.log("llega al action", clave.value);
+          //  console.log("llega al action", clave.value);
 
             const resp = await loginOperario( authContext.token || "" , clave.value , "loginOperario");
-            console.log("respuesta de login", resp)
+          //  console.log("respuesta de login", resp)
             
             if(!accessControl(resp.role.nombre , "ACCESO-COMANDA")){
                 alert("No tiene permisos para acceder a esta seccion");
@@ -27,7 +27,7 @@ export const ModalClave = component$(() => {
                     rol: resp.role?.nombre
                 };
             }
-            console.log("respuesta de login", authContext.user);            
+           //console.log("respuesta de login", authContext.user);            
         });
 
     return (

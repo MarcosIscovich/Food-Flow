@@ -14,7 +14,7 @@ export const ModalMudar = component$((props: parametros) => {
   const mesaId = useSignal<any>("");
 
   const sendMesa = $(async (mesa: any) => {
-    console.log("mesa ENVIADA", mesa);
+   // console.log("mesa ENVIADA", mesa);
     mesaContext.numeroMesa = mesa;
     mesaId.value = "";
   });

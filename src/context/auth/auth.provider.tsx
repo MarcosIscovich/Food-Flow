@@ -26,7 +26,7 @@ export const AuthProvider = component$(() => {
                 authStore.token = newToken.access_token;
                 authStore.isAutenticated = true;
                 authStore.loading = false;
-                console.log("newToken**********", newToken);   
+               // console.log("newToken**********", newToken);   
                 authStore.user = {id: newToken.user.id,
                     email: newToken.user.email,
                     name: newToken.user.nombre,
@@ -40,7 +40,7 @@ export const AuthProvider = component$(() => {
                     }
                     
                 }
-                console.log("authStore.user**********", authStore.user);
+                //console.log("authStore.user**********", authStore.user);
             }
             else{
                 authStore.loading = false;
@@ -58,7 +58,7 @@ export const AuthProvider = component$(() => {
         track(() => {
             authStore.token //, authStore.user
         })
-        console.log("CAMBIO EL TOKEN", authStore.token);
+        //console.log("CAMBIO EL TOKEN", authStore.token);
         if(authStore.token && authStore.token.length >0)
         {
             authStore.isAutenticated = true;

@@ -53,6 +53,7 @@ export const tableFieldConfiguration: iTableFieldConfiguration[] = [
     visibleInTable: true,
     defaultValue: "",
     type: "date",
+    ordenable: true,
   },
   {
     title: "Cantidad",

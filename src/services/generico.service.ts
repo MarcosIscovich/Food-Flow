@@ -17,7 +17,7 @@ export const lista = async (
     const fil = filtro == "" ? "" : filtro;
    // console.log("llega a lista filtro: ", filtro);
     const encoded = encodeURI(`${configuration.api}${url}?page=${pageNumber}${fil}&limit=${pageSize}&sort=${orderSign == "-" ? "-": "" }${order}`)//?page=${pageNumber}&per_page=${pageSize}&sort=${order}`) //&searchText=${searchText});${orderSign == "-" ? "-": "" }
-    console.log("Encoded",encoded);
+   // console.log("Encoded",encoded);
     //console.log("order", order)
     const resp = await fetch(
     encoded,
@@ -31,7 +31,7 @@ export const lista = async (
     );
   
     const data = await resp.json();
-      console.log("llega a lista: ", data);
+      //console.log("llega a lista: ", data);
     return data;
   };
 
@@ -42,11 +42,11 @@ export const create = async (
   url: string
 
 ): Promise<any> => {
-  console.log("llega a crear payload ", item);
-  console.log("llega a crear token ", token);
+  //console.log("llega a crear payload ", item);
+  //console.log("llega a crear token ", token);
   
   const encoded = encodeURI(`${configuration.api}${url}`)
-  console.log(encoded);
+  //console.log(encoded);
   const resp = await fetch(encoded, {
     method: "POST",
     headers: {
@@ -66,9 +66,9 @@ export const update = async (
   data: any,
   url: string
 ): Promise<any> => {
-  console.log("llega a actualizar: ", data, url, token);
+  //console.log("llega a actualizar: ", data, url, token);
   const encoded = encodeURI(`${configuration.api}${url}/${data.id}`)
-  console.log("URLLLLLLLL", encoded);
+  //console.log("URLLLLLLLL", encoded);
   const resp = await fetch(encoded,
     // `${configuration.api}${url}/${data.id}`,
     {
@@ -82,7 +82,7 @@ export const update = async (
   );
 
   const respuesta = resp.json();
-  console.log("llega cupon/update", respuesta);
+  //console.log("llega cupon/update", respuesta);
   return respuesta;
 };
 
@@ -91,7 +91,7 @@ export const deleteItem = async (
   item: any,
   url: string
 ): Promise<any> => {
-  console.log("llega a eliminar: ", item);
+  //console.log("llega a eliminar: ", item);
 
   const resp = await fetch(
     `${configuration.api}${url}/${item.id}`,
@@ -106,7 +106,7 @@ export const deleteItem = async (
   );
   
     const data = await resp.json();
-    console.log("llega cupon/create", data);  
+    //console.log("llega cupon/create", data);  
     return data;
 };
 
@@ -128,7 +128,7 @@ export const selectItems = async (
   );
   
   const data = await resp.json();
-  console.log("llega selectItems", data);
+  //console.log("llega selectItems", data);
 
   return data;
 }
@@ -150,7 +150,7 @@ export const findUsers = async (
     }
   );
   const data = await resp.json();
-  console.log("llega Users", data);
+  //console.log("llega Users", data);
 
   return data;
 }
@@ -171,7 +171,7 @@ export const findUsers = async (
       }
     );
     const data = await resp.json();
-    console.log("llega clientes", data);
+    //console.log("llega clientes", data);
     return data;
     }
   
@@ -183,7 +183,7 @@ export const loginOperario = async (
   clave: string,
   url: string
 ): Promise<any> => {
-  console.log("llega a loginOperario: ", clave, `${configuration.api}${url}/`);
+  //console.log("llega a loginOperario: ", clave, `${configuration.api}${url}/`);
 
 
   const resp = await fetch(
@@ -199,7 +199,7 @@ export const loginOperario = async (
   );
 
   const data = await resp.json();
-  console.log("llega selectItems", data);
+  //console.log("llega selectItems", data);
 
   return data;
 }
@@ -208,7 +208,7 @@ export const loginSupervisor = async (
   clave: string,
   url: string
 ): Promise<any> => {
-  console.log("llega a loginSupervisor: ", clave, `${configuration.api}${url}/`);
+  //console.log("llega a loginSupervisor: ", clave, `${configuration.api}${url}/`);
 
 
   const resp = await fetch(
@@ -224,7 +224,7 @@ export const loginSupervisor = async (
   );
 
   const data = await resp.json();
-  console.log("llega selectItems", data);
+  //console.log("llega selectItems", data);
 
   return data;
 }

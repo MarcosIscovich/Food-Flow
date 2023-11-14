@@ -15,7 +15,7 @@ export const Modal = component$<ComponentProps>((props) => {
       : "max-w-2xl"
     : "max-w-2xl";
 
-    console.log("sizeModal", sizeModal);
+    //console.log("sizeModal", sizeModal);
   return (
     <div class={show ? "modal modal-middle modal-open " : "modal modal-middle"}>
       <div class={`modal-box ${sizeModal} border-solid border-2 border-indigo-600`}>

@@ -63,4 +63,6 @@ export const dataInicial = {
   numero: "",
   capacidad: "",
   estado_id: "",
+  orden_id: "",
+  reserva: [],
 };

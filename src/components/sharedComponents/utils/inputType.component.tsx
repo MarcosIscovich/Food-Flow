@@ -110,7 +110,7 @@ export const InputType = component$<InputType>((props) => {
           )}
           {field.type === "password" && pass.value && (
             <div class="flex flex-col">
-              {console.log("pass", pass.value)}
+              {/* {console.log("pass", pass.value)} */}
               <input
                 class={`${
                   !pass.value

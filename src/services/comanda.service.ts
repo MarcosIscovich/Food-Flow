@@ -4,11 +4,11 @@ export const deleteProducto = async (
     token: any,
     item: any,
 ): Promise<any> => {
-    console.log("DELETE PRODUCTO ", item);
-    console.log("TOKEN ", token);
+    //console.log("DELETE PRODUCTO ", item);
+    //console.log("TOKEN ", token);
 
     const encoded = encodeURI(`${configuration.api}deleteProducto`)
-    console.log(encoded);
+    //console.log(encoded);
     const resp = await fetch(encoded, {
         method: "DELETE",
         headers: {
@@ -27,11 +27,11 @@ export const updateProducto = async (
     token: any,
     item: any,
 ): Promise<any> => {
-    console.log("UPDATE PRODUCTO ", item);
-    console.log("TOKEN ", token);
+    //console.log("UPDATE PRODUCTO ", item);
+    //console.log("TOKEN ", token);
 
     const encoded = encodeURI(`${configuration.api}updateProducto`)
-    console.log(encoded);
+    //console.log(encoded);
     const resp = await fetch(encoded, {
         method: "PUT",
         headers: {

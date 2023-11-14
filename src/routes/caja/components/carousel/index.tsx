@@ -28,25 +28,25 @@ export const CarouselItems = component$((props: parametros) => {
 
   useTask$(({track}) => {
     track(() => selectedSubrubro.value)
-    console.log("selectedSubRubro", selectedSubrubro.value);
+   // console.log("selectedSubRubro", selectedSubrubro.value);
     if(selectedSubrubro.value){
       const _productosData =  productosData.value.filter((producto) => producto.sub_rubro_id === selectedSubrubro.value)
-      console.log("_ProductosData", _productosData);
+     // console.log("_ProductosData", _productosData);
       if(_productosData.length > 0){
-        console.log("Subrubros", _productosData);
+       // console.log("Subrubros", _productosData);
         const _slidesProductos = [];
         for (let i = 0; i < _productosData.length; i += 8) {
           const items = [];
           for (let j = i; j < i + 8; j++) {
             if (_productosData[j]) {
               items.push(_productosData[j]);
-              console.log("items", items);
+              //console.log("items", items);
             }
           }
           _slidesProductos.push(items);
         }
         slidesProductos.value = _slidesProductos;
-        console.log("slidesSubProductos", slidesProductos.value.length);
+       // console.log("slidesSubProductos", slidesProductos.value.length);
       }
       else{
         slidesProductos.value = [];
@@ -56,25 +56,25 @@ export const CarouselItems = component$((props: parametros) => {
 
   useTask$(({track}) => {
     track(() => selectedRubro.value)
-    console.log("selectedRubro", selectedRubro.value);
+    //console.log("selectedRubro", selectedRubro.value);
     if(selectedRubro.value){
       const _subRubrosData =  subrubrosData.value.filter((subrubro) => subrubro.rubro_id === selectedRubro.value)
-      console.log("_subRubrosData", _subRubrosData);
+      //console.log("_subRubrosData", _subRubrosData);
       if(_subRubrosData.length > 0){
-        console.log("Subrubros", _subRubrosData);
+       // console.log("Subrubros", _subRubrosData);
         const _slidesSubProductos = [];
         for (let i = 0; i < _subRubrosData.length; i += 8) {
           const items = [];
           for (let j = i; j < i + 8; j++) {
             if (_subRubrosData[j]) {
               items.push(_subRubrosData[j]);
-              console.log("items", items);
+             // console.log("items", items);
             }
           }
           _slidesSubProductos.push(items);
         }
         slidesSubProductos.value = _slidesSubProductos;
-        console.log("slidesSubProductos", slidesSubProductos.value.length);
+       // console.log("slidesSubProductos", slidesSubProductos.value.length);
       }
       else{
         slidesSubProductos.value = [];
@@ -85,7 +85,7 @@ export const CarouselItems = component$((props: parametros) => {
   useTask$(({track}) => {
     track(() => (rubrosData.value, productosData.value))
     if(rubrosData.value.length > 0){
-      console.log("Rubros", rubrosData.value);
+     // console.log("Rubros", rubrosData.value);
       //todo: build a carousel with this data
       const _slides = [];
       for (let i = 0; i < rubrosData.value.length; i += 8) {
@@ -100,11 +100,11 @@ export const CarouselItems = component$((props: parametros) => {
         
       }
       slides.value = _slides;
-      console.log("slides", slides.value.length);
+     // console.log("slides", slides.value.length);
     }
     
     if(productosData.value.length > 0){
-      console.log("Productos", productosData.value);
+     // console.log("Productos", productosData.value);
       const _slidesProductos = [];
       for (let i = 0; i < productosData.value.length; i += 8) {
         const items = [];
@@ -117,37 +117,37 @@ export const CarouselItems = component$((props: parametros) => {
         _slidesProductos.push(items);
       }
       slidesProductos.value = _slidesProductos;
-      console.log("slidesProductos", slidesProductos.value.length);
+      //console.log("slidesProductos", slidesProductos.value.length);
     }
   })
 
   useTask$(async ({ track }) => {
     track(() => authContext.token)
     if (authContext.token) {
-      console.log("useTask$");
+      //console.log("useTask$");
       const subrubros = await lista(authContext.token || "", 1, 100, "", "", "", "subrubros", []);
-      console.log("SUBRUBROS", subrubros);
+      //console.log("SUBRUBROS", subrubros);
       subrubrosData.value = subrubros.data;
 
       const rubros = await lista(authContext.token || "", 1, 100, "", "", "", "rubros", []);
       rubrosData.value = rubros.data;
-      console.log("Rubros", rubrosData.value);
+      //console.log("Rubros", rubrosData.value);
 
       const productos = await lista(authContext.token || "", 1, 1000, "", "", "", "productos", []);
       productosData.value = productos.data;
-      console.log("Productos", productosData.value);
+      //console.log("Productos", productosData.value);
     }
   });
 
   const clearShow = $(() => {
-    console.log("clearShow");    
+    //console.log("clearShow");    
     showRubros.value = true;
     showSubrubros.value = false;
     showProductos.value = false;
   });
 
   const showItems = $((id: string, action: string) => {
-    console.log("showItems", id);
+    //console.log("showItems", id);
     if (action === "showSubrubros") {
       showRubros.value = false;
       selectedRubro.value = id;
@@ -161,7 +161,7 @@ export const CarouselItems = component$((props: parametros) => {
   });
 
   const addItems = $((id: string, action: string) => {
-    console.log("addItems", id);
+    //console.log("addItems", id);
   });
 
 
@@ -200,7 +200,7 @@ export const CarouselItems = component$((props: parametros) => {
                 <div class="carousel w-full">
                   {slides.value.map((slide:any, idx:any) => {
                     const totalSlider = slides.value.length;
-                    console.log("totalSlider", totalSlider);
+      //              console.log("totalSlider", totalSlider);
                     const ref1 =
                       "#" + (slides.value.length - 1 - idx).toString();
                     const ref2 = "#" + (idx + 1);
@@ -260,7 +260,7 @@ export const CarouselItems = component$((props: parametros) => {
                 <div class="carousel w-full">
                   {slidesSubProductos.value.map((slide:any, idx:any) => {
                     const totalSlider = slidesSubProductos.value.length;
-                    console.log("totalSlider", totalSlider);
+        //            console.log("totalSlider", totalSlider);
                     const ref1 =
                       "#" + (slidesSubProductos.value.length - 1 - idx).toString();
                     const ref2 = "#" + (idx + 1);
@@ -340,7 +340,7 @@ export const CarouselItems = component$((props: parametros) => {
                 <div class="carousel w-full">
                   {slidesProductos.value.map((slide:any, idx:any) => {
                     const totalSlider = slidesProductos.value.length;
-                    console.log("totalSlider", totalSlider);
+          //          console.log("totalSlider", totalSlider);
                     const ref1 =
                       "#" + (slidesProductos.value.length - 1 - idx).toString();
                     const ref2 = "#" + (idx + 1);

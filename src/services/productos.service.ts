@@ -6,7 +6,7 @@ export const getAllProducts = async (
 ): Promise<any> => {  
 
     const encoded = encodeURI(`${configuration.api}getAllProducts`)
-    console.log(encoded);
+   // console.log(encoded);
     
     const resp = await fetch(encoded, {
         method: "GET",
@@ -18,7 +18,7 @@ export const getAllProducts = async (
     });
 
     const data = resp.json();
-    console.log("llega del back getAllproducts", data);
+    //console.log("llega del back getAllproducts", data);
     return data;
 }
 
@@ -28,11 +28,11 @@ export const mudar_Producto = async (
     dataSend: any,
 
 ): Promise<any> => {
-    console.log("llega a crear payload ", mesaId);
-    console.log("llega a crear token ", token);
+    //console.log("llega a crear payload ", mesaId);
+    //console.log("llega a crear token ", token);
 
     const encoded = encodeURI(`${configuration.api}mudarProducto/${mesaId}`)
-    console.log(encoded);
+    //console.log(encoded);
     const resp = await fetch(encoded, {
         method: "PUT",
         headers: {
