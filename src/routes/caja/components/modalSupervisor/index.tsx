@@ -7,12 +7,13 @@ import {PermisoContext} from '~/context/supervisor/supervisor.context';
 
 interface parametros {
     openModalClave: any,
-    tienePermiso: any
+    tienePermiso: any,
+    infoToast: any
 }
 
 export const ModalSupervisor = component$((props: parametros) => {
 
-    const { openModalClave , tienePermiso} = props;
+    const { openModalClave , tienePermiso, infoToast} = props;
 
     const clave = useSignal<string>("");
 
@@ -25,14 +26,20 @@ export const ModalSupervisor = component$((props: parametros) => {
         loginSupervisor(authContext.token || "", clave.value, "loginSupervisor").then((resp) => {
             //console.log("resp", resp);
             if (!resp.success) {
-                alert(resp.message);
+                //alert(resp.message);
+                infoToast.show = true;
+                infoToast.msg = resp.message;
+                infoToast.type = "error"
                 // openModalClave.value = false;
                 tienePermiso.value = false;
                 clave.value = "";
                 return;
             } else {
                 if (!accessControl(resp.data.role.nombre, "ACCESO-FULL")) {
-                    alert("No tiene permisos para acceder a esta seccion");
+                    //alert("No tiene permisos para acceder a esta seccion");
+                    infoToast.show = true;
+                    infoToast.msg = "No tiene permisos para acceder a esta seccion"
+                    infoToast.type = "error"
                     clave.value = "";
                     tienePermiso.value = false;
                     // openModalClave.value = false;

@@ -45,7 +45,7 @@ export const ModalClave = component$(() => {
                   <label class="label" >
                     <span class="label-text">Clave</span>
                   </label>
-                  <input type="number" placeholder="clave" name='clave' bind:value={clave} class="input input-bordered" />
+                  <input type="password" placeholder="clave" name='clave' bind:value={clave} class="input input-bordered" />
                 </div>
                 
                 <div class="form-control mt-6">

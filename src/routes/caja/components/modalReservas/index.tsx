@@ -4,7 +4,7 @@ import { AuthContext } from '~/context/auth/auth.context';
 import { findClients } from "~/services/generico.service";
 import { reservarMesaServicio } from '~/services/mesa.service';
 import mesas from '../viewMesas/mesas';
-
+import moment from 'moment';
 
 
 interface parametros {
@@ -115,7 +115,7 @@ export const ModalReservas = component$((props: parametros) => {
                   </div>
                   <div class="form-control mr-1">
                     <label class="label">
-                      <span class="label-text">Hora</span>
+                      <span class="label-text">Día</span>
                     </label>
                     <input
                       type="date"
@@ -123,7 +123,12 @@ export const ModalReservas = component$((props: parametros) => {
                       name="dia"
                       bind:value={dia}
                       class="input input-bordered"
-                    />
+                      min={moment(Date.now()).format("YYYY-MM-DD")}
+                     //min="2023-11-05"
+                      max={moment(Date.now()).add(1,'w').format("YYYY-MM-DD")}
+                      required />
+                      <span class="validity"></span>
+                    
                   </div>
 
                   <div class="form-control mr-1">

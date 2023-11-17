@@ -410,6 +410,9 @@ export default component$(() => {
         case "eliminarMesa":
           liberarMesa();
           break;
+        case "logOut":
+          logOut();
+          break;
 
         default:
           break;
@@ -765,7 +768,11 @@ export default component$(() => {
        productos={infoOrdenes}
       />
       <ModalClave />
-      <ModalSupervisor tienePermiso={tienePermiso} openModalClave={false} />
+      <ModalSupervisor 
+        tienePermiso={tienePermiso} 
+        openModalClave={false} 
+        infoToast={infoToast}
+      />
       <ModalMudar  infoToast={infoToast}/>
       <ModalProducto
         cantidad={cantidad}
@@ -922,7 +929,9 @@ export default component$(() => {
                                 class="btn-func btn--rojo"
                                 onClick$={() => {
                                   console.log("Informe de ventas");
-                                  logOut();
+                                  permisoContext.action = "logOut";
+                                  modal_Supervisor.showModal();
+                                  //logOut();
                                 }}
                               >
                                 <div class="flex justify-center items-center">

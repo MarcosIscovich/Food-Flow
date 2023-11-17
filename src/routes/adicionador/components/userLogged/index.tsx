@@ -20,8 +20,8 @@ export const UserLogged = component$(() => {
             <div class="stat-figure">
               {/* <IconUser size={"60"} /> */}
               <div class="avatar">
-                <div class="w-24 mask mask-squircle">
-                  <img src={logoFF} width={50} height={50} />
+                <div class="w-16 mask mask-squircle">
+                  <img src={logoFF} />
                 </div>
               </div>
               {/* <div class="avatar online">
